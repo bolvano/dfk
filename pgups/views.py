@@ -31,4 +31,4 @@ def reg_request(request):                # Сохраняет данные из 
 	else:
 		request_form = RequestForm()
 		person_form = PersonForm()
-		return render(request, 'pgups/reg.html', {'request_form' : request_form, 'person_form' : person_form})
+	return render(request, 'pgups/reg.html', {'request_form' : request_form, 'person_form' : person_form})
