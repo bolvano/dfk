@@ -6,12 +6,18 @@
 
 <body>
 
-	<h2>Техническая заявка на участие в соревнованих по плаванию</h2>
+<div>
+
+	<h2>Техническая заявка на участие в соревнованиях по плаванию</h2>
 
 	<p>
 	Пожалуйста, внимательно заполните заявку. Укажите имена и фамилии участников, даты рождения (год - обязательно),
 	основную и при необходимости дополнительную дистанцию, а также предварительное время.
 	</p>
+
+</div>
+
+<div>
 		
         <form method="POST" class="request-form">{% csrf_token %}
 
@@ -23,9 +29,21 @@
 
             	{{ person_form.as_ul }}
 
+            	{{ competitor_form.as_ul }}
+
             <button type="submit">Отправить заявку</button>
 
         </form>
+
+        {% if messages %}
+				<ul class="messages">
+    			{% for message in messages %}
+    				<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    			{% endfor %}
+				</ul>
+		{% endif %}
+
+</div>
 
 		
 </body>
