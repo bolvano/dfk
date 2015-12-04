@@ -1,8 +1,9 @@
 from django.shortcuts import render
-from .forms import RequestForm, PersonForm, CompetitorForm
+from .forms import RequestForm, RequestCompetitorFormSet, RequestPersonFormSet
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from .models import Age, Person, Userrequest
+import datetime
 
 
 # Получает IP пользователя
@@ -23,30 +24,32 @@ def reg_request(request):
 	if request.method == "POST":
 
 		request_form = RequestForm(request.POST)
-		person_form = PersonForm(request.POST)
-		competitor_form = CompetitorForm(request.POST)
+		request_person_formset = RequestPersonFormSet(request.POST)
+		request_competitor_formset = RequestCompetitorFormSet(request.POST)
 
-		if person_form.is_valid() and request_form.is_valid() and competitor_form.is_valid():	
-
-			# Сохранение данных о человеке
-			person = person_form.save()
-			person.save()
+		if (request_form.is_valid() and request_competitor_formset.is_valid() and request_person_formset.is_valid()):
 
 			# Сохранение данных о заявителе
 			userrequest = request_form.save(commit=False)
 			userrequest.ip = get_client_ip(request)
 			userrequest.save()
 
-			# Создание и сохранение нового участника
-			competitor = competitor_form.save(commit=False)
-			competitor.person = Person.objects.get(pk = person.pk)
-			competitor.userrequest = Userrequest.objects.get(pk = userrequest.pk)		
-			competitor.save()
+			# Сохранение данных о человеке
+			for person_form in request_person_formset:
+				
+				person = person_form.save(commit=False)
+				person.userrequest = Userrequest.objects.get(pk = userrequest.pk)	
+				person.save()
 
-			# Очистить формы
-			#request_form = RequestForm() 
-			#person_form = PersonForm()
-			#competitor_form = CompetitorForm()
+			for competitor_form in request_competitor_formset:
+
+				competitor = competitor_form.save(commit=False)
+				competitor.person = Person.objects.get(pk = person.pk)
+				competitor.userrequest = Userrequest.objects.get(pk = userrequest.pk)	
+				now = datetime.datetime.now()
+				age = now.year - int(person.birth_year)	
+				competitor.age = Age.objects.get(min_age__lte=age, max_age__gte=age)
+				competitor.save()
 
 			# Success message
 			messages.success(request, 'Заявка сохранена.')
@@ -58,8 +61,10 @@ def reg_request(request):
 	else:
 
 		request_form = RequestForm()
-		person_form = PersonForm()
-		competitor_form = CompetitorForm()
+		request_person_formset = RequestPersonFormSet()
+		request_competitor_formset = RequestCompetitorFormSet()
 
 	# Показать страницу с формой
-	return render(request, 'pgups/reg.html', {'request_form' : request_form, 'person_form' : person_form, 'competitor_form' : competitor_form}, )
+	return render(request, 'pgups/reg.html', {'request_form' : request_form,
+											  'request_person_formset' : request_person_formset,
+											  'request_competitor_formset' : request_competitor_formset}, )
