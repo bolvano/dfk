@@ -53,10 +53,13 @@
                 {% endfor %}
 
             </fieldset> 
-        </div>
-        <div id="fieldset-competitor">           
-            <fieldset>     
 
+        </div>
+        
+        <div id="fieldset-competitor">  
+
+            <fieldset>     
+                
                 {{ request_competitor_formset.management_form }}
                 {{ request_competitor_formset.non_form_errors }}
 
@@ -73,8 +76,9 @@
                 {% endfor %}
 
             </fieldset>
-        </div>
 
+        </div>
+        
         <button type="submit">Отправить заявку</button>
 
     </form>

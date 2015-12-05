@@ -35,7 +35,7 @@ class PersonForm(forms.ModelForm):
     class Meta:
 
         model = Person
-        exclude = ['regdate']
+        exclude = ['reg_date']
         labels = {
 
             'first_name': (' Имя'),
@@ -61,8 +61,3 @@ class CompetitorForm(forms.ModelForm):
             'main_distance' : ('Основная дистанция:')
 
         }
-
-
-# Формсеты
-RequestCompetitorFormSet = inlineformset_factory(Userrequest, Competitor, form=CompetitorForm)
-RequestPersonFormSet = inlineformset_factory(Userrequest, Person, form=PersonForm)

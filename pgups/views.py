@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from .forms import RequestForm, RequestCompetitorFormSet, RequestPersonFormSet
+from .forms import RequestForm, PersonForm, CompetitorForm
 from django.contrib import messages
-from django.http import HttpResponseRedirect
-from .models import Age, Person, Userrequest
 import datetime
+from django.forms.models import inlineformset_factory
+from .models import Userrequest, Person, Competition, Team, Competitor, Tour, Age
+from django.http import HttpResponseRedirect
 
 
 # Получает IP пользователя
@@ -24,6 +25,11 @@ def reg_request(request):
 	if request.method == "POST":
 
 		request_form = RequestForm(request.POST)
+
+		# Формсеты
+		RequestCompetitorFormSet = inlineformset_factory(Userrequest, Competitor, form=CompetitorForm, extra=4)
+		RequestPersonFormSet = inlineformset_factory(Userrequest, Person, form=PersonForm, extra=2)
+
 		request_person_formset = RequestPersonFormSet(request.POST)
 		request_competitor_formset = RequestCompetitorFormSet(request.POST)
 
@@ -34,6 +40,9 @@ def reg_request(request):
 			userrequest.ip = get_client_ip(request)
 			userrequest.save()
 
+			c = 2 # Количество участников на человека
+			offset = 0 # Смещение
+
 			# Сохранение данных о человеке
 			for person_form in request_person_formset:
 				
@@ -41,15 +50,17 @@ def reg_request(request):
 				person.userrequest = Userrequest.objects.get(pk = userrequest.pk)	
 				person.save()
 
-			for competitor_form in request_competitor_formset:
+				for competitor_form in request_competitor_formset[offset : offset + c]:
 
-				competitor = competitor_form.save(commit=False)
-				competitor.person = Person.objects.get(pk = person.pk)
-				competitor.userrequest = Userrequest.objects.get(pk = userrequest.pk)	
-				now = datetime.datetime.now()
-				age = now.year - int(person.birth_year)	
-				competitor.age = Age.objects.get(min_age__lte=age, max_age__gte=age)
-				competitor.save()
+					competitor = competitor_form.save(commit=False)
+					competitor.person = Person.objects.get(pk = person.pk)
+					competitor.userrequest = Userrequest.objects.get(pk = userrequest.pk)	
+					now = datetime.datetime.now()
+					age = now.year - int(person.birth_year)	
+					competitor.age = Age.objects.get(min_age__lte=age, max_age__gte=age)
+					competitor.save()
+
+				offset += c
 
 			# Success message
 			messages.success(request, 'Заявка сохранена.')
