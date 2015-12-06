@@ -17,18 +17,22 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
-
 # Сохраняет данные из формы в БД
 def reg_request(request):                
+
+	# Формсеты
+	extra_persons = 1
+	person_competitor_coef = 2
+	extra_competitors = extra_persons*person_competitor_coef
+
+	RequestCompetitorFormSet = inlineformset_factory(Userrequest, Competitor, form=CompetitorForm, extra=extra_competitors, can_delete=False)
+	RequestPersonFormSet = inlineformset_factory(Userrequest, Person, form=PersonForm, extra=extra_persons, can_delete=False)
+
 
 	# Если форма отправлена, сохранить данные
 	if request.method == "POST":
 
 		request_form = RequestForm(request.POST)
-
-		# Формсеты
-		RequestCompetitorFormSet = inlineformset_factory(Userrequest, Competitor, form=CompetitorForm, extra=4)
-		RequestPersonFormSet = inlineformset_factory(Userrequest, Person, form=PersonForm, extra=2)
 
 		request_person_formset = RequestPersonFormSet(request.POST)
 		request_competitor_formset = RequestCompetitorFormSet(request.POST)

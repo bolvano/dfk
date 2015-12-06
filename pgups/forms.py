@@ -15,7 +15,6 @@ class RequestForm(forms.ModelForm):
                                             empty_label='Выберите команду:', 
                                             label='Спортивное общество (команда):'
                                             )
-
     class Meta:
 
         model = Userrequest

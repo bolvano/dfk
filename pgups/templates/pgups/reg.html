@@ -4,7 +4,11 @@
 
 <meta charset="utf-8" /> 
 
-<head></head>
+<head>
+
+	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	
+</head>
 
 <body>
 
@@ -13,8 +17,9 @@
     <h2>Техническая заявка на участие в соревнованиях по плаванию</h2>
 
     <p>
-    Пожалуйста, внимательно заполните заявку. Укажите имена и фамилии участников, даты рождения (год - обязательно),
+    Пожалуйста, внимательно заполните заявку. Укажите имена и фамилии участников, год рождения,
     основную и при необходимости дополнительную дистанцию, а также предварительное время.
+    Все поля обязательны для заполнения.
     </p>
 
 </div>
@@ -25,60 +30,61 @@
    
         <h3 id="request-form-header">Заявитель</h3>
 
-         <div id="request-form">  
+        {{ request_form.as_p }}
 
-            {{ request_form.as_ul }}
+        <div id="form_set"> 
 
-        </div>
+	        {{ request_person_formset.management_form }}
+	        {{ request_person_formset.non_form_errors }}
 
-        <h3 id="competitor-form-header">Участник</h3>
+	        <hr>           
+	        {% for form in request_person_formset %}
+	        <p>
+	            {{ form.as_table }}
+	        </p>
+	        {% endfor %}
 
-        <div id="fieldset-person">
+	        {{ request_competitor_formset.management_form }}
+	        {{ request_competitor_formset.non_form_errors }}
 
-            <fieldset>
+	        {% for form in request_competitor_formset %}
+	        
+	            {{ form.as_table }}
+	            <br>
 
-                {{ request_person_formset.management_form }}
-                {{ request_person_formset.non_form_errors }}            
-
-                {% for form in request_person_formset %}
-
-                    {{ form }}
-
-                <div>
-                    {{ form.description.errors }}
-                    {{ form.description.label_tag }}
-                    {{ form.description }}
-                </div>
-
-                {% endfor %}
-
-            </fieldset> 
+	        {% endfor %}
 
         </div>
-        
-        <div id="fieldset-competitor">  
 
-            <fieldset>     
-                
-                {{ request_competitor_formset.management_form }}
-                {{ request_competitor_formset.non_form_errors }}
+        <input type="button" value="Добавить участника" id="add_more">
 
-                {% for form in request_competitor_formset %}
+		<div id="empty_form" style="display:none">
+			<hr>
+			<p>
+	        	{{ request_person_formset.empty_form.as_table }}
+	    	</p>
+		</div>
 
-                    {{ form }}
+		<div id="empty_form2" style="display:none">
+			
+	        	{{ request_competitor_formset.empty_form.as_table }}
+	        <br>
+		</div>		
 
-                <div>
-                    {{ form.description.errors }}
-                    {{ form.description.label_tag }}
-                    {{ form.description }}
-                </div>
+		<script>
+		    $('#add_more').click(function() {
+		        var form_idx = $('#id_person_set-TOTAL_FORMS').val();
+		        var form_idx2 = $('#id_competitor_set-TOTAL_FORMS').val();
 
-                {% endfor %}
+		        $('#form_set').append($('#empty_form').html().replace(/__prefix__/g, form_idx));
+		        $('#form_set').append($('#empty_form2').html().replace(/__prefix__/g, form_idx2));
+		        $('#form_set').append($('#empty_form2').html().replace(/__prefix__/g, parseInt(form_idx2)+1));
 
-            </fieldset>
+		        $('#id_person_set-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+		        $('#id_competitor_set-TOTAL_FORMS').val(parseInt(form_idx2) + 2);
+		    });
+		</script>
 
-        </div>
-        
         <button type="submit">Отправить заявку</button>
 
     </form>
