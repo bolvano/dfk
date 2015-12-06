@@ -38,6 +38,8 @@ class Person(models.Model):
     birth_year = models.CharField(max_length=4, choices=YEAR_OF_BIRTH_CHOICES, default=2008)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     reg_date = models.DateTimeField(auto_now=True)
+
+    userrequest = models.ForeignKey('Userrequest')
     
     def __str__(self):
         return self.first_name + ' ' + self.last_name
@@ -78,8 +80,8 @@ class Distance(models.Model):
 #Заявки
 class Userrequest(models.Model):
     """Request  model"""
-    competition = models.ForeignKey('Competition', null=True)
-    team = models.ForeignKey('Team', null=True)
+    competition = models.ForeignKey('Competition')
+    team = models.ForeignKey('Team')
     representative = models.CharField(max_length=255)
     phone = models.CharField(max_length=255)
     email = models.EmailField()
@@ -113,7 +115,7 @@ class Tour(models.Model):
     finished = models.BooleanField()
     
     def __str__(self):
-        return self.competition.name + ' ' + self.style.name + ' ' + self.distance.name  + ' ' + self.age.name + ' ' + ('M' if self.gender else 'Ж')
+        return self.competition.name + ' ' + self.style.name + ' ' + self.distance.name  + ' ' + self.age.name + ' ' + self.gender
 
 
 #Участники
@@ -122,10 +124,10 @@ class Competitor(models.Model):
 
     person = models.ForeignKey('Person')
     userrequest = models.ForeignKey('Userrequest')
-    age = models.ForeignKey('Age', null=True)
+    age = models.ForeignKey('Age')
     approved = models.BooleanField(default=False)
     tour = models.ForeignKey('Tour')
-    prior_time = models.FloatField(default=0)
+    prior_time = models.FloatField()
     main_distance = models.BooleanField()
     
     def __str__(self):

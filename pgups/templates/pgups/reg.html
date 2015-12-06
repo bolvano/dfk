@@ -1,50 +1,98 @@
 {% load staticfiles %}
 
 <html>
+
 <meta charset="utf-8" /> 
+
 <head></head>
 
 <body>
 
 <div>
 
-	<h2>Техническая заявка на участие в соревнованиях по плаванию</h2>
+    <h2>Техническая заявка на участие в соревнованиях по плаванию</h2>
 
-	<p>
-	Пожалуйста, внимательно заполните заявку. Укажите имена и фамилии участников, даты рождения (год - обязательно),
-	основную и при необходимости дополнительную дистанцию, а также предварительное время.
-	</p>
-
-</div>
-
-<div>
-		
-        <form method="POST" class="request-form">{% csrf_token %}
-
-        	<h3>Заявитель</h3>
-
-            	{{ request_form.as_ul }}
-
-        	<h3>Участник</h3>
-
-            	{{ person_form.as_ul }}
-
-            	{{ competitor_form.as_ul }}
-
-            <button type="submit">Отправить заявку</button>
-
-        </form>
-
-        {% if messages %}
-				<ul class="messages">
-    			{% for message in messages %}
-    				<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    			{% endfor %}
-				</ul>
-		{% endif %}
+    <p>
+    Пожалуйста, внимательно заполните заявку. Укажите имена и фамилии участников, даты рождения (год - обязательно),
+    основную и при необходимости дополнительную дистанцию, а также предварительное время.
+    </p>
 
 </div>
 
-		
+<div>      
+
+    <form method="POST" class="request-form">{% csrf_token %}
+   
+        <h3 id="request-form-header">Заявитель</h3>
+
+         <div id="request-form">  
+
+            {{ request_form.as_ul }}
+
+        </div>
+
+        <h3 id="competitor-form-header">Участник</h3>
+
+        <div id="fieldset-person">
+
+            <fieldset>
+
+                {{ request_person_formset.management_form }}
+                {{ request_person_formset.non_form_errors }}            
+
+                {% for form in request_person_formset %}
+
+                    {{ form }}
+
+                <div>
+                    {{ form.description.errors }}
+                    {{ form.description.label_tag }}
+                    {{ form.description }}
+                </div>
+
+                {% endfor %}
+
+            </fieldset> 
+
+        </div>
+        
+        <div id="fieldset-competitor">  
+
+            <fieldset>     
+                
+                {{ request_competitor_formset.management_form }}
+                {{ request_competitor_formset.non_form_errors }}
+
+                {% for form in request_competitor_formset %}
+
+                    {{ form }}
+
+                <div>
+                    {{ form.description.errors }}
+                    {{ form.description.label_tag }}
+                    {{ form.description }}
+                </div>
+
+                {% endfor %}
+
+            </fieldset>
+
+        </div>
+        
+        <button type="submit">Отправить заявку</button>
+
+    </form>
+
+    {% if messages %}
+
+            <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+            </ul>
+
+    {% endif %}
+
+</div>     
 </body>
 </html>
