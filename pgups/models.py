@@ -42,7 +42,7 @@ class Person(models.Model):
     userrequest = models.ForeignKey('Userrequest')
     
     def __str__(self):
-        return self.first_name + ' ' + self.last_name
+        return self.first_name + ' ' + self.last_name + ' (' + self.birth_year + '/' + self.gender +')'
 
 
 #Возрастные группы
@@ -131,7 +131,7 @@ class Competitor(models.Model):
     main_distance = models.BooleanField()
     
     def __str__(self):
-        return self.person.last_name + ' ' + self.person.first_name  
+        return self.person.last_name + ' ' + self.person.first_name + ': ' + self.tour.__str__() + ' (' + str(self.prior_time) + ')'
 
 
 #Старты

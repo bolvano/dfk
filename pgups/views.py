@@ -25,7 +25,7 @@ def reg_request(request):
 	person_competitor_coef = 2
 	extra_competitors = extra_persons*person_competitor_coef
 
-	RequestCompetitorFormSet = inlineformset_factory(Userrequest, Competitor, form=CompetitorForm, extra=extra_competitors, can_delete=False)
+	RequestCompetitorFormSet = inlineformset_factory(Person, Competitor, form=CompetitorForm, extra=extra_competitors, can_delete=False)
 	RequestPersonFormSet = inlineformset_factory(Userrequest, Person, form=PersonForm, extra=extra_persons, can_delete=False)
 
 

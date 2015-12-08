@@ -1,6 +1,5 @@
 from django import forms
 from .models import Userrequest, Person, Competition, Team, Competitor, Tour
-from django.forms.models import inlineformset_factory
 
 
 # Форма заявки
