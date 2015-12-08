@@ -2,6 +2,28 @@ from django import forms
 from .models import Userrequest, Person, Competition, Team, Competitor, Tour
 
 
+class RequestForm2(forms.ModelForm):
+
+    competition = forms.ModelChoiceField(   Competition.objects.all(),
+                                            empty_label='Выберите соревнование из списка:', 
+                                            label='Соревнования:'
+                                            )
+
+    team = forms.ModelChoiceField(          Team.objects.all(), 
+                                            empty_label='Выберите команду:', 
+                                            label='Спортивное общество (команда):'
+                                            )
+    class Meta:
+
+        model = Userrequest
+        exclude = ['ip', 'date']
+        labels = {
+            'representative': ('Представитель команды (ФИО):'),
+            'phone': ('Телефон:'),
+            'email': ('Электронная почта:'),
+        }
+
+
 # Форма заявки
 class RequestForm(forms.ModelForm):
 

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .forms import RequestForm, PersonForm, CompetitorForm
+from .forms import RequestForm, PersonForm, CompetitorForm, RequestForm2
 from django.contrib import messages
 import datetime
 from django.forms.models import inlineformset_factory
@@ -16,6 +16,28 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
+
+#def person_form(request):
+#	return render(request,PersonForm())
+
+
+def reg_request2(request): 
+
+	extra_persons = 1
+	person_competitor_coef = 2
+	extra_competitors = extra_persons*person_competitor_coef
+	RequestCompetitorFormSet = inlineformset_factory(Person, Competitor, form=CompetitorForm, extra=extra_competitors, can_delete=False)
+	RequestPersonFormSet = inlineformset_factory(Userrequest, Person, form=PersonForm, extra=extra_persons, can_delete=False)
+
+	if request.method == "POST":	
+
+		pass
+		
+	else:
+
+		request_form = RequestForm()
+
+	return render(request, 'pgups/reg2.html', {'request_form' : request_form,}, )
 
 # Сохраняет данные из формы в БД
 def reg_request(request):                
