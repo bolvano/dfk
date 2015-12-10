@@ -1,0 +1,93 @@
+{% load staticfiles %}
+<html>
+<meta charset="utf-8" /> 
+<head>
+	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script type='text/javascript'>
+
+	$(document).ready(function() {
+	    //var max_fields      = 30; //maximum input boxes allowed
+	    var wrapper         = $("#right"); //Fields wrapper
+	    var add_button      = $("#add_person"); //Add button ID
+
+	    var field_code = '<h1>test</h1>';
+
+	    var x = 1; //initlal text box count
+	    $(add_button).click(function(e){ //on add input button click
+	        e.preventDefault();
+	        //if(x < max_fields){ //max input box allowed
+	            x++; //text box increment
+	            
+	            $(wrapper).append('<div>'+field_code+'<a href="#" class="remove_field">Удалить</a></div>'); //add input box
+	        //}
+	        //else {
+	        //	alert("Превышено максимальное число участников в заявке!");
+	        //}
+	    });
+	    
+	    $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
+	        e.preventDefault(); $(this).parent('div').remove(); x--;
+	    })
+	});
+</script>
+
+</head>
+<body>
+<form method="POST" class="request-form">{% csrf_token %}  
+<div id="content" style="width: 100%;">
+	<div>
+	    <h2>Техническая заявка на участие в соревнованиях по плаванию</h2>
+	    <p>
+	    Пожалуйста, внимательно заполните заявку. Укажите имена и фамилии участников, год рождения,
+	    основную и при необходимости дополнительную дистанцию, а также предварительное время.
+	    Все поля обязательны для заполнения.
+	    </p>
+	</div>
+  <div id="left" style="float:left; width: 60%">
+	<div>      
+	     
+	        <h3 id="request-form-header">Заявитель</h3>
+	        {{ request_form.as_p }}
+
+	        <button type="submit">Отправить заявку</button>
+
+	    
+	    {% if messages %}
+	            <ul class="messages">
+	            {% for message in messages %}
+	                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+	            {% endfor %}
+	            </ul>
+	    {% endif %}
+	</div> 
+  </div>
+
+  <div id="right" style="width: 35%; float:right; margin: 2 auto"> 
+  <h3 id="request-form-header2">Участники</h3>
+  	<input type="hidden" id="persons_num" value="0">
+  	<input type="button" value="Добавить участника" id="add_person">
+  </div>
+
+</div>
+</form>
+
+<div style="clear:both"></div>
+
+	<script>
+	/*
+		    $('#add_person').click(function() {
+		        var persons = parseInt($('#persons_num').val());
+		        persons += 1;
+		        $('#persons_num').val(persons);
+		        alert(persons);
+		        $('#right').append('<h1>test</h1><a href="#" class="remove_field">Удалить</a>');
+		    });
+
+		    $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
+	        e.preventDefault(); $(this).parent('div').remove(); x--;
+	    	})
+*/
+	</script>
+    
+</body>
+</html>        
