@@ -5,6 +5,8 @@ import datetime
 from django.forms.models import inlineformset_factory
 from .models import Userrequest, Person, Competition, Team, Competitor, Tour, Age
 from django.http import HttpResponseRedirect
+import json
+import re
 
 
 # Получает IP пользователя
@@ -16,6 +18,82 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
+
+#def person_form(request):
+#	return render(request,PersonForm())
+
+
+def reg_request2(request): 
+
+	RequestCompetitorFormSet = inlineformset_factory(Person, Competitor, form=CompetitorForm, can_delete=True, extra=1)
+	RequestPersonFormSet = inlineformset_factory(Userrequest, Person, form=PersonForm, can_delete=True, extra=1)
+
+	if request.method == "POST":	
+
+		#import ipdb; ipdb.set_trace()
+
+		request_form = RequestForm(request.POST)
+
+		competitorMap = json.loads(request.POST['competitorMap'])
+
+		request_person_formset = RequestPersonFormSet(request.POST)
+		request_competitor_formset = RequestCompetitorFormSet(request.POST)
+
+		if (request_form.is_valid() and request_competitor_formset.is_valid() and request_person_formset.is_valid()):
+
+			# Сохранение данных о заявителе
+			userrequest = request_form.save(commit=False)
+			userrequest.ip = get_client_ip(request)
+			userrequest.save()
+
+			# Сохранение данных о человеке
+			for person_form in request_person_formset:
+
+				import ipdb; ipdb.set_trace()
+
+				if person_form.cleaned_data.get('DELETE'):
+					continue
+				
+				person = person_form.save(commit=False)
+				person.userrequest = Userrequest.objects.get(pk = userrequest.pk)	
+				person.save()
+
+				person_form_id = int(re.search(r'\d+', person_form.prefix).group())
+				main_distance = True;
+
+				for competitor_form in request_competitor_formset:
+
+					competitor_form_id = int(re.search(r'\d+', competitor_form.prefix).group())
+
+					#import ipdb; ipdb.set_trace()
+
+					if str(competitor_form_id) in competitorMap and competitorMap[str(competitor_form_id)] == str(person_form_id):
+
+						competitor = competitor_form.save(commit=False)
+						competitor.person = Person.objects.get(pk = person.pk)
+						competitor.userrequest = Userrequest.objects.get(pk = userrequest.pk)	
+						now = datetime.datetime.now()
+						age = now.year - int(person.birth_year)	
+						competitor.age = Age.objects.get(min_age__lte=age, max_age__gte=age)
+						competitor.main_distance = main_distance
+						main_distance = False
+						competitor.save()
+
+			# Success message
+			messages.success(request, 'Заявка сохранена.')
+
+			# Редирект на страницу с пустой формой
+			return HttpResponseRedirect('')
+		
+	else:
+
+		request_form = RequestForm()
+		request_person_formset = RequestPersonFormSet()
+		request_competitor_formset = RequestCompetitorFormSet()
+
+	return render(request, 'pgups/reg2.html', {'request_form' : request_form,
+		'request_person_formset': request_person_formset,
+		'request_competitor_formset': request_competitor_formset}, )
 
 # Сохраняет данные из формы в БД
 def reg_request(request):                
@@ -56,13 +134,17 @@ def reg_request(request):
 
 				for competitor_form in request_competitor_formset[offset : offset + c]:
 
-					competitor = competitor_form.save(commit=False)
-					competitor.person = Person.objects.get(pk = person.pk)
-					competitor.userrequest = Userrequest.objects.get(pk = userrequest.pk)	
-					now = datetime.datetime.now()
-					age = now.year - int(person.birth_year)	
-					competitor.age = Age.objects.get(min_age__lte=age, max_age__gte=age)
-					competitor.save()
+					#import ipdb; ipdb.set_trace()
+
+					if 'tour' in competitor_form.data:
+
+						competitor = competitor_form.save(commit=False)
+						competitor.person = Person.objects.get(pk = person.pk)
+						competitor.userrequest = Userrequest.objects.get(pk = userrequest.pk)	
+						now = datetime.datetime.now()
+						age = now.year - int(person.birth_year)	
+						competitor.age = Age.objects.get(min_age__lte=age, max_age__gte=age)
+						competitor.save()
 
 				offset += c
 

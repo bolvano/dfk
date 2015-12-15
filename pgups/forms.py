@@ -1,7 +1,6 @@
 from django import forms
 from .models import Userrequest, Person, Competition, Team, Competitor, Tour
 
-
 # Форма заявки
 class RequestForm(forms.ModelForm):
 
@@ -14,6 +13,9 @@ class RequestForm(forms.ModelForm):
                                             empty_label='Выберите команду:', 
                                             label='Спортивное общество (команда):'
                                             )
+    
+    competitorMap = forms.CharField(widget=forms.HiddenInput())
+
     class Meta:
 
         model = Userrequest
@@ -33,7 +35,7 @@ class PersonForm(forms.ModelForm):
     class Meta:
 
         model = Person
-        exclude = ['reg_date']
+        exclude = ['reg_date', 'userrequest']
         labels = {
 
             'first_name': (' Имя'),
@@ -47,15 +49,15 @@ class PersonForm(forms.ModelForm):
 # Форма с данными об участнике
 class CompetitorForm(forms.ModelForm):
 
-    tour = forms.ModelChoiceField(Tour.objects.all(), empty_label='Выберите тур:', label=' Тур: ')
-    prior_time = forms.FloatField(required=False, label=' Предварительное время: ', widget=forms.TextInput())
+    tour = forms.ModelChoiceField(Tour.objects.all(), empty_label='Выберите дистанцию', label='Тур')
+    prior_time = forms.FloatField(required=False, label='Время', widget=forms.TextInput(attrs={'size': '6'}))
 
     class Meta:
 
         model = Competitor
-        exclude = ['approved', 'person', 'userrequest', 'age']
+        exclude = ['approved', 'person', 'userrequest', 'age', 'main_distance']
         labels = {
-
-            'main_distance' : ('Основная дистанция:')
-
+            #'tour' : ('Тур'),
+            #'prior_time' : ('Время'),
+            #'main_distance' : ('Основная дистанция:')
         }
