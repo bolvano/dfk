@@ -6,12 +6,15 @@ class RequestForm(forms.ModelForm):
 
     competition = forms.ModelChoiceField(   Competition.objects.all(),
                                             empty_label='Выберите соревнование из списка:', 
-                                            label='Соревнования:'
+                                            label='Соревнования:',
+                                            error_messages={'required': 'Это обязательное поле'}
                                             )
 
     team = forms.ModelChoiceField(          Team.objects.all(), 
                                             empty_label='Выберите команду:', 
-                                            label='Спортивное общество (команда):'
+                                            label='Команда (необязательно):',
+                                            required=False
+                                            #error_messages={'required': 'Это обязательное поле'}
                                             )
     
     competitorMap = forms.CharField(widget=forms.HiddenInput())
@@ -20,9 +23,16 @@ class RequestForm(forms.ModelForm):
 
         model = Userrequest
         exclude = ['ip', 'date']
+
+        error_messages={
+        'email': {'required': 'Это обязательное поле'},
+        'phone': {'required': 'Это обязательное поле'},
+        'representative': {'required': 'Это обязательное поле'},
+        }
+
         labels = {
 
-            'representative': ('Представитель команды (ФИО):'),
+            'representative': ('Заявитель/Представитель команды:'),
             'phone': ('Телефон:'),
             'email': ('Электронная почта:'),
 
@@ -49,8 +59,18 @@ class PersonForm(forms.ModelForm):
 # Форма с данными об участнике
 class CompetitorForm(forms.ModelForm):
 
-    tour = forms.ModelChoiceField(Tour.objects.all(), empty_label='Выберите дистанцию', label='Тур')
-    prior_time = forms.FloatField(required=False, label='Время', widget=forms.TextInput(attrs={'size': '6'}))
+    tour = forms.ModelChoiceField(          Tour.objects.all(), 
+                                            empty_label='Выберите дистанцию', 
+                                            label='Тур', 
+                                            error_messages={'required': 'Это обязательное поле'}
+                                            )
+
+    prior_time = forms.FloatField(
+                                            required=True, 
+                                            label='Время', 
+                                            widget=forms.TextInput(attrs={'size': '6'}), 
+                                            error_messages={'required': 'Это обязательное поле'}
+                                            )
 
     class Meta:
 

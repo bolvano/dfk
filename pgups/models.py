@@ -81,7 +81,7 @@ class Distance(models.Model):
 class Userrequest(models.Model):
     """Request  model"""
     competition = models.ForeignKey('Competition')
-    team = models.ForeignKey('Team')
+    team = models.ForeignKey('Team', null=True, blank=True)
     representative = models.CharField(max_length=255)
     phone = models.CharField(max_length=255)
     email = models.EmailField()
@@ -89,7 +89,8 @@ class Userrequest(models.Model):
     date = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return self.competition.name + ' ' + self.team.name  
+        team = '('+self.team.name+')' if self.team else '(Инд.)'
+        return self.competition.name + ' ' + team  
 
     def get_client_ip(request):                                     
         # Получает IP пользователя

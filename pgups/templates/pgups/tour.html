@@ -1,0 +1,15 @@
+{% load staticfiles %}
+<html>
+<meta charset="utf-8" /> 
+<head>
+	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+</head>
+<body>
+
+{% for competitor in data %}
+    <li> {{ competitor.person }} Предварительное время: {{competitor.prior_time}}  </li>
+{% endfor %}
+
+    
+</body>
+</html>        
