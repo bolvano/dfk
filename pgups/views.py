@@ -3,7 +3,7 @@ from .forms import RequestForm, PersonForm, CompetitorForm
 from django.contrib import messages
 import datetime
 from django.forms.models import inlineformset_factory
-from .models import Userrequest, Person, Competition, Team, Competitor, Tour, Age
+from .models import Userrequest, Person, Competition, Team, Competitor, Tour, Age, Distance, Style
 from django.http import HttpResponseRedirect, HttpResponse
 
 import json
@@ -28,14 +28,14 @@ def reg_request(request):
 
 	if request.method == "POST":	
 
-		#import ipdb; ipdb.set_trace()
-
 		request_form = RequestForm(request.POST)
 
 		competitorMap = json.loads(request.POST['competitorMap'])
 
 		request_person_formset = RequestPersonFormSet(request.POST)
 		request_competitor_formset = RequestCompetitorFormSet(request.POST)
+
+		#import ipdb; ipdb.set_trace()
 
 		if (request_form.is_valid() and request_competitor_formset.is_valid() and request_person_formset.is_valid()):
 
@@ -46,8 +46,6 @@ def reg_request(request):
 
 			# Сохранение данных о человеке
 			for person_form in request_person_formset:
-
-				#import ipdb; ipdb.set_trace()
 
 				if person_form.cleaned_data.get('DELETE'):
 					continue
@@ -62,8 +60,6 @@ def reg_request(request):
 				for competitor_form in request_competitor_formset:
 
 					competitor_form_id = int(re.search(r'\d+', competitor_form.prefix).group())
-
-					#import ipdb; ipdb.set_trace()
 
 					if str(competitor_form_id) in competitorMap and competitorMap[str(competitor_form_id)]==str(person_form_id):
 
@@ -95,8 +91,36 @@ def reg_request(request):
 
 def tours(request):
 	tours = Tour.objects.filter(finished=False)
-	return render(request, 'pgups/tours.html', {'tours': tours}, )	
+	return render(request, 'pgups/tours.html', {'tours': tours},)
 
+def distances(request):
+	distances = []
+
+	tours = Tour.objects.all()
+
+	for tour in tours:
+		competitors = tour.competitor_set
+
+		if competitors.count():
+			distances.append('distance/'+ str(tour.competition.id) +'/'+str(tour.distance.id)+'/'+str(tour.style.id)+'/'+tour.gender+'/')
+
+	distances = list(set(distances))
+
+	return render(request, 'pgups/distances.html', {'distances': distances},)
+
+
+def distance(request, competition_id, distance_id, style_id, gender_id):
+	distances = []
+
+	competition = Competition.objects.get(pk=competition_id)
+	distance = Distance.objects.get(pk=distance_id)
+	style = Style.objects.get(pk=style_id)
+
+	tours = Tour.objects.filter(competition=competition, distance=distance, style=style, gender=gender_id)
+
+	competitors = Competitor.objects.filter(tour__in=tours)
+
+	return render(request, 'pgups/distance.html', {'competitors': competitors},)
 
 def tour_starts(request, tour_id):
 	#competition = Competition.objects.get(pk = competition)
@@ -112,24 +136,24 @@ def tour_starts(request, tour_id):
 
 		#import ipdb; ipdb.set_trace()
 
-		if remainders>0: # есть остаток
-			if full_starts>0 and remainders<minimal: #есть полные и остаток меньше трёх, перегруппировка первых двух
+		if remainders > 0: # есть остаток
+			if full_starts > 0 and remainders < minimal: #есть полные и остаток меньше трёх, перегруппировка первых двух
 				starts.append(competitors[:minimal]) # первый старт - три участника
 				if full_starts == 1: # был один полный старт: будет два неполных
 					starts.append(competitors[minimal:])
 				else: # было более одного полного: второй будет неполным, остальные полными
 					begin = minimal
-					end = begin+num_of_lanes-(minimal-remainders)
+					end = begin + num_of_lanes - (minimal - remainders)
 
 					starts.append(competitors[begin:end])
 
 					begin = end
-					for i in range(0, full_starts-1):
+					for i in range(0, full_starts - 1):
 						end = begin + num_of_lanes
 						starts.append(competitors[begin:end])
 						begin = end
 
-			elif full_starts>0 and remainders>=minimal: # есть полные старты и остаток три или больше
+			elif full_starts > 0 and remainders >= minimal: # есть полные старты и остаток три или больше
 				starts.append(competitors[:remainders])
 				begin = remainders
 				for i in range(0, full_starts):
@@ -157,11 +181,11 @@ def tour_starts(request, tour_id):
 												'starts': starts}, )	
 
 
-def get_tours(request, age):
+def get_tours(request, age, gender):
 	now = datetime.datetime.now()
 	age = now.year - int(age)
 	age = Age.objects.get(min_age__lte=age, max_age__gte=age)
-	tours = Tour.objects.filter(age=age)
+	tours = Tour.objects.filter(age=age, gender=gender)
 	tour_dict = {}
 	for tour in tours:
 		tour_dict[tour.id] = tour.__str__()
