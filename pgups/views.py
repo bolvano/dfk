@@ -65,7 +65,7 @@ def reg_request(request):
 
 					#import ipdb; ipdb.set_trace()
 
-					if str(competitor_form_id) in competitorMap and competitorMap[str(competitor_form_id)] == str(person_form_id):
+					if str(competitor_form_id) in competitorMap and competitorMap[str(competitor_form_id)]==str(person_form_id):
 
 						competitor = competitor_form.save(commit=False)
 						competitor.person = Person.objects.get(pk = person.pk)
@@ -101,11 +101,60 @@ def tours(request):
 def tour_starts(request, tour_id):
 	#competition = Competition.objects.get(pk = competition)
 	tour = Tour.objects.get(pk = tour_id)
+	num_of_lanes = 5
+	minimal = 3
+
+	starts = []
+
 	if tour:
-		data = tour.competitor_set.all().order_by('prior_time')
-	else:
-		data = 'No tour with id '+tour_id
-	return render(request, 'pgups/tour.html', {'data': data}, )	
+		competitors = tour.competitor_set.all().order_by('-prior_time')
+		(full_starts, remainders) = divmod(len(competitors), num_of_lanes)
+
+		#import ipdb; ipdb.set_trace()
+
+		if remainders>0: # есть остаток
+			if full_starts>0 and remainders<minimal: #есть полные и остаток меньше трёх, перегруппировка первых двух
+				starts.append(competitors[:minimal]) # первый старт - три участника
+				if full_starts == 1: # был один полный старт: будет два неполных
+					starts.append(competitors[minimal:])
+				else: # было более одного полного: второй будет неполным, остальные полными
+					begin = minimal
+					end = begin+num_of_lanes-(minimal-remainders)
+
+					starts.append(competitors[begin:end])
+
+					begin = end
+					for i in range(0, full_starts-1):
+						end = begin + num_of_lanes
+						starts.append(competitors[begin:end])
+						begin = end
+
+			elif full_starts>0 and remainders>=minimal: # есть полные старты и остаток три или больше
+				starts.append(competitors[:remainders])
+				begin = remainders
+				for i in range(0, full_starts):
+					end = begin + num_of_lanes
+					starts.append(competitors[begin:end])
+					begin = end
+
+			else:
+				starts.append(competitors[:])
+
+		elif full_starts: # нет остатков, просто раскидываем
+			begin = 0
+			for i in range(0, full_starts):
+				end = begin + num_of_lanes
+				starts.append(competitors[begin:end])
+				begin = end
+
+	num_starts = len(starts)
+
+	return render(request, 'pgups/tour.html', {
+												'competitors': competitors, 
+												'full_starts': full_starts,
+												'remainders': remainders,
+												'num_starts': num_starts,
+												'starts': starts}, )	
 
 
 def get_tours(request, age):
