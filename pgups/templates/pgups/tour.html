@@ -6,8 +6,19 @@
 </head>
 <body>
 
-{% for competitor in data %}
-    <li> {{ competitor.person }} Предварительное время: {{competitor.prior_time}}  </li>
+full: {{full_starts}} <br>
+remain: {{remainders}} <br>
+num_starts: {{num_starts}} <br>
+
+
+
+{% for start in starts %}
+
+	<hr>
+	{% for competitor in start %}
+	    <li> {{ competitor.person }} Предварительное время: {{competitor.prior_time}}  </li>
+	{% endfor %}
+
 {% endfor %}
 
     
