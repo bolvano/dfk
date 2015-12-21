@@ -89,12 +89,29 @@ def reg_request(request):
 		'request_person_formset': request_person_formset,
 		'request_competitor_formset': request_competitor_formset}, )
 
-def tours(request):
-	tours = Tour.objects.filter(finished=False)
-	return render(request, 'pgups/tours.html', {'tours': tours},)
+
+def generate_tours(request):
+	competition = Competition.objects.get(pk=2)
+	distance50 = Distance.objects.get(pk=2)
+	distance100 = Distance.objects.get(pk=1)
+	styles = Style.objects.all()
+	ages = Age.objects.all()
+
+	for age in ages:
+		for style in styles:
+			for gender in ['М','Ж']:
+				tour = Tour(competition=competition, style=style, age=age, gender=gender, finished=False, )
+				if style.id != 6:
+					tour.distance = distance50
+				else:
+					tour.distance = distance100
+				tour.save()
+
+	return HttpResponse(json.dumps({}), content_type="application/json")	
+
 
 def distances(request):
-	distances = []
+	distances = {}
 
 	tours = Tour.objects.all()
 
@@ -102,78 +119,68 @@ def distances(request):
 		competitors = tour.competitor_set
 
 		if competitors.count():
-			distances.append('distance/'+ str(tour.competition.id) +'/'+str(tour.distance.id)+'/'+str(tour.style.id)+'/'+tour.gender+'/')
-
-	distances = list(set(distances))
+			distances['distance/'+str(tour.competition.id)+'/'+str(tour.distance.id)+'/'+str(tour.style.id)+'/'+tour.gender+'/'] = tour.distance.name+' '+tour.style.name+' '+tour.gender
 
 	return render(request, 'pgups/distances.html', {'distances': distances},)
 
 
 def distance(request, competition_id, distance_id, style_id, gender_id):
-	distances = []
+
+	num_of_lanes = 5
+	minimal = 3
+
+	starts = []
 
 	competition = Competition.objects.get(pk=competition_id)
 	distance = Distance.objects.get(pk=distance_id)
 	style = Style.objects.get(pk=style_id)
 
 	tours = Tour.objects.filter(competition=competition, distance=distance, style=style, gender=gender_id)
+	competitors = Competitor.objects.filter(tour__in=tours).order_by('-prior_time')
+	(full_starts, remainders) = divmod(len(competitors), num_of_lanes)
 
-	competitors = Competitor.objects.filter(tour__in=tours)
+	#import ipdb; ipdb.set_trace()
 
-	return render(request, 'pgups/distance.html', {'competitors': competitors},)
+	if remainders > 0: # есть остаток
+		if full_starts > 0 and remainders < minimal: #есть полные и остаток меньше трёх, перегруппировка первых двух
+			starts.append(competitors[:minimal]) # первый старт - три участника
+			if full_starts == 1: # был один полный старт: будет два неполных
+				starts.append(competitors[minimal:])
+			else: # было более одного полного: второй будет неполным, остальные полными
+				begin = minimal
+				end = begin + num_of_lanes - (minimal - remainders)
 
-def tour_starts(request, tour_id):
-	#competition = Competition.objects.get(pk = competition)
-	tour = Tour.objects.get(pk = tour_id)
-	num_of_lanes = 5
-	minimal = 3
+				starts.append(competitors[begin:end])
 
-	starts = []
-
-	if tour:
-		competitors = tour.competitor_set.all().order_by('-prior_time')
-		(full_starts, remainders) = divmod(len(competitors), num_of_lanes)
-
-		#import ipdb; ipdb.set_trace()
-
-		if remainders > 0: # есть остаток
-			if full_starts > 0 and remainders < minimal: #есть полные и остаток меньше трёх, перегруппировка первых двух
-				starts.append(competitors[:minimal]) # первый старт - три участника
-				if full_starts == 1: # был один полный старт: будет два неполных
-					starts.append(competitors[minimal:])
-				else: # было более одного полного: второй будет неполным, остальные полными
-					begin = minimal
-					end = begin + num_of_lanes - (minimal - remainders)
-
-					starts.append(competitors[begin:end])
-
-					begin = end
-					for i in range(0, full_starts - 1):
-						end = begin + num_of_lanes
-						starts.append(competitors[begin:end])
-						begin = end
-
-			elif full_starts > 0 and remainders >= minimal: # есть полные старты и остаток три или больше
-				starts.append(competitors[:remainders])
-				begin = remainders
-				for i in range(0, full_starts):
+				begin = end
+				for i in range(0, full_starts - 1):
 					end = begin + num_of_lanes
 					starts.append(competitors[begin:end])
 					begin = end
 
-			else:
-				starts.append(competitors[:])
-
-		elif full_starts: # нет остатков, просто раскидываем
-			begin = 0
+		elif full_starts > 0 and remainders >= minimal: # есть полные старты и остаток три или больше
+			starts.append(competitors[:remainders])
+			begin = remainders
 			for i in range(0, full_starts):
 				end = begin + num_of_lanes
 				starts.append(competitors[begin:end])
 				begin = end
 
-	num_starts = len(starts)
+		else:
+			starts.append(competitors[:])
 
-	return render(request, 'pgups/tour.html', {
+	elif full_starts: # нет остатков, просто раскидываем
+		begin = 0
+		for i in range(0, full_starts):
+			end = begin + num_of_lanes
+			starts.append(competitors[begin:end])
+			begin = end
+
+	num_starts = len(starts)
+	title = 'Заплывы ' + distance.name + ' ' + style.name + ' ' + gender_id
+
+	return render(request, 'pgups/distance.html', {
+												'title': title,
 												'competitors': competitors, 
 												'full_starts': full_starts,
 												'remainders': remainders,

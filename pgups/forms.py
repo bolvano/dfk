@@ -59,7 +59,7 @@ class PersonForm(forms.ModelForm):
 # Форма с данными об участнике
 class CompetitorForm(forms.ModelForm):
 
-    tour = forms.ModelChoiceField(          Tour.objects.none(), 
+    tour = forms.ModelChoiceField(          Tour.objects.all(), 
                                             empty_label='Выберите дистанцию', 
                                             label='Тур', 
                                             error_messages={'required': 'Это обязательное поле'}

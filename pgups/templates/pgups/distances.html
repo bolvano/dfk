@@ -6,8 +6,8 @@
 </head>
 <body>
 
-{% for distance in distances %}
-    <li> <a href="../../{{distance}}">{{ distance }}</a>  </li>
+{% for k,v in distances.items %}
+    <li> <a href="../../{{k}}">{{ v }}</a>  </li>
 {% endfor %}
 
 </body>

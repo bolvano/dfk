@@ -5,10 +5,23 @@
 	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 </head>
 <body>
+<h2>{{title}}</h2>
 
-{% for competitor in competitors %}
-    <li> {{ competitor }}</a>  </li>
+full: {{full_starts}} <br>
+remain: {{remainders}} <br>
+num_starts: {{num_starts}} <br>
+
+
+
+{% for start in starts %}
+
+	<hr>
+	{% for competitor in start %}
+	    <li> {{ competitor.person }} Предварительное время: {{competitor.prior_time}}  </li>
+	{% endfor %}
+
 {% endfor %}
 
+    
 </body>
-</html>   
+</html>        
