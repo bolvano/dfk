@@ -29,14 +29,14 @@ class Team(models.Model):
 #Люди
 class Person(models.Model):
     """Person model"""
-    GENDER_CHOICES = ( (None, '-'), ('М', 'М'),('Ж', 'Ж'), )
+    GENDER_CHOICES = ( ('М', 'М'),('Ж', 'Ж'), )
 
-    YEAR_OF_BIRTH_CHOICES =  tuple( [tuple([str(x), str(x)]) for x in range(1929, 2010)] )
+    YEAR_OF_BIRTH_CHOICES =  tuple( [tuple([str(x), str(x)]) for x in range(1929, 1998)] )
 
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    birth_year = models.CharField(max_length=4, choices=YEAR_OF_BIRTH_CHOICES, default=2008)
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    birth_year = models.CharField(max_length=4, choices=YEAR_OF_BIRTH_CHOICES, default=1997)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default='Ж')
     reg_date = models.DateTimeField(auto_now=True)
 
     userrequest = models.ForeignKey('Userrequest')

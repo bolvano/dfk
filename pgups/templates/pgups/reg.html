@@ -34,6 +34,33 @@
 
 		$("#id_competitorMap").attr('value', '{}');
 
+
+	    var filterTours = function(select_id){
+
+	    	person_id = $(select_id).parent().parent().attr('id').replace(/\D/g,''); // person div
+
+	    	pby_selector = '#id_person_set-' + person_id + '-birth_year' + ' option:selected';
+	        year = $(pby_selector).val();
+
+	        gender_selector = '#id_person_set-' + person_id + '-gender' + ' option:selected';
+	        gender = $(gender_selector).val();
+	        request_url = '/get_tours/' + year + '/' + gender + '/';
+
+	        $.ajax({
+	            url: request_url,
+	            success: function(data){
+
+	            	$(select_id).empty();
+
+	                $.each(data, function(key, value){
+	                    $(select_id).append('<option value="' + key + '">' + value +'</option>');
+	                });
+	            }
+	        });	    	
+	    };		
+
+
+
 		var addCompetitor = function(person) {
 
 			var competitorMap = JSON.parse($("#id_competitorMap").val());
@@ -46,10 +73,13 @@
 
 			competitorMap[newCompetitor.attr('id').replace(/\D/g,'')] = person.attr('id').replace(/\D/g,'');
 
-			console.log(competitorMap);
 			$("#id_competitorMap").attr('value', JSON.stringify(competitorMap));
 
-			$('#id_competitor_set-TOTAL_FORMS').attr('value', count+1);
+			$('#id_competitor_set-TOTAL_FORMS').attr('value', count + 1);
+
+	    	new_tour_id = '#id_competitor_set-' + count.toString() + '-tour';
+
+			filterTours(new_tour_id);
 		};	
 	
 		var addPerson = function() {
@@ -59,10 +89,7 @@
 	        var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
 
 			var newPerson = $(compiledTmpl).appendTo("div#persons-form-container");
-
 	        $('#id_person_set-TOTAL_FORMS').attr('value', count+1);
-	        console.log($('#persons-form-container').children().length);
-
 	        addCompetitor(newPerson);
 
             // some animate to scroll to view our new form
@@ -81,15 +108,8 @@
 	    $("#right").on("click", ".remove_person", function(e){ //user click on remove text
 	    	e.preventDefault(); 
 
-	    	//var count_persons = $('#persons-form-container').children().length;
-	    	//var count_competitors = $('.competitor_div').length;
-	    	//var removed_competitors = $(this).parent().find(".competitor_div").length;
-
 	        $(this).parent('div').hide();
 	        $(this).parent().find('input[id*="DELETE"]').prop('checked', true);
-
-	        //$('#id_person_set-TOTAL_FORMS').attr('value', count_persons-1);
-	        //$('#id_competitor_set-TOTAL_FORMS').attr('value', count_competitors-removed_competitors);
 
 	        var parent_id = $(this).parent().attr('id').replace(/\D/g,'');
 	        var competitorMap = JSON.parse($("#id_competitorMap").val());
@@ -109,28 +129,33 @@
 	    	addCompetitor(parent); //person div
 	    });
 
+	    $("#right").on("change", 'select[id*="birth_year"]', function(){ 
 
-/*	    $("#right").on("change", 'select[id*="birth_year"]', function(){ 
+	    	var person = $(this).parent().attr('id');
 
-	    	var parent_id = $(this).parent().attr('id').replace(/\D/g,'');
-	    	var select_id = '#id_competitor_set-'+parent_id+'-tour';
+	    	person_competitors = '#' + person + ' .competitor_div';
 
-	        age_id = $(this).val();
-	        request_url = '/get_tours/' + age_id + '/';
-	        $.ajax({
-	            url: request_url,
-	            success: function(data){
-	                $.each(data[0], function(key, value){
-	                    $(select_id).append('<option value="' + this.key + '">' + this.value +'</option>');
-	                });
-	            }
-	            //return false;
-	        })
+	    	$(person_competitors).each(
+	    		function(index) {
+	    			tour_id = $(this).find('select').attr('id');
+	    			tour_id = '#' + tour_id;
+	    			filterTours(tour_id);
+	    		});
 	    });
-	*/
 
+	    $("#right").on("change", 'select[id*="gender"]', function(){ 
 
+	    	var person = $(this).parent().attr('id');
 
+	    	person_competitors = '#' + person + ' .competitor_div';
+
+	    	$(person_competitors).each(
+	    		function(index) {
+	    			tour_id = $(this).find('select').attr('id');
+	    			tour_id = '#' + tour_id;
+	    			filterTours(tour_id);
+	    		});
+	    });	    
 	});
 </script>
 
@@ -168,7 +193,9 @@
 	            </ul>
 	    {% endif %}
 
-	    <a href="tours" style="position: absolute; bottom: 20; left: 20;">Туры</a>
+	    <div style="position: absolute; bottom: 20; left: 20;">
+	    <a href="distances">Дистанции</a>
+	    </div>
 
 	</div>
 

@@ -6,8 +6,8 @@
 </head>
 <body>
 
-{% for tour in tours %}
-    <li> <a href="../tour/{{tour.id}}/">{{ tour }}</a>  </li>
+{% for k,v in distances.items %}
+    <li> <a href="../../{{k}}">{{ v }}</a>  </li>
 {% endfor %}
 
 </body>
