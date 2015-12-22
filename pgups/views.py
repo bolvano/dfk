@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*- 
 from django.shortcuts import render
 from .forms import RequestForm, PersonForm, CompetitorForm
 from django.contrib import messages
