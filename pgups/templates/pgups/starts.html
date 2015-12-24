@@ -1,0 +1,14 @@
+{% load staticfiles %}
+<html>
+<meta charset="utf-8" /> 
+<head>
+	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+</head>
+<body>
+
+{% for start in starts %}
+    <li> <a href="../start/{{start.id}}">{{ start.name }} #{{ start.num }}</a>  </li>
+{% endfor %}
+
+</body>
+</html>   
