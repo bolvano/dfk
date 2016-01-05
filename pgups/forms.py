@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*- 
 
 from django import forms
-from .models import Userrequest, Person, Competition, Team, Competitor, Tour
+from .models import Userrequest, Person, Competition, Team, Competitor, Tour, Result
 
 # Форма заявки
 class RequestForm(forms.ModelForm):
