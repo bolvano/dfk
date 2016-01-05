@@ -134,7 +134,20 @@ class Competitor(models.Model):
     main_distance = models.BooleanField()
     
     def __str__(self):
-        return self.person.last_name + ' ' + self.person.first_name + ': ' + self.tour.__str__() + ' (' + str(self.prior_time) + ')'
+        if self.userrequest.team:
+            team = self.userrequest.team.name
+        else:
+            team = 'Инд.'
+        return self.person.last_name + ' ' + self.person.first_name + ' ('+ team +')' +': ' + self.tour.age.name + ' (' + str(self.prior_time) + ')'
+
+# CDSG
+class Cdsg(models.Model):
+    competition = models.ForeignKey('Competition')
+    name = models.CharField(max_length=255, null=True, blank=True, default='foo')
+    number = models.PositiveSmallIntegerField(default=1)
+
+    def __str__(self):
+        return self.name + ' #' + str(self.number)
 
 
 #Старты
@@ -142,10 +155,11 @@ class Start(models.Model):
     """Start  model"""
 
     name = models.CharField(max_length=255, null=True, blank=True, default='foo')
-    num = models.PositiveSmallIntegerField(default=1)
+    cdsg = models.ForeignKey('Cdsg')
+    num = models.PositiveSmallIntegerField(default=1) # num in cdmg
     
     def __str__(self):
-        return self.name
+        return self.name + ' #' + str(self.num)
 
 class Order(models.Model):
     """Start-Competitors bind model w/ lane position"""
@@ -170,7 +184,7 @@ class Result(models.Model):
     points = models.PositiveSmallIntegerField()
 
     def __str__(self):
-        return self.competitor.__str__() + ' ' + self.competitor.tour.__str__()
+        return self.competitor.__str__() + ' ' + self.competitor.tour.__str__() + ' ' + str(self.time)
 
 
 

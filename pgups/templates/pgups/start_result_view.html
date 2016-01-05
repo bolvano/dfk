@@ -1,0 +1,26 @@
+{% load staticfiles %}
+<html>
+<meta charset="utf-8" /> 
+<head>
+</head>
+<body>
+
+<h3>Заплыв № {{start_num}}</h3>
+<hr>
+
+{% for result in results %}
+
+    <li> {{ result.competitor.person.last_name }} {{ result.competitor.person.last_name }} ({{ result.competitor.userrequest.team.name }}):  {{ result.time }}</li>
+
+{% endfor %}
+
+<hr>
+
+<a href="../../start_result/{{start_id}}/">Редактировать</a> {% if next_start_id %}<a href="../../start_result/{{next_start_id}}/">Следующий заплыв>></a> {% endif %}
+
+<br> <a href="../../all_starts/1/">Все старты</a><br>
+<a href="../../tours/">Туры</a><br>
+<a href="../../">Главная</a><br>
+    
+</body>
+</html>        

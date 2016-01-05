@@ -1,0 +1,27 @@
+{% load staticfiles %}
+<html>
+<meta charset="utf-8" /> 
+<head>
+	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+</head>
+<body>
+
+<h3>{{tour_name}}</h3>
+
+<hr>
+
+{% for pair in res %}
+    <li>  {{pair.0}} : {{pair.1}}  </li>
+{% endfor %}
+
+
+<hr>
+
+
+<a href="../../tours/">Все туры</a><br>
+
+<a href="../../">Главная</a><br>
+
+
+</body>
+</html>   

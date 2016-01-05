@@ -8,9 +8,11 @@
 
 {% for cdsg in cdsg_list %}
 
-	{{cdsg.name}}
+	<h3>{{cdsg.name}}</h3>
 
-	{% for start in cdsg.starts %}
+	{% for start in cdsg.start_set.all %}
+
+		<br>Заплыв № {{start.num}} <a href="../../start_result/{{start.id}}/">Результат</a><br>
 
 	    {% for order in start.order_set.all %}
 	    <li> {{ order.lane }} :: {{ order.competitor }} </li>

@@ -1,0 +1,17 @@
+{% load staticfiles %}
+<html>
+<meta charset="utf-8" /> 
+<head>
+	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+</head>
+<body>
+
+{% for team in teams %}
+    <li> {{ team.name }} </li>
+{% endfor %}
+
+<hr>
+<a href="../">Главная</a><br>
+
+</body>
+</html>   
