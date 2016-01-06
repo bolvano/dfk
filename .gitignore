@@ -4,4 +4,4 @@ __pycache__
 dfk/settings.py
 pgups/migrations/*
 *~
-pgups/static/*
+
