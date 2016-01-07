@@ -1,6 +1,8 @@
 {% load staticfiles %}
+
 <html>
 <meta charset="utf-8" /> 
+
 <head>
 
 	<link href="{% static 'css/main.css' %}" rel="stylesheet">  <!-- CSS -->
@@ -13,35 +15,42 @@
 	</style>
 
 	<script type="text/html" id="person-template">
-	<div id="person-__prefix__">
-	<br>
-	<hr>
-	    	<table>
-				{% for error in request_person_formset.empty_form.non_field_errors %}
-				    <tr><td>{{ error }}</td></tr>
-				{% endfor %}
-		        {% for field in request_person_formset.empty_form.visible_fields %}
-				<tr>
-				    <td>{{ field.label_tag }}</td>
-				    <td>{{ field }}</td>
-				    <td>{{ field.errors }}</td>
-				</tr>
-				{% endfor %}
-				{% for field in request_person_formset.empty_form.hidden_fields %}
-					<tr><td>{{ field.as_hidden }}</td></tr>
+		<div id="person-__prefix__">
+		<br>
+		<hr>
+
+				{% for field in request_person_formset.empty_form.visible_fields %}
+
+		    		<div class="field-wrapper">
+
+		        		{{ field.errors }}
+		        		{{ field.label_tag }} {{ field }}
+
+		        	{% if field.help_text %}
+		        		<p class="help">{{ field.help_text|safe }}</p>
+		        	{% endif %}
+
+	    			</div>
+
 				{% endfor %}
 
-			</table>
-		
-	    <a href="#" class="remove_person">Удалить участника</a><br>  
-	    <a href="#" class="btn btn-info add-competitor">Добавить участнику заплыв</a>  
-	</div>
+				{% for field in request_person_formset.empty_form.hidden_fields %}
+					<div>{{ field.as_hidden }}</div>
+				{% endfor %}
+
+		    <br>
+
+		    <a href="#" class="btn btn-info add-competitor">Добавить участнику заплыв</a><br>
+
+		    <a href="#" class="remove_person">Удалить участника</a>
+
+		</div>
 	</script>
 
 	<script type="text/html" id="competitor-template">
-	<div id="competitor-__prefix__" class="competitor_div">
-	    {{ request_competitor_formset.empty_form }}
-	</div>
+		<div id="competitor-__prefix__" class="competitor_div">
+		    {{ request_competitor_formset.empty_form }}
+		</div>
 	</script>
 
 	<script src="{% static 'js/main.js' %}"></script>  <!-- JS -->
@@ -71,28 +80,21 @@
 		    Если заявка индивидуальная, оставьте поле "Команда" пустым.
 		    </p>
 
-			<table>
-				{% for error in request_form.non_field_errors %}
-				    <tr><td>{{ error }}</td></tr>
-				{% endfor %}
+			{% for field in request_form.visible_fields %}
+    		<div class="field-wrapper">
+        		{{ field.errors }}
+        		{{ field.label_tag }} {{ field }}
+        	{% if field.help_text %}
+        		<p class="help">{{ field.help_text|safe }}</p>
+        	{% endif %}
+			</div>
+			{% endfor %}
+			{% for field in request_form.hidden_fields %}
+				<div>{{ field.as_hidden }}</div>
+			{% endfor %}
 
-				{% for field in request_form.visible_fields %}
-				    
-				    <tr>
-				    	<td>{{ field.label_tag }}</td>
-				    	<td>{{ field }}</td>
-				    	<td>{{ field.errors }}</td>
-				    </tr>
-
-				{% endfor %}
-				{% for field in request_form.hidden_fields %}
-					<tr><td>{{ field.as_hidden }}</td></tr>
-				{% endfor %}
-			</table>
-
-	        <button type="submit">Отправить заявку</button>
-
-	    
+	        <button id="submit" type="submit">Отправить заявку</button>
+    
 	    {% if messages %}
 	            <ul class="messages">
 	            {% for message in messages %}
@@ -100,8 +102,6 @@
 	            {% endfor %}
 	            </ul>
 	    {% endif %}
-
-
 
 	</div>
 
@@ -115,21 +115,21 @@
 		{{ request_person_formset.management_form }}
 		{{ request_competitor_formset.management_form }}
 
-		<div id="persons-form-container">
-		</div> 	
+		<div id="persons-form-container"></div> 
+
 		<br><hr><a href="#" id="add-person-button" class="btn btn-info add-person">Добавить участника</a>
 
 	</div>
 </div>
 
-
 <div style="clear:both"></div>
+
 </form> 
 
 <div>
-<a href="all_starts/1/">Утверждённые старты</a><br>
-<a href="tours/">Туры</a><br>
-<a href="teams/">Команды</a><br>
+	<a href="all_starts/1/">Утверждённые старты</a><br>
+	<a href="tours/">Туры</a><br>
+	<a href="teams/">Команды</a><br>
 </div>
     
 </body>
