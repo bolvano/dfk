@@ -2,79 +2,61 @@
 
 <html>
 <meta charset="utf-8" /> 
-
 <head>
-
 	<link href="{% static 'css/main.css' %}" rel="stylesheet">  <!-- CSS -->
-
 	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-
 	<style>
 	input[id*="DELETE"] { display: none; }
 	label[for*="DELETE"] { display: none; }
 	</style>
-
 	<script type="text/html" id="person-template">
-		<div id="person-__prefix__">
-		<br>
-		<hr>
-
-				{% for field in request_person_formset.empty_form.visible_fields %}
-
-		    		<div class="field-wrapper">
-
-		        		{{ field.errors }}
-		        		{{ field.label_tag }} {{ field }}
-
-		        	{% if field.help_text %}
-		        		<p class="help">{{ field.help_text|safe }}</p>
-		        	{% endif %}
-
-	    			</div>
-
-				{% endfor %}
-
-				{% for field in request_person_formset.empty_form.hidden_fields %}
-					<div>{{ field.as_hidden }}</div>
-				{% endfor %}
-
+		<div id="person-__prefix__" style="border-top:1px solid #FFF9ED;border-bottom:1px solid #FFF9ED;padding:10px 0px;margin:5px">
+			<br>
+			{% for field in request_person_formset.empty_form.visible_fields %}
+    		<div class="field-wrapper">
+        		{{ field.errors }}
+        		{{ field.label_tag }} {{ field }}
+        	{% if field.help_text %}
+        		<p class="help">{{ field.help_text|safe }}</p>
+        	{% endif %}
+			</div>
+			{% endfor %}
+			{% for field in request_person_formset.empty_form.hidden_fields %}
+			<div>{{ field.as_hidden }}</div>
+			{% endfor %}
 		    <br>
-
-		    <a href="#" class="btn btn-info add-competitor">Добавить участнику заплыв</a><br>
-
+		    
+		    <div id="remove-person-button">
 		    <a href="#" class="remove_person">Удалить участника</a>
-
+		    <hr style="height:1px;visibility:hidden;margin-bottom:-1px">
+		    <a href="#" class="btn btn-info add-competitor">Добавить участнику заплыв</a>
+		    </div>
 		</div>
 	</script>
-
 	<script type="text/html" id="competitor-template">
 		<div id="competitor-__prefix__" class="competitor_div">
 		    {{ request_competitor_formset.empty_form }}
 		</div>
 	</script>
-
 	<script src="{% static 'js/main.js' %}"></script>  <!-- JS -->
-
 </head>
-
 <body>
-
 <form method="POST" class="request-form">{% csrf_token %} 
-
 <div id="content">
-
+	<div id="menu"> <!-- Menu -->
+		<div id="menu-button"><a href="all_starts/1/">Утверждённые старты</a></div>
+		<div id="menu-button"><a href="tours/">Туры</a></div>
+		<div id="menu-button"><a href="teams/">Команды</a></div>
+	</div> 			<!-- End of menu -->
 	<h1>Техническая заявка на участие в соревнованиях по плаванию</h1>
-
 	<div id="header">	    
 	    <p>
 	    <br>Пожалуйста, внимательно заполните заявку. Укажите имена и фамилии участников, год рождения,
 	    основную и при необходимости дополнительную дистанцию, а также предварительное время.
 	    <br>Все поля, кроме специально отмеченных, обязательны для заполнения.
 	    </p>
-    </div>	<!-- End of header --> 
-
-	<div id="left">    
-	     
+    </div>			<!-- End of header -->
+	<div id="left">    	     
 	        <h3>Заявитель</h3>
 		    <p>
 		    Если заявка индивидуальная, оставьте поле "Команда" пустым.
@@ -93,7 +75,7 @@
 				<div>{{ field.as_hidden }}</div>
 			{% endfor %}
 
-	        <button id="submit" type="submit">Отправить заявку</button>
+	        <div id="submit-button"><button id="submit" type="submit">Отправить заявку</button></div>
     
 	    {% if messages %}
 	            <ul class="messages">
@@ -117,7 +99,7 @@
 
 		<div id="persons-form-container"></div> 
 
-		<br><hr><a href="#" id="add-person-button" class="btn btn-info add-person">Добавить участника</a>
+		<a href="#" id="add-person-button" class="btn btn-info add-person">Добавить участника</a>
 
 	</div>
 </div>
@@ -125,12 +107,5 @@
 <div style="clear:both"></div>
 
 </form> 
-
-<div>
-	<a href="all_starts/1/">Утверждённые старты</a><br>
-	<a href="tours/">Туры</a><br>
-	<a href="teams/">Команды</a><br>
-</div>
-    
 </body>
 </html>        

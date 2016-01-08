@@ -118,7 +118,7 @@ class Tour(models.Model):
     finished = models.BooleanField()
     
     def __str__(self):
-        return self.competition.name + ' ' + self.style.name + ' ' + self.distance.name  + ' ' + self.age.name + ' ' + self.gender
+        return self.style.name + ' ' + self.distance.name  + ' ' + self.age.name + ' ' + self.gender
 
 
 #Участники

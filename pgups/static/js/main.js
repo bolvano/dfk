@@ -76,7 +76,8 @@ $(document).ready(function() {
     $("#right").on("click", ".remove_person", function(e){ //user click on remove text
     	e.preventDefault(); 
 
-        $(this).parent('div').hide();
+        $(this).parent('div').parent('div').hide();
+
         $(this).parent().find('input[id*="DELETE"]').prop('checked', true);
 
         var parent_id = $(this).parent().attr('id').replace(/\D/g,'');
@@ -93,13 +94,13 @@ $(document).ready(function() {
     $("#right").on("click", ".add-competitor", function(ev){
     	ev.preventDefault();
 
-    	var parent = $(this).parent();
+    	var parent = $(this).parent().parent();
     	addCompetitor(parent); //person div
     });
 
     $("#right").on("change", 'select[id*="birth_year"]', function(){ 
 
-    	var person = $(this).parent().attr('id');
+    	var person = $(this).parent().parent().attr('id');
 
     	person_competitors = '#' + person + ' .competitor_div';
 
@@ -114,7 +115,7 @@ $(document).ready(function() {
 
     $("#right").on("change", 'select[id*="gender"]', function(){ 
 
-    	var person = $(this).parent().attr('id');
+    	var person = $(this).parent().parent().attr('id');
 
     	person_competitors = '#' + person + ' .competitor_div';
 
