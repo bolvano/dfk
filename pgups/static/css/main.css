@@ -80,22 +80,22 @@ a:focus{
 #left {
 	position: relative;
 	float: left;
-	width: 40%;
+	width: 35%;
 	height: 50%;
 	margin-left: auto;
 	margin-right: auto;
 	padding: 20px;
-	padding-left: 5%;
+	padding-left: 3%;
 }
 
 #right {
 	position: relative;
 	float: left;
-	width: 45%;
+	width: 53%;
 	margin-left: auto;
 	margin-right: auto;
 	padding: 20px;
-	padding-right: 5%;
+	padding-right: 3%;
 
 }
 
@@ -108,6 +108,10 @@ a:focus{
 	position:relative;
 	width: 40%;
 	margin: 0 auto;
+}
+
+.competitor_div {
+	width: 100%;
 }
 
 
@@ -224,14 +228,17 @@ a:focus{
 
 #submit-button {
 	position: relative;
-	top: 31%;
+	width: 20%;
+	margin: 0 auto;
 }
 
 #submit {
     padding: 10px 15px;
     background: #4479BA;
     color: #FFF9ED;
-    font-size: 11pt;
+    height: 50px;
+    width: 200px;
+    font-size: 12pt;
     text-align: center;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
@@ -269,6 +276,7 @@ a:focus{
 #remove-person-button {
 	position:relative;
 	float:right;
+	width: 30%;
 	top:-117px;
 }
 

@@ -74,8 +74,6 @@
 			{% for field in request_form.hidden_fields %}
 				<div>{{ field.as_hidden }}</div>
 			{% endfor %}
-
-	        <div id="submit-button"><button id="submit" type="submit">Отправить заявку</button></div>
     
 	    {% if messages %}
 	            <ul class="messages">
@@ -105,6 +103,7 @@
 </div>
 
 <div style="clear:both"></div>
+<div id="submit-button"><button id="submit" type="submit">Отправить заявку</button></div>
 
 </form> 
 </body>
