@@ -3,6 +3,7 @@
 from django import forms
 from .models import Userrequest, Person, Competition, Team, Competitor, Tour, Result
 
+
 # Форма заявки
 class RequestForm(forms.ModelForm):
 
@@ -39,7 +40,7 @@ class RequestForm(forms.ModelForm):
             'email': ('Электронная почта:'),
 
         }
-        
+
 
 # Форма с данными о человеке 
 class PersonForm(forms.ModelForm):
@@ -50,10 +51,10 @@ class PersonForm(forms.ModelForm):
         exclude = ['reg_date', 'userrequest']
         labels = {
 
-            'first_name': (' Имя'),
-            'last_name': (' Фамилия'),
-            'birth_year': (' Год рождения'),
-            'gender': (' Пол'),
+            'first_name': (' Имя:'),
+            'last_name': (' Фамилия:'),
+            'birth_year': (' Год рождения:'),
+            'gender': (' Пол:'),
 
         }
 

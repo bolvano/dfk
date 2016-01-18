@@ -6,7 +6,7 @@ urlpatterns = [
     url(r'^$', views.reg_request, name='regrequest'),
     url(r'^teams/$', views.teams),
     url(r'^distances/$', views.distances),
-    url(r'^tours/$', views.tours),
+    url(r'^tours/$', views.tours, name='tours'),
     url(r'^tours2/$', views.tours2),
     url(r'^tour/(?P<id>\d+)/$', views.tour),
     url(r'^starts/$', views.starts),
@@ -16,7 +16,7 @@ urlpatterns = [
     url(r'^get_tours/(?P<age>\d+)/(?P<gender>\w+)/$', views.get_tours),
     #url(r'^generate_tours/(?P<competition_id>\d+)/$', views.generate_tours),
     #url(r'^generate_starts/(?P<competition_id>\d+)/$', views.generate_starts),
-    url(r'^all_starts/(?P<competition_id>\d+)/$', views.all_starts),
+    url(r'^all_starts/(?P<competition_id>\d+)/$', views.all_starts, name='all_starts'),
     url(r'^start_result/(?P<start_id>\d+)/$', views.start_result),
     url(r'^start_result_view/(?P<start_id>\d+)/$', views.start_result_view),
     

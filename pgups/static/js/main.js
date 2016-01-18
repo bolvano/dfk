@@ -2,14 +2,11 @@ $(document).ready(function() {
 
 	$("#id_competitorMap").attr('value', '{}');
 
-
     var filterTours = function(select_id){
 
-    	person_id = $(select_id).parent().parent().attr('id').replace(/\D/g,''); // person div
-
+    	person_id = $(select_id).parent().parent().parent().parent().parent().parent().parent().attr('id').replace(/\D/g,''); // person div
     	pby_selector = '#id_person_set-' + person_id + '-birth_year' + ' option:selected';
         year = $(pby_selector).val();
-
         gender_selector = '#id_person_set-' + person_id + '-gender' + ' option:selected';
         gender = $(gender_selector).val();
         request_url = '/get_tours/' + year + '/' + gender + '/';
@@ -28,21 +25,17 @@ $(document).ready(function() {
     };		
 
 
-
 	var addCompetitor = function(person) {
 
 		var competitorMap = JSON.parse($("#id_competitorMap").val());
 		var count = $('.competitor_div').length;
-
 		var tmplMarkup = $('#competitor-template').html();
 		var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
-
-		var newCompetitor = $(compiledTmpl).appendTo(person);
+		var newCompetitor = $(compiledTmpl).appendTo(person.find("#competitor-col"));
 
 		competitorMap[newCompetitor.attr('id').replace(/\D/g,'')] = person.attr('id').replace(/\D/g,'');
 
 		$("#id_competitorMap").attr('value', JSON.stringify(competitorMap));
-
 		$('#id_competitor_set-TOTAL_FORMS').attr('value', count + 1);
 
     	new_tour_id = '#id_competitor_set-' + count.toString() + '-tour';
@@ -55,7 +48,6 @@ $(document).ready(function() {
         var count = $('#persons-form-container').children().length;
         var tmplMarkup = $('#person-template').html();
         var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
-
 		var newPerson = $(compiledTmpl).appendTo("div#persons-form-container");
         $('#id_person_set-TOTAL_FORMS').attr('value', count+1);
         addCompetitor(newPerson);
@@ -100,7 +92,7 @@ $(document).ready(function() {
 
     $("#right").on("change", 'select[id*="birth_year"]', function(){ 
 
-    	var person = $(this).parent().parent().attr('id');
+    	var person = $(this).parent().parent().parent().parent().attr('id');
 
     	person_competitors = '#' + person + ' .competitor_div';
 
@@ -115,7 +107,7 @@ $(document).ready(function() {
 
     $("#right").on("change", 'select[id*="gender"]', function(){ 
 
-    	var person = $(this).parent().parent().attr('id');
+    	var person = $(this).parent().parent().parent().parent().attr('id');
 
     	person_competitors = '#' + person + ' .competitor_div';
 
