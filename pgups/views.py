@@ -9,8 +9,6 @@ from django.forms import modelformset_factory
 from .models import Userrequest, Person, Competition, Team, Competitor, Tour, Age, Distance, Style, Start, Order, Cdsg, Result
 from django.http import HttpResponseRedirect, HttpResponse
 from django import forms
-
-
 import json
 import re
 
@@ -25,6 +23,7 @@ def get_client_ip(request):
         ip = request.META.get('REMOTE_ADDR')
     return ip
 
+
 def attribute_lanes(competitor_set):
 	return_set = {}
 	lanes = [3,2,4,1,5]
@@ -32,6 +31,7 @@ def attribute_lanes(competitor_set):
 		return_set[lanes.pop(0)] = competitor
 
 	return return_set
+
 
 def start_result(request, start_id):
 
@@ -69,6 +69,7 @@ def start_result(request, start_id):
 		result_formset = ResultFormSet(queryset=Result.objects.filter(competitor__in=competitors))
 
 	return render(request, 'pgups/start_result.html', {'result_formset' : result_formset, 'start_num': start.num, 'next_start_id':next_start_id} )
+
 
 def start_result_view(request, start_id):
 	start = Start.objects.get(pk=start_id)
@@ -190,10 +191,12 @@ def distances(request):
 
 	return render(request, 'pgups/distances.html', {'distances': distances},)
 
+
 def starts(request):
 	starts = Start.objects.all()
 
 	return render(request, 'pgups/starts.html', {'starts': starts},)
+
 
 def all_starts(request, competition_id):
 	competition = Competition.objects.get(pk=competition_id)
@@ -202,10 +205,12 @@ def all_starts(request, competition_id):
 
 	return render(request, 'pgups/all_starts.html', {'cdsg_list': cdsg_list, 'competition_id':competition_id},)
 
+
 def start(request, id):
 	start = Start.objects.get(pk=id)
 
 	return render(request, 'pgups/start.html', {'start': start},)
+
 
 def distance_starts(request, competition_id, distance_id, style_id, gender_id):
 
@@ -226,6 +231,7 @@ def distance_starts(request, competition_id, distance_id, style_id, gender_id):
 			starts.append(order.start)
 
 	return render(request, 'pgups/distance_starts.html', {'starts': starts},)
+
 
 def distance(request, competition_id, distance_id, style_id, gender_id):
 
@@ -412,6 +418,7 @@ def distance(request, competition_id, distance_id, style_id, gender_id):
 	
 	return HttpResponseRedirect('../../all_starts/'+competition_id+'/')'''
 
+
 def teams(request):
 	res = {}
 	teams = Team.objects.all()
@@ -424,13 +431,13 @@ def teams(request):
 	return render(request, 'pgups/teams.html', {'teams': teams},)
 
 
-
 def tours(request):
 
 	tours = Tour.objects.exclude(competitor=None).order_by('style', 'age', 'gender') #.order_by('age').order_by('style')
 	#tours = Tour.objects.exclude(competitor=None).order_by('gender').order_by('age').order_by('style')
 
 	return render(request, 'pgups/tours.html', {'tours': tours},)
+
 
 def tours2(request):
 	res2 = []
@@ -460,7 +467,6 @@ def tours2(request):
 	return render(request, 'pgups/tours2.html', {'res2': res2},)
 
 
-
 def tour(request, id):
 
 	res = []	
@@ -482,6 +488,7 @@ def tour(request, id):
 	res = sorted(res, key=lambda x: x[1])
 			
 	return render(request, 'pgups/tour.html', {'res': res, 'tour_name': tour_name},)	
+
 
 def get_tours(request, age, gender):
 	now = datetime.datetime.now()

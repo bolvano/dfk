@@ -4,28 +4,34 @@
 {% block content %}
 	<!-- Jumbotron -->
     <div class="jumbotron">
-      <div class="container">
-        <h1>Техническая заявка на участие в соревнованиях по плаванию</h1>
-        <p>Пожалуйста, внимательно заполните заявку. Укажите имена и фамилии участников, год рождения,
-	    основную и при необходимости дополнительную дистанцию, а также предварительное время.</p>
-        <p>Все поля, кроме специально отмеченных, обязательны для заполнения.</p>
-      </div>
+      	<div class="container">
+      		<div class="row">
+				<div class="col-md-11">
+			        <h1 class="gray">Техническая заявка на участие в соревнованиях по плаванию</h1><br>
+			        <p class="lead">Пожалуйста, внимательно заполните заявку. Укажите имена и фамилии участников, год рождения,
+				    основную и при необходимости дополнительную дистанцию, а также предварительное время.</p>
+			        <p class="aside"><i>Все поля, кроме специально отмеченных, обязательны для заполнения.</i></p>
+			    </div>
+			</div>
+      	</div>
     </div>
     <!-- Jumbotron -->
     <!-- MEGAFORM -->
-	<form class="form-horizontal" role="form" action="." method="post">
-		{% csrf_token %} 
+	<form class="form-horizontal" role="form" action="." method="post">{% csrf_token %} 
 	    <div class="container">
-			<div id="left">   
-		        <h3>Заявитель</h3>
-		        <br>
-			    <p>Если заявка индивидуальная, оставьте поле "Команда" пустым.</p>
-			    <br>
+			<div id="left"> 
+				<div class="row">
+					<div class="col-md-7">
+				        <h3 class="gray">Заявитель</h3><br>
+					    <p>Если заявка индивидуальная, оставьте поле "Команда" пустым.</p><br>
+				    </div>
+			    </div>
+			    <!-- Request form -->
 			    {% for field in request_form.visible_fields %}
 			        {% if field.errors %}
 			            <div class="form-group has-error">
-			                <label class="col-sm-3 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
-			                <div class="col-sm-5">
+			                <label class="col-md-3 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
+			                <div class="col-md-5">
 			                    {{ field|attr:"class:form-control" }}
 			                    <span class="help-block">
 			                        {% for error in  field.errors %}{{ error }}{% endfor %}
@@ -34,8 +40,8 @@
 			            </div>
 			        {% else %}
 			            <div class="form-group">
-			                <label class="col-sm-3 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
-			                <div class="col-sm-5">
+			                <label class="col-md-3 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
+			                <div class="col-md-5">
 			                    {{ field|attr:"class:form-control" }}
 			                    {% if field.help_text %}
 			                        <p class="help-block"><small>{{ field.help_text }}</small></p>
@@ -47,41 +53,52 @@
 			    {% for field in request_form.hidden_fields %}
 					<div>{{ field.as_hidden }}</div>
 				{% endfor %}
+				<!-- End Request form -->
 				<hr>
 			</div>
 			<div id="right"> 
-				<br>
-				<h3>Участники</h3>
-				<br>
-				<p>Если заявка командная, добавьте участников команды, если индивидуальная - то только себя.
-				Первая указанная дистанция идёт в зачёт. Для каждого участника будет учитываться только одна основная и одна дополнительная (по желанию) дистанция.
-			    </p>
+				<div class="row">
+					<div class="col-md-7">
+						<h3 class="gray">Участники</h3><br>
+						<p>Если заявка командная, добавьте участников команды, если индивидуальная - то только себя.
+						Первая указанная дистанция идёт в зачёт. Для каждого участника будет учитываться только одна основная и одна дополнительная (по желанию) дистанция.
+					    </p>
+				    </div>
+			    </div>
 			    <br>
 				{{ request_person_formset.management_form }}
 				{{ request_competitor_formset.management_form }}
 				<div id="persons-form-container"></div>
 				<hr>
-				<a href="#" id="add-person-button" class="btn btn-success btn-md add-person">Добавить участника</a>
+				<a href="#" id="add-person-button" class="btn btn-success btn-lg add-person">Добавить участника</a>
 			</div>
 			<br>
-			<div class="row">
-			<div class="col-lg-1 col-centered">
-				<button id="submit" type="submit" class="btn btn-primary btn-lg">Отправить заявку</button>
+		</div>
+	    <div class="jumbotron">
+	      	<div class="container">
+				<div class="row" >
+					<div class="col-lg-3 col-centered">
+						<button type="submit" class="btn btn-primary btn-xxl">Отправить заявку</button>
+					    {% if messages %}
+					            {% for message in messages %}
+					                <br><h4{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h4>
+					            {% endfor %}
+					    {% endif %}
+					</div>
+				</div>
 			</div>
-			</div>
-			<br>
 		</div>
 	</form>
 	<!-- MEGAFORM -->
 	<script type="text/html" id="person-template">		
 		<div id="person-__prefix__" class="row">
 			<hr><br>
-			<div class="col-sm-5">
+			<div class="col-md-5">
 			    {% for field in request_person_formset.empty_form.visible_fields %}
 			        {% if field.errors %}
 			            <div class="form-group has-error">
-			                <label class="col-sm-4 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
-			                <div class="col-sm-8">
+			                <label class="col-md-4 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
+			                <div class="col-md-8">
 			                    {{ field|attr:"class:form-control" }}
 			                    <span class="help-block">
 			                        {% for error in  field.errors %}{{ error }}{% endfor %}
@@ -90,8 +107,8 @@
 			            </div>
 			        {% else %}
 			            <div class="form-group">
-			                <label class="col-sm-4 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
-			                <div class="col-sm-8">
+			                <label class="col-md-4 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
+			                <div class="col-md-8">
 			                    {{ field|attr:"class:form-control" }}
 			                    {% if field.help_text %}
 			                        <p class="help-block"><small>{{ field.help_text }}</small></p>
@@ -104,22 +121,22 @@
 					<div>{{ field.as_hidden }}</div>
 				{% endfor %}
 			</div>
-		    <div class="col-sm-2">
+		    <div class="col-md-2">
 			    <a href="#" class="btn btn-danger btn-md btn-block remove_person">Удалить участника</a>
 			    <a href="#" class="btn btn-success btn-md btn-block add-competitor">Добавить заплыв</a>
 		    </div>	
-		    <div id="competitor-col" class="col-sm-5"></div>
+		    <div id="competitor-col" class="col-md-5"></div>
 		</div>
 	</script>
 	<script type="text/html" id="competitor-template">
 		<div id="competitor-__prefix__" class="competitor_div">
 			<div class="row">
-				<div class="col-sm-10">
+				<div class="col-md-10">
 				    {% for field in request_competitor_formset.empty_form.visible_fields %}
 				        {% if field.errors %}
 				            <div class="form-group has-error">
-				                <label class="col-sm-2 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
-				                <div class="col-sm-10">
+				                <label class="col-md-2 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
+				                <div class="col-md-10">
 				                    {{ field|attr:"class:form-control" }}
 				                    <span class="help-block">
 				                        {% for error in  field.errors %}{{ error }}{% endfor %}
@@ -128,8 +145,8 @@
 				            </div>
 				        {% else %}
 				            <div class="form-group">
-				                <label class="col-sm-2 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
-				                <div class="col-sm-10">
+				                <label class="col-md-2 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
+				                <div class="col-md-10">
 				                    {{ field|attr:"class:form-control" }}
 				                    {% if field.help_text %}
 				                        <p class="help-block"><small>{{ field.help_text }}</small></p>
@@ -142,10 +159,8 @@
 						<div>{{ field.as_hidden }}</div>
 					{% endfor %}
 				</div>
-				<div class="col-sm-2">
-					<a href="#" class="btn btn-danger btn-sm remove-competitor">
-          				<span class="glyphicon glyphicon-remove"></span>
-        			</a>
+				<div class="col-md-2">
+					<a href="#" class="btn btn-danger btn-sm remove-competitor">Удалить заплыв</a>
 				</div>
 			</div>
 			<hr>

@@ -4,12 +4,12 @@ $(document).ready(function() {
 
     var filterTours = function(select_id){
 
-    	person_id = $(select_id).parent().parent().parent().parent().parent().parent().parent().attr('id').replace(/\D/g,''); // person div
-    	pby_selector = '#id_person_set-' + person_id + '-birth_year' + ' option:selected';
-        year = $(pby_selector).val();
-        gender_selector = '#id_person_set-' + person_id + '-gender' + ' option:selected';
-        gender = $(gender_selector).val();
-        request_url = '/get_tours/' + year + '/' + gender + '/';
+    	var person_id = $(select_id).parents(':eq(6)').attr('id').replace(/\D/g,''); // person div
+    	var pby_selector = '#id_person_set-' + person_id + '-birth_year' + ' option:selected';
+        var year = $(pby_selector).val();
+        var gender_selector = '#id_person_set-' + person_id + '-gender' + ' option:selected';
+        var gender = $(gender_selector).val();
+        var request_url = '/get_tours/' + year + '/' + gender + '/';
 
         $.ajax({
             url: request_url,
@@ -38,7 +38,7 @@ $(document).ready(function() {
 		$("#id_competitorMap").attr('value', JSON.stringify(competitorMap));
 		$('#id_competitor_set-TOTAL_FORMS').attr('value', count + 1);
 
-    	new_tour_id = '#id_competitor_set-' + count.toString() + '-tour';
+    	var new_tour_id = '#id_competitor_set-' + count.toString() + '-tour';
 
 		filterTours(new_tour_id);
 	};	
@@ -59,48 +59,76 @@ $(document).ready(function() {
 
     };		
 
-	addPerson();
+	//addPerson();
+
+
+// Adding
 
 	$("#right").on('click', '.add-person', function(){
 	    addPerson();
 	});
+
+    $("#right").on("click", ".add-competitor", function(ev){
+        ev.preventDefault();
+
+        var parent = $(this).parent().parent();
+        addCompetitor(parent); //person div
+    });
     
+
+// Removing
+
+    // person div
     $("#right").on("click", ".remove_person", function(e){ //user click on remove text
     	e.preventDefault(); 
 
         $(this).parent('div').parent('div').hide();
 
-        $(this).parent().find('input[id*="DELETE"]').prop('checked', true);
+        $(this).parent().parent().find('input[id*="DELETE"]').prop('checked', true);
 
-        var parent_id = $(this).parent().attr('id').replace(/\D/g,'');
+        var parent_id = $(this).parent().parent().attr('id').replace(/\D/g,'');
+
         var competitorMap = JSON.parse($("#id_competitorMap").val());
+
 		for(var f in competitorMap) {
 	        if(competitorMap[f] == parent_id) {
 	            delete competitorMap[f];
 	        }
 	    }
+
+        $("#id_competitorMap").attr('value', JSON.stringify(competitorMap));
+    });
+
+    // competitor div
+    $("#right").on("click", ".remove-competitor", function(e){ //user click on remove text
+        e.preventDefault(); 
+
+        $(this).parents(':eq(2)').hide();
+
+        $(this).parents(':eq(2)').find('input[id*="DELETE"]').prop('checked', true);
+
+        var competitor_id = $(this).parents(':eq(2)').attr('id').replace(/\D/g,'');
+
+        var competitorMap = JSON.parse($("#id_competitorMap").val());
+        
+        delete competitorMap[competitor_id];
+
         $("#id_competitorMap").attr('value', JSON.stringify(competitorMap));
     });
 
 
-    $("#right").on("click", ".add-competitor", function(ev){
-    	ev.preventDefault();
-
-    	var parent = $(this).parent().parent();
-    	addCompetitor(parent); //person div
-    });
+// Filtering
 
     $("#right").on("change", 'select[id*="birth_year"]', function(){ 
 
     	var person = $(this).parent().parent().parent().parent().attr('id');
 
-    	person_competitors = '#' + person + ' .competitor_div';
+    	var person_competitors = '#' + person + ' .competitor_div';
 
     	$(person_competitors).each(
     		function(index) {
-    			tour_id = $(this).find('select').attr('id');
+    			var tour_id = $(this).find('select').attr('id');
     			tour_id = '#' + tour_id;
-                console.log(tour_id);
     			filterTours(tour_id);
     		});
     });
@@ -109,11 +137,11 @@ $(document).ready(function() {
 
     	var person = $(this).parent().parent().parent().parent().attr('id');
 
-    	person_competitors = '#' + person + ' .competitor_div';
+    	var person_competitors = '#' + person + ' .competitor_div';
 
     	$(person_competitors).each(
     		function(index) {
-    			tour_id = $(this).find('select').attr('id');
+    			var tour_id = $(this).find('select').attr('id');
     			tour_id = '#' + tour_id;
     			filterTours(tour_id);
     		});
