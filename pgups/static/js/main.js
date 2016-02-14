@@ -145,5 +145,5 @@ $(document).ready(function() {
     			tour_id = '#' + tour_id;
     			filterTours(tour_id);
     		});
-    });	    
+    });
 });

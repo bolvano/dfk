@@ -1,18 +1,9 @@
+{% extends 'pgups/base.html' %}
 {% load staticfiles %}
-<html>
-<meta charset="utf-8" /> 
-<head>
-	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-	<link href="{% static 'css/main.css' %}" rel="stylesheet">  <!-- CSS -->
-</head>
-<body>
+{% block content %}
 
 {% for tour in tours %}
     <li> <a href="../tour/{{tour.id}}">{{ tour }}</a>  </li>
 {% endfor %}
 
-<hr>
-<a href="../">Главная</a><br>
-
-</body>
-</html>   
+{% endblock %} 

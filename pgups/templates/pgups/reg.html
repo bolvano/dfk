@@ -14,91 +14,94 @@
 			    </div>
 			</div>
       	</div>
-    </div>
-    <!-- Jumbotron -->
+    </div> <!-- End of Jumbotron -->
     <!-- MEGAFORM -->
 	<form class="form-horizontal" role="form" action="." method="post">{% csrf_token %} 
 	    <div class="container">
 			<div id="left"> 
-				<div class="row">
+				<div class="well row">
 					<div class="col-md-7">
 				        <h3 class="gray">Заявитель</h3><br>
 					    <p>Если заявка индивидуальная, оставьте поле "Команда" пустым.</p><br>
 				    </div>
-			    </div>
+			    </div> <!-- End of well -->
 			    <!-- Request form -->
 			    {% for field in request_form.visible_fields %}
 			        {% if field.errors %}
 			            <div class="form-group has-error">
-			                <label class="col-md-3 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
-			                <div class="col-md-5">
+			                <label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
+			                <div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
 			                    {{ field|attr:"class:form-control" }}
 			                    <span class="help-block">
-			                        {% for error in  field.errors %}{{ error }}{% endfor %}
+			                        <!-- {% for error in  field.errors %}{{ error }}{% endfor %} -->
+			                      	<script src="{% static 'js/notie.js' %}"></script>
+									<script> notie.alert(3, 'Не все поля заполнены!', 2.5); </script>
 			                    </span>
 			                </div>
-			            </div>
+			            </div> <!-- End of form errors -->
 			        {% else %}
 			            <div class="form-group">
-			                <label class="col-md-3 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
-			                <div class="col-md-5">
+			                <label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
+			                <div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
 			                    {{ field|attr:"class:form-control" }}
 			                    {% if field.help_text %}
 			                        <p class="help-block"><small>{{ field.help_text }}</small></p>
 			                    {% endif %}
-			                </div>
+			                </div> <!-- End of form fields -->
 			            </div>
 			        {% endif %}
 			    {% endfor %}
 			    {% for field in request_form.hidden_fields %}
-					<div>{{ field.as_hidden }}</div>
+				<div>{{ field.as_hidden }}</div> <!-- Hidden fields -->
 				{% endfor %}
-				<!-- End Request form -->
+				<!-- End of Request form -->
 				<hr>
-			</div>
+			</div> <!-- End of #left -->
 			<div id="right"> 
-				<div class="row">
+				<div class="well row">
 					<div class="col-md-7">
 						<h3 class="gray">Участники</h3><br>
 						<p>Если заявка командная, добавьте участников команды, если индивидуальная - то только себя.
 						Первая указанная дистанция идёт в зачёт. Для каждого участника будет учитываться только одна основная и одна дополнительная (по желанию) дистанция.
 					    </p>
 				    </div>
-			    </div>
+			    </div> <!-- End of well -->
 			    <br>
 				{{ request_person_formset.management_form }}
 				{{ request_competitor_formset.management_form }}
-				<div id="persons-form-container"></div>
+				<div id="persons-form-container"> <!-- Person form --> </div>
 				<hr>
 				<a href="#" id="add-person-button" class="btn btn-success btn-lg add-person">Добавить участника</a>
-			</div>
+			</div> <!-- End of #right -->
 			<br>
-		</div>
+		</div> <!-- End of container -->
 	    <div class="jumbotron">
 	      	<div class="container">
 				<div class="row" >
-					<div class="col-lg-3 col-centered">
-						<button type="submit" class="btn btn-primary btn-xxl">Отправить заявку</button>
+					<div class="col-lg-3 col-md-4 col-sm-5 col-xs-6 col-centered">
+						<button type="submit" class="btn btn-warning btn-xxl">Отправить заявку</button>
 					    {% if messages %}
-					            {% for message in messages %}
-					                <br><h4{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h4>
-					            {% endfor %}
+			            {% for message in messages %}
+		                <!-- <br><h4{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h4> -->
+	                	<script src="{% static 'js/notie.js' %}"></script>
+						<script> notie.alert(1, 'Заявка сохранена!', 2.5); </script> <!-- Notie -->
+			            {% endfor %}
 					    {% endif %}
 					</div>
 				</div>
-			</div>
-		</div>
-	</form>
-	<!-- MEGAFORM -->
+			</div> <!-- End of container -->
+		</div> <!-- End of jumbotron -->
+	</form> <!-- END OF MEGAFORM -->
+	<!-- Templates --> 
 	<script type="text/html" id="person-template">		
 		<div id="person-__prefix__" class="row">
 			<hr><br>
-			<div class="col-md-5">
+			<div class="col-lg-5 col-md-4 col-sm-8 col-xs-12">
 			    {% for field in request_person_formset.empty_form.visible_fields %}
 			        {% if field.errors %}
 			            <div class="form-group has-error">
-			                <label class="col-md-4 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
-			                <div class="col-md-8">
+			                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
+			                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
 			                    {{ field|attr:"class:form-control" }}
 			                    <span class="help-block">
 			                        {% for error in  field.errors %}{{ error }}{% endfor %}
@@ -107,8 +110,8 @@
 			            </div>
 			        {% else %}
 			            <div class="form-group">
-			                <label class="col-md-4 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
-			                <div class="col-md-8">
+			                <label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
+			                <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
 			                    {{ field|attr:"class:form-control" }}
 			                    {% if field.help_text %}
 			                        <p class="help-block"><small>{{ field.help_text }}</small></p>
@@ -121,17 +124,17 @@
 					<div>{{ field.as_hidden }}</div>
 				{% endfor %}
 			</div>
-		    <div class="col-md-2">
+		    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
 			    <a href="#" class="btn btn-danger btn-md btn-block remove_person">Удалить участника</a>
 			    <a href="#" class="btn btn-success btn-md btn-block add-competitor">Добавить заплыв</a>
 		    </div>	
-		    <div id="competitor-col" class="col-md-5"></div>
+		    <div id="competitor-col" class="col-lg-5 col-md-5 col-sm-12 col-xs-12"></div>
 		</div>
 	</script>
 	<script type="text/html" id="competitor-template">
 		<div id="competitor-__prefix__" class="competitor_div">
 			<div class="row">
-				<div class="col-md-10">
+				<div class="col-lg-10 col-md-10 col-sm-8 col-xs-12">
 				    {% for field in request_competitor_formset.empty_form.visible_fields %}
 				        {% if field.errors %}
 				            <div class="form-group has-error">
@@ -159,7 +162,7 @@
 						<div>{{ field.as_hidden }}</div>
 					{% endfor %}
 				</div>
-				<div class="col-md-2">
+				<div class="col-lg-2 col-md-2 col-sm-8 col-xs-12 ">
 					<a href="#" class="btn btn-danger btn-sm remove-competitor">Удалить заплыв</a>
 				</div>
 			</div>
