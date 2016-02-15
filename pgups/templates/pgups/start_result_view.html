@@ -1,27 +1,33 @@
+{% extends 'pgups/base.html' %}
 {% load staticfiles %}
-<html>
-<meta charset="utf-8" /> 
-<head>
-	<link href="{% static 'css/main.css' %}" rel="stylesheet">  <!-- CSS -->
-</head>
-<body>
-
-<h3>Заплыв № {{start_num}}</h3>
-<hr>
-
-{% for result in results %}
-
-    <li> {{ result.competitor.person.last_name }} {{ result.competitor.person.last_name }} ({{ result.competitor.userrequest.team.name }}):  {{ result.time }}</li>
-
-{% endfor %}
-
-<hr>
-
-<a href="../../start_result/{{start_id}}/">Редактировать</a> {% if next_start_id %}<a href="../../start_result/{{next_start_id}}/">Следующий заплыв>></a> {% endif %}
-
-<br> <a href="../../all_starts/1/">Все старты</a><br>
-<a href="../../tours/">Туры</a><br>
-<a href="../../">Главная</a><br>
-    
-</body>
-</html>        
+{% block content %}
+<div class="container">
+	<div class="result row">
+		<div class="single-cdsg-start-num">
+			<span class="start-num">Заплыв {{start_num}}</span>
+			<a class="btn btn-info pull-right" href="../../all_starts/1/">Все старты</a>
+		</div>
+		<table class="single-cdsg-table result-table table table-striped table-hover table-bordered">
+			<tbody>
+			{% for result in results %}
+				<tr>
+					<td class="order-name">{{result.competitor.person.first_name}} {{result.competitor.person.last_name}}</td>
+					<td class="order-team">{{result.competitor.userrequest.team.name}}</td>
+					<td class="order-age text-center">{{result.competitor.age}}</td>
+					<td class="order-prior-time order-time-animation text-center">{{result.time}}</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+		<a class="btn btn-default pull-right" href="../../start_result/{{start_id}}/">Редактировать</a>
+	</div>
+	<div class="next-start row">
+	<hr>
+	{% if next_start_id %}
+		<a class="btn btn-primary pull-right" href="../../start_result/{{next_start_id}}/">
+			Следующий заплыв <span class="glyphicon glyphicon-chevron-right"></span>
+		</a>
+	{% endif %}
+	</div>
+</div>
+{% endblock %}

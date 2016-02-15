@@ -144,3 +144,22 @@ label[for*="DELETE"] { display: none; }
 .order-time > input {
   width: 100%;
 }
+
+/* Chrome, Safari, Opera */
+@-webkit-keyframes greenish {
+    from {background-color: rgba(128, 255, 128, 0.6);}
+    to {background-color: #fff;}
+}
+
+/* Standard syntax */
+@keyframes greenish {
+    from {background-color: rgba(128, 255, 128, 0.6);}
+    to {background-color: #fff;}
+}
+
+.order-time-animation {
+  -webkit-animation-name: greenish; /* Chrome, Safari, Opera */
+  -webkit-animation-duration: 3s; /* Chrome, Safari, Opera */
+  animation-name: greenish;
+  animation-duration: 3s;
+}
