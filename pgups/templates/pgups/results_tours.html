@@ -1,0 +1,34 @@
+{% extends 'pgups/base.html' %}
+{% load staticfiles %}
+{% load i18n widget_tweaks %}
+{% block content %}
+
+
+<h2>{{competition.name}} </h2>
+ <h3>Результаты по турам</h3>
+
+<hr>
+
+
+
+
+{% for result in results %}
+<h4>{{result.0}}</h4>
+
+{% for c in result.1 %}
+<li>{{c.person.last_name}} {{c.person.first_name}} : {{c.result_set.all.0.time}}</li>
+{% endfor %}
+
+
+{%if result.2|length > 0 %}
+Не вышли:<br>
+{% for c in result.2 %}
+<li>{{c.person.last_name}} {{c.person.first_name}}</li>
+{% endfor %}
+{% endif %}
+
+{% endfor %}
+
+
+
+{% endblock %}

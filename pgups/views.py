@@ -11,6 +11,52 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django import forms
 import json
 import re
+from django.shortcuts import get_object_or_404
+
+def index(request):
+    competitions = Competition.objects.all().order_by('date_start')
+    return render(request, 'pgups/index.html', {'competitions': competitions},)
+
+def competition(request, competition_id):
+    competition = get_object_or_404(Competition, pk=competition_id)
+    return render(request, 'pgups/competition.html', {'competition': competition},)
+
+def userrequest(request, userrequest_id):
+    userrequest = get_object_or_404(Userrequest, pk=userrequest_id)
+    return render(request, 'pgups/userrequest.html', {'userrequest': userrequest},)
+
+def person(request, person_id):
+    person = get_object_or_404(Person, pk=person_id)
+    return render(request, 'pgups/person.html', {'person': person},)
+
+def results_starts(request, competition_id):
+    competition = get_object_or_404(Competition, pk=competition_id)
+    cdsgs = Cdsg.objects.filter(competition=competition)
+    starts = Start.objects.filter(cdsg__in=cdsgs).order_by('num')
+
+    return render(request, 'pgups/results_starts.html', {'competition':competition, 'starts':starts},)
+
+def results_tours(request, competition_id):
+
+    results = []
+    competition = get_object_or_404(Competition, pk=competition_id)
+    tours = Tour.objects.filter(competition=competition)
+    for tour in tours:
+        competitors = []
+        competitors_good = []
+        competitors_bad = []
+        for c in tour.competitor_set.all():
+            competitors.append(c)
+
+        competitors.sort(key=lambda c: c.result_set.all()[0].time)
+        competitors_good = list(filter(lambda c: c.result_set.all()[0].time > 0, competitors))
+        competitors_bad = list(filter(lambda c: c.result_set.all()[0].time == 0, competitors))
+
+        results.append((tour,competitors_good,competitors_bad))
+
+    return render(request, 'pgups/results_tours.html', {'results': results, 'tours':tours, 'competition': competition},)
+
+
 
 
 # Получает IP пользователя

@@ -1,0 +1,17 @@
+{% extends 'pgups/base.html' %}
+{% load staticfiles %}
+{% load i18n widget_tweaks %}
+{% block content %}
+{{person.first_name}} {{person.last_name}}<br>
+{{person.gender}} {{person.birth_year}}
+
+<hr>
+
+Участие:
+{% for competitor in person.competitor_set.all %}
+<li>{{competitor.userrequest.competition}} : {{competitor.tour}}
+{% if competitor.userrequest.competition.finished %} (<b> {{competitor.result_set.all.0.time}}, {{competitor.result_set.all.0.result}} </b>) {% endif %}
+</li>
+{% endfor %}
+
+{% endblock %}

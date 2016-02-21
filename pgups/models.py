@@ -156,7 +156,7 @@ class Start(models.Model):
 
     name = models.CharField(max_length=255, null=True, blank=True, default='foo')
     cdsg = models.ForeignKey('Cdsg')
-    num = models.PositiveSmallIntegerField(default=1) # num in cdmg
+    num = models.PositiveSmallIntegerField(default=1) # num in cdsg
     
     def __str__(self):
         return self.name + ' #' + str(self.num)
@@ -171,6 +171,8 @@ class Order(models.Model):
     def __str__(self):
         return self.start.name + ' ' + self.competitor.person.last_name + ' (' + str(self.competitor.prior_time) + ')' + ' ' + str(self.lane)
 
+    class Meta:
+        ordering = ['lane']
 
 #Результаты
 class Result(models.Model):
