@@ -1,9 +1,0 @@
-{% extends 'pgups/base.html' %}
-{% load staticfiles %}
-{% block content %}
-
-{% for tour in tours %}
-    <li> <a href="../tour/{{tour.id}}">{{ tour }}</a>  </li>
-{% endfor %}
-
-{% endblock %} 

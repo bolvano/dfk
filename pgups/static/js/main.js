@@ -4,12 +4,15 @@ $(document).ready(function() {
 
     var filterTours = function(select_id){
 
+        var competition_selector = '#id_competition';
+        var competition_id = $(competition_selector).val();
     	var person_id = $(select_id).parents(':eq(6)').attr('id').replace(/\D/g,''); // person div
     	var pby_selector = '#id_person_set-' + person_id + '-birth_year' + ' option:selected';
         var year = $(pby_selector).val();
         var gender_selector = '#id_person_set-' + person_id + '-gender' + ' option:selected';
         var gender = $(gender_selector).val();
-        var request_url = '/get_tours/' + year + '/' + gender + '/';
+
+        var request_url = '/get_tours/' + year + '/' + gender + '/' + competition_id + '/';
 
         $.ajax({
             url: request_url,
@@ -26,7 +29,6 @@ $(document).ready(function() {
 
 
 	var addCompetitor = function(person) {
-
 		var competitorMap = JSON.parse($("#id_competitorMap").val());
 		var count = $('.competitor_div').length;
 		var tmplMarkup = $('#competitor-template').html();
@@ -145,5 +147,10 @@ $(document).ready(function() {
     			tour_id = '#' + tour_id;
     			filterTours(tour_id);
     		});
+    });
+
+// Autocomplete
+    $("#right").on("keyup", 'input[id*="last_name"]', function(){
+        console.log($(this).val());
     });
 });
