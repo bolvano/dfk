@@ -1,0 +1,29 @@
+{% extends 'pgups/base.html' %}
+{% load staticfiles %}
+{% load i18n widget_tweaks %}
+{% block content %}
+
+
+<h2>{{competition.name}} </h2>
+ <h3>Результаты по заплывам и дорожкам</h3>
+
+<hr>
+
+{% for start in starts%}
+<h4>Заплыв №{{start.num}}</h4>
+{% for order in start.order_set.all %}
+
+<li>{{order.lane}}: {{order.competitor.person.last_name}} {{order.competitor.person.first_name}}:
+{% if order.competitor.result_set.all.0.time > 0 %}{{order.competitor.result_set.all.0.time}} {% else %}
+
+{% if order.competitor.person.gender == 'Ж'%}Не вышла{% else %}Не вышел{% endif %}
+
+{%endif%}</li>
+
+{% endfor %}
+
+<hr>
+
+{% endfor %}
+
+{% endblock %}

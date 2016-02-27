@@ -1,0 +1,165 @@
+.form-horizontal .control-label.text-left{
+    text-align: left;
+}
+
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
+.jumbotron h1, .gray {
+  color: #3B444B;
+}
+
+.jumbotron p.aside {
+  font-size: 19px;
+}
+
+.btn-xxl {
+  padding: 16px 22px;
+  font-size: 28px;
+  border-radius: 10px;
+}
+
+#left .well,
+#right .well {
+  font-size: 16px;
+}
+
+
+/* Sticky footer styles
+-------------------------------------------------- */
+
+html {
+  font-style: Helvetica, sans-serif;
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+
+
+/* Hidden form fields
+------------------------------------------------- */
+
+input[id*="DELETE"] { display: none; }
+label[for*="DELETE"] { display: none; }
+
+
+/* All starts area
+------------------------------------------------- */
+
+.single-cdsg-table {
+  table-layout: fixed;
+  word-wrap: break-word;
+}
+
+.single-cdsg {
+  border-bottom: 1px solid #DDDDDD;
+  padding: 15px 0;
+  width: 90%;
+}
+
+.single-cdsg-heading {
+  margin-bottom: 25px;
+  font-weight: bold;
+}
+
+.single-cdsg-start {
+  margin-bottom: 25px;
+  margin-left: 20px;
+}
+
+.single-cdsg-start-num {
+  margin-bottom: 10px;
+  min-height: 40px
+}
+
+.start-num {
+  font-size: 1.5em;
+  line-height: 2em;
+}
+
+.order-lane {
+  background-color: #B9F2FF;
+  width: 4%;
+}
+
+.order-name {
+  width: 50%;
+}
+
+.order-team {
+  width: 20%;
+}
+
+.order-age {
+  width: 13%;
+}
+
+.order-prior-time {
+  width: 13%;
+  padding-top: 15px !important;
+}
+
+.order-lane,
+.order-name,
+.order-team,
+.order-age {
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
+}
+
+
+/* Single start edit
+------------------------------------------------- */
+
+.result {
+  margin-top: 15px;
+  width: 90%;
+}
+
+.next-start {
+  width: 90%;
+}
+
+.hidden-field {
+  display: none;
+}
+
+.order-time {
+  padding-top: 10px !important;
+}
+
+.order-time > input {
+  width: 100%;
+}
+
+/* Chrome, Safari, Opera */
+@-webkit-keyframes greenish {
+    0% {background-color: rgba(128, 255, 128, 0.6);}
+    100% {background-color: #fff;}
+}
+
+/* Standard syntax */
+@keyframes greenish {
+    0% {background-color: rgba(128, 255, 128, 0.6);}
+    100% {background-color: #fff;}
+}
+
+.order-time-animation {
+  -webkit-animation-name: greenish; /* Chrome, Safari, Opera */
+  -webkit-animation-duration: 3s; /* Chrome, Safari, Opera */
+  animation-name: greenish;
+  animation-duration: 3s;
+}

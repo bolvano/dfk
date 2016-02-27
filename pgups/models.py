@@ -118,7 +118,7 @@ class Tour(models.Model):
     finished = models.BooleanField()
     
     def __str__(self):
-        return self.competition.name + ' ' + self.style.name + ' ' + self.distance.name  + ' ' + self.age.name + ' ' + self.gender
+        return self.style.name + ' ' + self.distance.name  + ' ' + self.age.name + ' ' + self.gender
 
 
 #Участники
@@ -138,7 +138,7 @@ class Competitor(models.Model):
             team = self.userrequest.team.name
         else:
             team = 'Инд.'
-        return self.person.last_name + ' ' + self.person.first_name + ' ('+ team +')' +': ' + self.tour.age.name + ' (' + str(self.prior_time) + ')'
+        return self.person.last_name + ' ' + self.person.first_name + ' ('+ team +')' +': ' + self.tour.age.name + ' ' + self.tour.style.name + ' (' + str(self.prior_time) + ')'
 
 # CDSG
 class Cdsg(models.Model):
@@ -156,7 +156,7 @@ class Start(models.Model):
 
     name = models.CharField(max_length=255, null=True, blank=True, default='foo')
     cdsg = models.ForeignKey('Cdsg')
-    num = models.PositiveSmallIntegerField(default=1) # num in cdmg
+    num = models.PositiveSmallIntegerField(default=1) # num in cdsg
     
     def __str__(self):
         return self.name + ' #' + str(self.num)
@@ -171,6 +171,8 @@ class Order(models.Model):
     def __str__(self):
         return self.start.name + ' ' + self.competitor.person.last_name + ' (' + str(self.competitor.prior_time) + ')' + ' ' + str(self.lane)
 
+    class Meta:
+        ordering = ['lane']
 
 #Результаты
 class Result(models.Model):
@@ -179,9 +181,10 @@ class Result(models.Model):
     competitor = models.ForeignKey('Competitor')
 #    tour = models.ForeignKey('Tour')
 #    start = models.ForeignKey('Start')
-    time = models.DecimalField(max_digits=7, decimal_places=3)
+    time = models.DecimalField(max_digits=7, decimal_places=2)
     result = models.PositiveSmallIntegerField()
     points = models.PositiveSmallIntegerField()
+    disqualification = models.PositiveSmallIntegerField(default=0)
 
     def __str__(self):
         return self.competitor.__str__() + ' ' + self.competitor.tour.__str__() + ' ' + str(self.time)

@@ -1,226 +1,172 @@
+{% extends 'pgups/base.html' %}
 {% load staticfiles %}
-<html>
-<meta charset="utf-8" /> 
-<head>
-	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-
-	<style>
-	input[id*="DELETE"] { display: none; }
-	label[for*="DELETE"] { display: none; }
-	</style>
-
-
-
-<script type="text/html" id="person-template">
-<div id="person-__prefix__">
-<br>
-<hr>
-    {{ request_person_formset.empty_form }}
-    <a href="#" class="remove_person">Удалить участника</a><br>  
-    <a href="#" class="btn btn-info add-competitor">Добавить участнику заплыв</a>  
-</div>
-</script>
-
-<script type="text/html" id="competitor-template">
-<div id="competitor-__prefix__" class="competitor_div">
-    {{ request_competitor_formset.empty_form }}
-</div>
-</script>
-
-
-	<script type='text/javascript'>
-
-	$(document).ready(function() {
-
-		$("#id_competitorMap").attr('value', '{}');
-
-
-	    var filterTours = function(select_id){
-
-	    	person_id = $(select_id).parent().parent().attr('id').replace(/\D/g,''); // person div
-
-	    	pby_selector = '#id_person_set-' + person_id + '-birth_year' + ' option:selected';
-	        year = $(pby_selector).val();
-
-	        gender_selector = '#id_person_set-' + person_id + '-gender' + ' option:selected';
-	        gender = $(gender_selector).val();
-	        request_url = '/get_tours/' + year + '/' + gender + '/';
-
-	        $.ajax({
-	            url: request_url,
-	            success: function(data){
-
-	            	$(select_id).empty();
-
-	                $.each(data, function(key, value){
-	                    $(select_id).append('<option value="' + key + '">' + value +'</option>');
-	                });
-	            }
-	        });	    	
-	    };		
-
-
-
-		var addCompetitor = function(person) {
-
-			var competitorMap = JSON.parse($("#id_competitorMap").val());
-			var count = $('.competitor_div').length;
-
-			var tmplMarkup = $('#competitor-template').html();
-			var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
-
-			var newCompetitor = $(compiledTmpl).appendTo(person);
-
-			competitorMap[newCompetitor.attr('id').replace(/\D/g,'')] = person.attr('id').replace(/\D/g,'');
-
-			$("#id_competitorMap").attr('value', JSON.stringify(competitorMap));
-
-			$('#id_competitor_set-TOTAL_FORMS').attr('value', count + 1);
-
-	    	new_tour_id = '#id_competitor_set-' + count.toString() + '-tour';
-
-			filterTours(new_tour_id);
-		};	
-	
-		var addPerson = function() {
-	        //ev.preventDefault();
-	        var count = $('#persons-form-container').children().length;
-	        var tmplMarkup = $('#person-template').html();
-	        var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
-
-			var newPerson = $(compiledTmpl).appendTo("div#persons-form-container");
-	        $('#id_person_set-TOTAL_FORMS').attr('value', count+1);
-	        addCompetitor(newPerson);
-
-            // some animate to scroll to view our new form
-	        $('html, body').animate({
-	                scrollTop: $("#add-person-button").position().top-200
-	            }, 800);
-
-	    };		
-
-		addPerson();
-
-		$("#right").on('click', '.add-person', function(){
-		    addPerson();
-		});
-	    
-	    $("#right").on("click", ".remove_person", function(e){ //user click on remove text
-	    	e.preventDefault(); 
-
-	        $(this).parent('div').hide();
-	        $(this).parent().find('input[id*="DELETE"]').prop('checked', true);
-
-	        var parent_id = $(this).parent().attr('id').replace(/\D/g,'');
-	        var competitorMap = JSON.parse($("#id_competitorMap").val());
-			for(var f in competitorMap) {
-		        if(competitorMap[f] == parent_id) {
-		            delete competitorMap[f];
-		        }
-		    }
-	        $("#id_competitorMap").attr('value', JSON.stringify(competitorMap));
-	    });
-
-
-	    $("#right").on("click", ".add-competitor", function(ev){
-	    	ev.preventDefault();
-
-	    	var parent = $(this).parent();
-	    	addCompetitor(parent); //person div
-	    });
-
-	    $("#right").on("change", 'select[id*="birth_year"]', function(){ 
-
-	    	var person = $(this).parent().attr('id');
-
-	    	person_competitors = '#' + person + ' .competitor_div';
-
-	    	$(person_competitors).each(
-	    		function(index) {
-	    			tour_id = $(this).find('select').attr('id');
-	    			tour_id = '#' + tour_id;
-	    			filterTours(tour_id);
-	    		});
-	    });
-
-	    $("#right").on("change", 'select[id*="gender"]', function(){ 
-
-	    	var person = $(this).parent().attr('id');
-
-	    	person_competitors = '#' + person + ' .competitor_div';
-
-	    	$(person_competitors).each(
-	    		function(index) {
-	    			tour_id = $(this).find('select').attr('id');
-	    			tour_id = '#' + tour_id;
-	    			filterTours(tour_id);
-	    		});
-	    });	    
-	});
-</script>
-
-</head>
-<body>
-<form method="POST" class="request-form">{% csrf_token %}  
-<div id="content" style="width: 100%;">
-
-	<div>
-	    <h2>Техническая заявка на участие в соревнованиях по плаванию</h2>
-	    <p>
-	    Пожалуйста, внимательно заполните заявку. Укажите имена и фамилии участников, год рождения,
-	    основную и при необходимости дополнительную дистанцию, а также предварительное время.
-	    Все поля, кроме специально отмеченных, обязательны для заполнения.
-	    </p>
-	</div>
-
-	<div id="left" style="float:left; width: 35%">    
-	     
-	        <h3 id="request-form-header">Заявитель</h3>
-		    <p>
-		    Если заявка индивидуальная, оставьте поле "Команда" пустым.
-		    </p>
-
-	        {{ request_form.as_p }}
-
-	        <button type="submit">Отправить заявку</button>
-
-	    
-	    {% if messages %}
-	            <ul class="messages">
-	            {% for message in messages %}
-	                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-	            {% endfor %}
-	            </ul>
-	    {% endif %}
-
-	    <div style="position: absolute; bottom: 20; left: 20;">
-	    <a href="all_starts/1/">Утверждённые старты</a><br>
-	    <a href="tours/">Туры</a><br>
-	    <a href="teams/">Команды</a><br>
-	    </div>
-
-	</div>
-
-	<div id="right" style="width: 65%; float:right; margin: 2 auto"> 
-
-		<h3>Участники</h3>
-		<p>
-	    Если заявка командная, добавьте участников команды, если индивидуальная - то только себя. Первая указанная дистанция идёт в зачёт. Для каждого участника будет учитываться только одна основная и одна дополнительная (по желанию) дистанция.
-	    </p>
-
-		{{ request_person_formset.management_form }}
-		{{ request_competitor_formset.management_form }}
-
-		<div id="persons-form-container">
-		</div> 	
-		<br><hr><a href="#" id="add-person-button" class="btn btn-info add-person">Добавить участника</a>
-
-	</div>
-</div>
-
-
-<div style="clear:both"></div>
-</form> 
-    
-</body>
-</html>        
+{% load i18n widget_tweaks %}
+{% block content %}
+	<!-- Jumbotron -->
+		<div class="jumbotron">
+				<div class="container">
+					<div class="row">
+				<div class="col-md-11">
+							<h1 class="gray">Техническая заявка на участие в соревнованиях по плаванию</h1><br>
+							<p class="lead">Пожалуйста, внимательно заполните заявку. Укажите имена и фамилии участников, год рождения,
+						основную и при необходимости дополнительную дистанцию, а также предварительное время.</p>
+							<p class="aside"><i>Все поля, кроме специально отмеченных, обязательны для заполнения.</i></p>
+					</div>
+			</div>
+				</div>
+		</div> <!-- End of Jumbotron -->
+		<!-- MEGAFORM -->
+	<form class="form-horizontal" role="form" action="../regrequest/" method="post">{% csrf_token %}
+			<div class="container">
+			<div id="left"> 
+				<div class="well row">
+					<div class="col-md-7">
+								<h3 class="gray">Заявитель</h3><br>
+							<p>Если заявка индивидуальная, оставьте поле "Команда" пустым.</p><br>
+						</div>
+					</div> <!-- End of well -->
+					<!-- Request form -->
+					{% for field in request_form.visible_fields %}
+							{% if field.errors %}
+									<div class="form-group has-error">
+											<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
+											<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
+													{{ field|attr:"class:form-control" }}
+													<span class="help-block">
+															<!-- {% for error in  field.errors %}{{ error }}{% endfor %} -->
+															<script src="{% static 'js/notie.js' %}"></script>
+									<script> notie.alert(3, 'Не все поля заполнены!', 2.5); </script>
+													</span>
+											</div>
+									</div> <!-- End of form errors -->
+							{% else %}
+									<div class="form-group">
+											<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
+											<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
+													{{ field|attr:"class:form-control" }}
+													{% if field.help_text %}
+															<p class="help-block"><small>{{ field.help_text }}</small></p>
+													{% endif %}
+											</div> <!-- End of form fields -->
+									</div>
+							{% endif %}
+					{% endfor %}
+					{% for field in request_form.hidden_fields %}
+				<div>{{ field.as_hidden }}</div> <!-- Hidden fields -->
+				{% endfor %}
+				<!-- End of Request form -->
+				<hr>
+			</div> <!-- End of #left -->
+			<div id="right">
+				<div class="well row">
+					<div class="col-md-7">
+						<h3 class="gray">Участники</h3><br>
+						<p>Если заявка командная, добавьте участников команды, если индивидуальная - то только себя.
+						Первая указанная дистанция идёт в зачёт. Для каждого участника будет учитываться только одна основная и одна дополнительная (по желанию) дистанция.
+							</p>
+						</div>
+					</div> <!-- End of well -->
+					<br>
+				{{ request_person_formset.management_form }}
+				{{ request_competitor_formset.management_form }}
+				<div id="persons-form-container"> <!-- Person form --> </div>
+				<hr>
+				<a href="#" id="add-person-button" class="btn btn-success btn-lg add-person">Добавить участника</a>
+			</div> <!-- End of #right -->
+			<br>
+		</div> <!-- End of container -->
+			<div class="jumbotron">
+					<div class="container">
+				<div class="row">
+					<div class="col-lg-3 col-md-4 col-sm-5 col-xs-6 col-centered">
+						<button type="submit" class="btn btn-warning btn-xxl">Отправить заявку</button>
+							{% if messages %}
+									{% for message in messages %}
+										<!-- <br><h4{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h4> -->
+										<script src="{% static 'js/notie.js' %}"></script>
+						<script> notie.alert(1, 'Заявка сохранена!', 2.5); </script> <!-- Notie -->
+									{% endfor %}
+							{% endif %}
+					</div>
+				</div>
+			</div> <!-- End of container -->
+		</div> <!-- End of jumbotron -->
+	</form> <!-- END OF MEGAFORM -->
+	<!-- Templates -->
+	<script type="text/html" id="person-template">
+		<div id="person-__prefix__" class="row">
+			<hr><br>
+			<div class="col-lg-5 col-md-4 col-sm-8 col-xs-12">
+					{% for field in request_person_formset.empty_form.visible_fields %}
+							{% if field.errors %}
+									<div class="form-group has-error">
+											<label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
+											<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+													{{ field|attr:"class:form-control" }}
+													<span class="help-block">
+															{% for error in  field.errors %}{{ error }}{% endfor %}
+													</span>
+											</div>
+									</div>
+							{% else %}
+									<div class="form-group">
+											<label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
+											<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+													{{ field|attr:"class:form-control" }}
+													{% if field.help_text %}
+															<p class="help-block"><small>{{ field.help_text }}</small></p>
+													{% endif %}
+											</div>
+									</div>
+							{% endif %}
+					{% endfor %}
+					{% for field in request_person_formset.empty_form.hidden_fields %}
+					<div>{{ field.as_hidden }}</div>
+				{% endfor %}
+			</div>
+				<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+					<a href="#" class="btn btn-danger btn-md btn-block remove_person">Удалить участника</a>
+					<a href="#" class="btn btn-success btn-md btn-block add-competitor">Добавить заплыв</a>
+				</div>
+				<div id="competitor-col" class="col-lg-5 col-md-5 col-sm-12 col-xs-12"></div>
+		</div>
+	</script>
+	<script type="text/html" id="competitor-template">
+		<div id="competitor-__prefix__" class="competitor_div">
+			<div class="row">
+				<div class="col-lg-10 col-md-10 col-sm-8 col-xs-12">
+						{% for field in request_competitor_formset.empty_form.visible_fields %}
+								{% if field.errors %}
+										<div class="form-group has-error">
+												<label class="col-md-2 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
+												<div class="col-md-10">
+														{{ field|attr:"class:form-control" }}
+														<span class="help-block">
+																{% for error in  field.errors %}{{ error }}{% endfor %}
+														</span>
+												</div>
+										</div>
+								{% else %}
+										<div class="form-group">
+												<label class="col-md-2 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
+												<div class="col-md-10">
+														{{ field|attr:"class:form-control" }}
+														{% if field.help_text %}
+																<p class="help-block"><small>{{ field.help_text }}</small></p>
+														{% endif %}
+												</div>
+										</div>
+								{% endif %}
+						{% endfor %}
+						{% for field in request_competitor_formset.empty_form.hidden_fields %}
+						<div>{{ field.as_hidden }}</div>
+					{% endfor %}
+				</div>
+				<div class="col-lg-2 col-md-2 col-sm-8 col-xs-12 ">
+					<a href="#" class="btn btn-danger btn-sm remove-competitor">Удалить заплыв</a>
+				</div>
+			</div>
+			<hr>
+		</div>
+	</script>
+{% endblock %}

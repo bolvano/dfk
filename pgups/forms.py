@@ -3,10 +3,11 @@
 from django import forms
 from .models import Userrequest, Person, Competition, Team, Competitor, Tour, Result
 
+
 # Форма заявки
 class RequestForm(forms.ModelForm):
 
-    competition = forms.ModelChoiceField(   Competition.objects.all(),
+    competition = forms.ModelChoiceField(   Competition.objects.filter(finished=False),
                                             empty_label='Выберите соревнование из списка:', 
                                             label='Соревнования:',
                                             error_messages={'required': 'Это обязательное поле'}
@@ -39,7 +40,7 @@ class RequestForm(forms.ModelForm):
             'email': ('Электронная почта:'),
 
         }
-        
+
 
 # Форма с данными о человеке 
 class PersonForm(forms.ModelForm):
@@ -50,10 +51,10 @@ class PersonForm(forms.ModelForm):
         exclude = ['reg_date', 'userrequest']
         labels = {
 
-            'first_name': (' Имя'),
-            'last_name': (' Фамилия'),
-            'birth_year': (' Год рождения'),
-            'gender': (' Пол'),
+            'first_name': (' Имя:'),
+            'last_name': (' Фамилия:'),
+            'birth_year': (' Год рождения:'),
+            'gender': (' Пол:'),
 
         }
 
@@ -61,9 +62,9 @@ class PersonForm(forms.ModelForm):
 # Форма с данными об участнике
 class CompetitorForm(forms.ModelForm):
 
-    tour = forms.ModelChoiceField(          Tour.objects.all(), 
-                                            empty_label='Выберите дистанцию', 
-                                            label='Тур', 
+    tour = forms.ModelChoiceField(          Tour.objects.all(),
+                                            empty_label='Выберите дистанцию',
+                                            label='Тур',
                                             error_messages={'required': 'Это обязательное поле'}
                                             )
 

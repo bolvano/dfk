@@ -1,0 +1,15 @@
+{% extends 'pgups/base.html' %}
+{% load staticfiles %}
+{% block content %}
+			<table class="single-cdsg-table table table-striped table-hover table-bordered">
+				<tbody>
+				{% for k,v in result.items %}
+					{{result_form.id}}
+					<tr>
+						<td class="order-lane text-center">{{k}}</td>
+						<td class="order-name">{{v}}</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+{% endblock %}

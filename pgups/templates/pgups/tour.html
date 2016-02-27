@@ -3,6 +3,7 @@
 <meta charset="utf-8" /> 
 <head>
 	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	<link href="{% static 'css/main.css' %}" rel="stylesheet">  <!-- CSS -->
 </head>
 <body>
 
@@ -13,14 +14,6 @@
 {% for pair in res %}
     <li>  {{pair.0}} : {{pair.1}}  </li>
 {% endfor %}
-
-
-<hr>
-
-
-<a href="../../tours/">Все туры</a><br>
-
-<a href="../../">Главная</a><br>
 
 
 </body>
