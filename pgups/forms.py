@@ -7,7 +7,7 @@ from .models import Userrequest, Person, Competition, Team, Competitor, Tour, Re
 # Форма заявки
 class RequestForm(forms.ModelForm):
 
-    competition = forms.ModelChoiceField(   Competition.objects.all(),
+    competition = forms.ModelChoiceField(   Competition.objects.filter(finished=False),
                                             empty_label='Выберите соревнование из списка:', 
                                             label='Соревнования:',
                                             error_messages={'required': 'Это обязательное поле'}
@@ -62,9 +62,9 @@ class PersonForm(forms.ModelForm):
 # Форма с данными об участнике
 class CompetitorForm(forms.ModelForm):
 
-    tour = forms.ModelChoiceField(          Tour.objects.all(), 
-                                            empty_label='Выберите дистанцию', 
-                                            label='Тур', 
+    tour = forms.ModelChoiceField(          Tour.objects.all(),
+                                            empty_label='Выберите дистанцию',
+                                            label='Тур',
                                             error_messages={'required': 'Это обязательное поле'}
                                             )
 

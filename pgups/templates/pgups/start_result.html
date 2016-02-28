@@ -4,8 +4,8 @@
 <div class="container">
 	<div class="result row">
 		<div class="single-cdsg-start-num">
-			<span class="start-num">Заплыв {{start_num}}</span>
-			<a class="btn btn-info pull-right" href="../../all_starts/1/">Все старты</a>
+			<span class="start-num">Заплыв {{start_num}} ({{cdsg_name}})</span>
+			<a class="btn btn-info pull-right" href="../../starts/{{competition_id}}/">Все старты</a>
 		</div>
 		<form method="POST" class="result-form">{% csrf_token %}
 		{{ result_formset.management_form }}
@@ -36,6 +36,11 @@
 	</div>
 	<div class="next-start row">
 		<hr>
+	{% if prev_start_id %}
+		<a class="btn btn-primary pull-left" href="../../start_result/{{prev_start_id}}/">
+			Предыдущий заплыв <span class="glyphicon glyphicon-chevron-left"></span>
+		</a>
+	{% endif %}
 	{% if next_start_id %}
 		<a class="btn btn-primary pull-right" href="../../start_result/{{next_start_id}}/">
 			Следующий заплыв <span class="glyphicon glyphicon-chevron-right"></span>
