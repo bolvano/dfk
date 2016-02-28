@@ -11,7 +11,7 @@
   color: #3B444B;
 }
 
-.jumbotron p.aside {
+.jumbotron .aside {
   font-size: 19px;
 }
 
@@ -31,7 +31,7 @@
 -------------------------------------------------- */
 
 html {
-  font-style: Helvetica, sans-serif;
+  font-family: Helvetica, sans-serif;
   position: relative;
   min-height: 100%;
 }
