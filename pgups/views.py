@@ -15,7 +15,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models.query import QuerySet
 
 
-from dal import autocomplete
+
 
 def index(request):
     competitions = Competition.objects.all().order_by('date_start')
@@ -52,6 +52,7 @@ def results_tours(request, competition_id):
         competitors = []
         competitors_good = []
         competitors_bad = []
+
         for c in tour.competitor_set.all():
             competitors.append(c)
 
@@ -269,7 +270,7 @@ def reg_request(request):
         'request_competitor_formset': request_competitor_formset}, )
 
 
-'''def generate_tours(request, competition_id):
+def generate_tours(request, competition_id):
     competition = Competition.objects.get(pk=competition_id)
     distance50 = Distance.objects.get(meters=50)
     distance100 = Distance.objects.get(meters=100)
@@ -286,8 +287,8 @@ def reg_request(request):
                     tour.distance = distance100
                 tour.save()
 
-    return HttpResponse(json.dumps({}), content_type="application/json")    
-    '''
+    return HttpResponse(json.dumps({}), content_type="application/json")
+
 
 def competition_starts(request, competition_id):
     competition = Competition.objects.get(pk=competition_id)

@@ -1,20 +1,21 @@
+{% extends 'pgups/base.html' %}
 {% load staticfiles %}
-<html>
-<meta charset="utf-8" /> 
-<head>
-	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-	<link href="{% static 'css/main.css' %}" rel="stylesheet">  <!-- CSS -->
-</head>
-<body>
+{% block content %}
 
-<h3>{{tour_name}}</h3>
+<div class="container">
 
-<hr>
+	<div class="heading">
+		<h2 class="bold">{{tour_name}}</h2>
+	</div>
 
-{% for pair in res %}
-    <li>  {{pair.0}} : {{pair.1}}  </li>
-{% endfor %}
+	<ol class="list">
+		{% for pair in res %}
+			<li>
+				{{pair.0}} : {{pair.1}}
+			</li>
+		{% endfor %}
+	</ol>
 
+</div>
 
-</body>
-</html>   
+{% endblock %}

@@ -18,7 +18,7 @@
 						<td class="order-name">{{result_form.instance.competitor.person.first_name}} {{result_form.instance.competitor.person.last_name}}</td>
 						<td class="order-team">{{result_form.instance.competitor.userrequest.team}}</td>
 						<td class="order-age text-center">{{result_form.instance.competitor.age}}</td>
-						<td class="order-time">{{result_form.time}}</td>
+						<td class="order-result">{{result_form.time}}</td>
 						<td class="hidden-field">{{result_form.competitor}}</td>
 					</tr>
 				{% endfor %}
@@ -38,7 +38,7 @@
 		<hr>
 	{% if prev_start_id %}
 		<a class="btn btn-primary pull-left" href="../../start_result/{{prev_start_id}}/">
-			Предыдущий заплыв <span class="glyphicon glyphicon-chevron-left"></span>
+			<span class="glyphicon glyphicon-chevron-left"></span> Предыдущий заплыв
 		</a>
 	{% endif %}
 	{% if next_start_id %}

@@ -1,29 +1,45 @@
 {% extends 'pgups/base.html' %}
 {% load staticfiles %}
-{% load i18n widget_tweaks %}
 {% block content %}
 
+<div class="container">
 
-<h2>{{competition.name}} </h2>
- <h3>Результаты по заплывам и дорожкам</h3>
+	<div class="heading">
+		<h1 class="bold">{{competition.name}} </h2>
+		<h2>Результаты по заплывам и дорожкам</h3>
+	</div>
 
-<hr>
+	{% for start in starts%}
 
-{% for start in starts%}
-<h4>Заплыв №{{start.num}}</h4>
-{% for order in start.order_set.all %}
+	<div class="single-cdsg">
+		<div class="single-cdsg-start-num">
+			<span class="start-num">Заплыв {{start.num}}</span>
+		</div>
 
-<li>{{order.lane}}: {{order.competitor.person.last_name}} {{order.competitor.person.first_name}}:
-{% if order.competitor.result_set.all.0.time > 0 %}{{order.competitor.result_set.all.0.time}} {% else %}
+		<table class="single-cdsg-table table table-striped table-hover table-bordered">
+			<tbody>
+			{% for order in start.order_set.all %}
+				<tr>
+					<td class="order-lane text-center col-md-1">{{order.lane}}</td>
+					<td class="order-name">{{order.competitor.person.first_name}} {{order.competitor.person.last_name}}</td>
+					<td class="order-team">{{order.competitor.userrequest.team}}</td>
+					<td class="order-age text-center">{{order.competitor.age}}</td>
+					<td class="order-time text-center">
+						{% if order.competitor.result_set.all.0.time > 0 %}
+							{{order.competitor.result_set.all.0.time}}
+						{% else %}
+							{% if order.competitor.person.gender == 'Ж'%}Не вышла {% else %} Не вышел {% endif %}
+						{% endif %}
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
 
-{% if order.competitor.person.gender == 'Ж'%}Не вышла{% else %}Не вышел{% endif %}
+	</div>
 
-{%endif%}</li>
+	{% endfor %}
 
-{% endfor %}
-
-<hr>
-
-{% endfor %}
+</div>
 
 {% endblock %}

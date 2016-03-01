@@ -1,14 +1,22 @@
 {% extends 'pgups/base.html' %}
 {% load staticfiles %}
-{% load i18n widget_tweaks %}
 {% block content %}
-{{userrequest.team}} {{userrequest.date}}
 
-<hr>
+<div class="container">
 
-Участники:
-{% for competitor in userrequest.competitor_set.all %}
-<li><a href="../../person/{{competitor.person.id}}/">{{competitor.person}} : {{competitor.tour}}</a></li>
-{% endfor %}
+	<div class="heading">
+		<h2 class="bold">{{userrequest.team}} ({{userrequest.date|date:"d.m.Y"}})</h2>
+	</div>
+
+	<h3>Участники:</h3>
+	<ol class="list">
+		{% for competitor in userrequest.competitor_set.all %}
+			<li>
+				<a href="../../person/{{competitor.person.id}}/">{{competitor.person}} : {{competitor.tour}}</a>
+			</li>
+		{% endfor %}
+	</ol>
+
+</div>
 
 {% endblock %}

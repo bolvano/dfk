@@ -1,17 +1,25 @@
 {% extends 'pgups/base.html' %}
 {% load staticfiles %}
-{% load i18n widget_tweaks %}
 {% block content %}
-{{person.first_name}} {{person.last_name}}<br>
-{{person.gender}} {{person.birth_year}}
 
-<hr>
+<div class="container">
+	<div class="heading">
+		<h3>{{person.first_name}} {{person.last_name}} (<!--{{person.gender}}-->{{person.birth_year}})</h3>
+	</div>
 
-Участие:
-{% for competitor in person.competitor_set.all %}
-<li>{{competitor.userrequest.competition}} : {{competitor.tour}}
-{% if competitor.userrequest.competition.finished %} (<b> {{competitor.result_set.all.0.time}}, {{competitor.result_set.all.0.result}} </b>) {% endif %}
-</li>
-{% endfor %}
+	<h4>Участие:</h4>
+
+	<ul class="list">
+		{% for competitor in person.competitor_set.all %}
+		<li>
+			{{competitor.userrequest.competition}}: {{competitor.tour}}
+			{% if competitor.userrequest.competition.finished %}
+				(<b>{{competitor.result_set.all.0.time}}, {{competitor.result_set.all.0.result}}</b>)
+			{% endif %}
+		</li>
+		{% endfor %}
+	</ul>
+
+</div>
 
 {% endblock %}

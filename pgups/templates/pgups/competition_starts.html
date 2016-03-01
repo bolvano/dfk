@@ -4,7 +4,7 @@
 <div class="container">
 {% for cdsg in cdsg_list %}
 	<div class="single-cdsg row">
-		<h3 class="single-cdsg-heading">{{cdsg.name}}</h3>
+		<h3 class="single-cdsg-heading bold">{{cdsg.name}}</h3>
 		{% for start in cdsg.start_set.all %}
 		<div class="single-cdsg-start">
 			<div class="single-cdsg-start-num">
@@ -19,7 +19,7 @@
 						<td class="order-name">{{order.competitor.person.first_name}} {{order.competitor.person.last_name}}</td>
 						<td class="order-team">{{order.competitor.userrequest.team}}</td>
 						<td class="order-age text-center">{{order.competitor.age}}</td>
-						<td class="order-prior-time text-center">{{order.competitor.prior_time}}</td>
+						<td class="order-time text-center">{{order.competitor.prior_time}}</td>
 					</tr>
 				{% endfor %}
 				</tbody>
