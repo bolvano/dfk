@@ -25,13 +25,15 @@
 				</tbody>
 			</table>
 			<button class="btn btn-success pull-right" type="submit">Сохранить результат</button>
-			{% if messages %}
+			<!-- {% if messages %}
 				<ul class="messages">
 				{% for message in messages %}
-				<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+					<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+					<script src="{% static 'js/notie.js' %}"></script>
+					<script> notie.alert(1, 'Результат сохранён!', 1.5); </script>
 				{% endfor %}
 				</ul>
-			{% endif %}
+			{% endif %} -->
 		</form>
 	</div>
 	<div class="next-start row">

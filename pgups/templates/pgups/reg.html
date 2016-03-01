@@ -33,9 +33,7 @@
 											<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
 													{{ field|attr:"class:form-control" }}
 													<span class="help-block">
-															<!-- {% for error in  field.errors %}{{ error }}{% endfor %} -->
-															<script src="{% static 'js/notie.js' %}"></script>
-									<script> notie.alert(3, 'Не все поля заполнены!', 2.5); </script>
+														{% for error in  field.errors %}{{ error }}{% endfor %}
 													</span>
 											</div>
 									</div> <!-- End of form errors -->
@@ -80,13 +78,13 @@
 				<div class="row">
 					<div class="col-lg-3 col-md-4 col-sm-5 col-xs-6 col-centered">
 						<button type="submit" class="btn btn-warning btn-xxl">Отправить заявку</button>
-							{% if messages %}
-									{% for message in messages %}
-										<!-- <br><h4{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h4> -->
-										<script src="{% static 'js/notie.js' %}"></script>
-						<script> notie.alert(1, 'Заявка сохранена!', 2.5); </script> <!-- Notie -->
-									{% endfor %}
-							{% endif %}
+						{% if messages %}
+							{% for message in messages %}
+								<!--<br><h4{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h4>-->
+								<script src="{% static 'js/notie.js' %}"></script>
+								<script> notie.alert(1, 'Заявка сохранена!', 2.5); </script> <!-- Notie -->
+							{% endfor %}
+						{% endif %}
 					</div>
 				</div>
 			</div> <!-- End of container -->

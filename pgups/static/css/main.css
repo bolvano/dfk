@@ -21,7 +21,6 @@ ul {
   border-bottom: 1px solid #979a9d;
   padding: 0 0 20px 0;
   margin: 0 0 20px 0;
-  color: #191970;
 }
 .list {
   font-size: 1em;
@@ -37,6 +36,9 @@ ul {
 }
 .note {
   font-size: 0.9em;
+}
+.competition-menu {
+  margin-bottom: 20px;
 }
 /* ---MEGAFORM--- */
 .form-horizontal .control-label.text-left {
@@ -84,7 +86,8 @@ label[for*="DELETE"] {
 }
 .single-cdsg {
   border-bottom: 1px solid #979a9d;
-  padding: 15px 0;
+  padding: 0 0 15px;
+  margin-bottom: 15px;
 }
 .single-cdsg-heading {
   margin-bottom: 25px;
@@ -159,7 +162,7 @@ label[for*="DELETE"] {
   float: left;
   margin-bottom: 10px;
 }
-/* Teams */
+/* ---Results team--- */
 .team-name {
   width: 30%;
   padding: 20px !important;
@@ -168,18 +171,18 @@ label[for*="DELETE"] {
   width: 70%;
   padding: 20px !important;
 }
-/* Results tour */
+/* ---Results tour--- */
 .result-tour {
   overflow: hidden;
   border-bottom: 1px solid #979a9d;
-  padding: 20px 0;
+  padding: 0 0 20px;
+  margin-bottom: 20px;
 }
 .result-tour-finished {
   float: left;
 }
 .result-tour-finished h3 {
   margin-bottom: 20px;
-  color: #191970;
 }
 .result-tour-finished .result-tour-table {
   width: 100%;

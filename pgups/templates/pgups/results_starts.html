@@ -1,21 +1,18 @@
 {% extends 'pgups/base.html' %}
 {% load staticfiles %}
 {% block content %}
-
 <div class="container">
-
 	<div class="heading">
-		<h1 class="bold">{{competition.name}} </h2>
-		<h2>Результаты по заплывам и дорожкам</h3>
+		<a href="{% url 'competition' competition_id=competition.id %}">
+			<h1 class="bold">{{competition.name}}</h1>
+		</a>
+		<h2>Результаты по заплывам и дорожкам</h2>
 	</div>
-
 	{% for start in starts%}
-
 	<div class="single-cdsg">
 		<div class="single-cdsg-start-num">
 			<span class="start-num">Заплыв {{start.num}}</span>
 		</div>
-
 		<table class="single-cdsg-table table table-striped table-hover table-bordered">
 			<tbody>
 			{% for order in start.order_set.all %}
@@ -35,11 +32,7 @@
 			{% endfor %}
 			</tbody>
 		</table>
-
 	</div>
-
 	{% endfor %}
-
 </div>
-
 {% endblock %}

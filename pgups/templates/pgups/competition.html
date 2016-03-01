@@ -1,18 +1,12 @@
 {% extends 'pgups/base.html' %}
 {% load staticfiles %}
 {% block content %}
-
 <div class="container">
-
 	<div class="heading">
 		<h1 class="bold">{{competition.name}}</h2>
 	</div>
-
-
 	{% if not competition.finished %}
-
-		<h3>Заявки</h3>
-
+		<h2>Заявки</h2>
 		<ul class="list">
 			{% for userrequest in competition.userrequest_set.all %}
 				<li>
@@ -20,11 +14,8 @@
 				</li>
 			{% endfor %}
 		</ul>
-
 		<hr>
-
-		<h3>Составы команд</h3>
-
+		<h2>Составы команд</h2>
 		<ul class="list">
 			{% for team in teams %}
 				<li>
@@ -32,11 +23,8 @@
 				</li>
 			{% endfor %}
 		</ul>
-
 		<hr>
-
-		<h3>Туры</h3>
-
+		<h2>Туры</h2>
 		<ul class="list">
 			{% for tour in competition.tour_set.all %}
 			{% if tour.competitor_set.all|length > 0 %}
@@ -46,31 +34,22 @@
 			{% endif %}
 			{% endfor %}
 		</ul>
-
 		<hr>
-
 		<div class="row">
 			<a class="btn btn-lg btn-success starts" href="../../competition/starts/{{competition.id}}/">
 				<span>Текущая сетка стартов</span>
 			</a>
 			<form class="generate-starts" action="../../generate_starts/" method="POST" >{% csrf_token %}
-					<input type="hidden" name="competition_id" value="{{competition.id}}">
-					<input type="submit" class="btn btn-default" value="Перегенерировать старты">
+				<input type="hidden" name="competition_id" value="{{competition.id}}">
+				<input type="submit" class="btn btn-lg btn-default" value="Перегенерировать старты">
 			</form>
 		</div>
-
 	{% else %}
-
-	<ul class="list larger">
-
-		<li><a href="../../results/starts/{{competition.id}}/">Результаты по заплывам и дорожкам</a></li>
-		<li><a href="../../results/tours/{{competition.id}}/">Результаты по турам</a></li>
-		<li><a href="../../results/teams/{{competition.id}}/">Результаты по командам</a></li>
-
-	</ul>
-
+	<div class="competition-menu larger">
+		<p><a class="btn btn-lg btn-primary" href="../../results/starts/{{competition.id}}/">Результаты по заплывам и дорожкам</a></p>
+		<p><a class="btn btn-lg btn-primary" href="../../results/tours/{{competition.id}}/">Результаты по турам</a></p>
+		<p><a class="btn btn-lg btn-primary" href="../../results/teams/{{competition.id}}/">Результаты по командам</a></p>
+	</div>
 	{% endif %}
-
 </div>
-
 {% endblock %}
