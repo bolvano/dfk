@@ -10,7 +10,8 @@
 		<ul class="list">
 			{% for userrequest in competition.userrequest_set.all %}
 				<li>
-					<a href="../../userrequest/{{userrequest.id}}/">{{userrequest.team}} : {{userrequest.date}}</a>
+					<a href="../../userrequest/{{userrequest.id}}/">{{userrequest.date|date:"d.m.Y"}}: {{userrequest.team}}
+					</a>
 				</li>
 			{% endfor %}
 		</ul>

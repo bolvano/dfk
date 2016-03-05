@@ -9,7 +9,9 @@
 		<div class="single-cdsg-start">
 			<div class="single-cdsg-start-num">
 				<span class="start-num">Заплыв {{start.num}}</span> 
-				<a class="start-results pull-right btn btn-info" href="../../start_result/{{start.id}}/">Результат</a>
+				{% if user.is_authenticated %}
+					<a class="start-results pull-right btn btn-info" href="../../start_result/{{start.id}}/">Результат</a>
+				{% endif %}
 			</div>
 			<table class="single-cdsg-table table table-striped table-hover table-bordered">
 				<tbody>

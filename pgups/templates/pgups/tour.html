@@ -8,13 +8,24 @@
 		<h2 class="bold">{{tour_name}}</h2>
 	</div>
 
-	<ol class="list">
-		{% for pair in res %}
-			<li>
-				{{pair.0}} : {{pair.1}}
-			</li>
-		{% endfor %}
-	</ol>
+	<div class="row">
+		<div class="col-lg-6 col-md-6 col-sm-10 col-xs-12">
+			<table class="result-tour-table table table-striped table-hover table-bordered">
+				<tbody>
+					{% for pair in res %}
+						<tr>
+							<td class="result-tour-name">
+								{{pair.0}}
+							</td>
+							<td class="result-tour-result">
+								{{pair.1}}
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
 
 </div>
 
