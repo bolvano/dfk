@@ -68,6 +68,11 @@ ul {
 #right .well {
   font-size: 1em;
 }
+label.error {
+  color: #a94442;
+  margin-top: 5px;
+  font-weight: normal;
+}
 /* ---Footer---*/
 .footer {
   position: absolute;
