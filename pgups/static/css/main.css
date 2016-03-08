@@ -40,6 +40,10 @@ ul {
 .competition-menu {
   margin-bottom: 20px;
 }
+.navbar__login {
+  margin: 13px 0;
+  color: #777;
+}
 /* ---MEGAFORM--- */
 .form-horizontal .control-label.text-left {
   text-align: left;

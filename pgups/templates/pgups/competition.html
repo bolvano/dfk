@@ -10,7 +10,12 @@
 		<ul class="list">
 			{% for userrequest in competition.userrequest_set.all %}
 				<li>
-					<a href="../../userrequest/{{userrequest.id}}/">{{userrequest.date|date:"d.m.Y"}}: {{userrequest.team}}
+					<a href="../../userrequest/{{userrequest.id}}/">{{userrequest.date|date:"d.m.Y"}}: 
+					{% if userrequest.team %}
+					{{userrequest.team}}
+					{% else %}
+					индивидуальная заявка
+					{% endif %}
 					</a>
 				</li>
 			{% endfor %}
@@ -42,7 +47,9 @@
 			</a>
 			<form class="generate-starts" action="../../generate_starts/" method="POST" >{% csrf_token %}
 				<input type="hidden" name="competition_id" value="{{competition.id}}">
-				<input type="submit" class="btn btn-lg btn-default" value="Перегенерировать старты">
+				{% if user.is_authenticated %}
+					<input type="submit" class="btn btn-lg btn-default" value="Перегенерировать старты">
+				{% endif %}
 			</form>
 		</div>
 	{% else %}

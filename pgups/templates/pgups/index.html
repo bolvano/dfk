@@ -10,7 +10,7 @@
 		{% for competition in competitions %}
 		<li>
 			<a href="competition/{{competition.id}}/">
-				{{competition.name}} ({{competition.typ}}) {{competition.date_start}}-{{competition.date_end}}
+				{{competition.name}} ({{competition.typ}}) <span style="font-size:smaller">({{competition.date_start|date:"d.m.Y"}} &ndash; {{competition.date_end|date:"d.m.Y"}})</span>
 			</a>
 			{% if competition.finished %} 
 				<span class="alt-color"> (завершены) </span> 
