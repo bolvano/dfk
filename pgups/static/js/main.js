@@ -183,10 +183,14 @@ $(document).ready(function() {
     // checking for cashed values onload
     checkValues('#left input', '#submit-request');
 
-    // watching the changes of input fields values
-    $('#left input').change( {selector: '#left input', disable: '#submit-request' }, function(event)
+    // checking values on key up
+    $('#left input').keyup( {selector: '#left input', disable: '#submit-request' }, function(event) {
         checkValues(event.data.selector, event.data.disable)
-    );
+    });
+
+    // watching the changes of input fields values
+    $('#left input').change( {selector: '#left input', disable: '#submit-request' }, function(event) {
+        checkValues(event.data.selector, event.data.disable)
+    });
 
 });
-
