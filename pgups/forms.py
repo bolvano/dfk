@@ -7,19 +7,50 @@ from .models import Userrequest, Person, Competition, Team, Competitor, Tour, Re
 # Форма заявки
 class RequestForm(forms.ModelForm):
 
+    form_name = "request_form"
+
     competition = forms.ModelChoiceField(   Competition.objects.filter(finished=False),
                                             empty_label='Выберите соревнование из списка:', 
                                             label='Соревнования:',
-                                            error_messages={'required': 'Это обязательное поле'}
+                                            error_messages={'required': 'Это обязательное поле'},
+                                            widget=forms.Select(attrs={'class': 'form-control',
+                                                                       'required': 'required',
+                                                                       'ng-model': 'competition', 
+                                                                       }),
                                             )
 
     team = forms.ModelChoiceField(          Team.objects.all(), 
                                             empty_label='Выберите команду:', 
                                             label='Команда (необязательно):',
-                                            required=False
-                                            #error_messages={'required': 'Это обязательное поле'}
+                                            required=False,
+                                            widget=forms.Select(attrs={'class': 'form-control'}),
                                             )
-    
+
+    representative = forms.CharField(       widget=forms.TextInput (attrs={'class': 'form-control', 
+                                                                           'required': 'required',
+                                                                           'ng-minlength': 2,
+                                                                           'ng-model': 'representative',
+                                                                          }
+                                                                   ),
+                                            label='Заявитель/Представитель команды:',
+                                            )
+
+    phone = forms.CharField(                widget=forms.TextInput (attrs={'class': 'form-control', 
+                                                                           'required': 'required',
+                                                                           'ng-model': 'phone',
+                                                                          }
+                                                                   ),
+                                            label='Телефон:',
+                                            )
+
+    email = forms.CharField(                widget=forms.EmailInput (attrs={'class': 'form-control', 
+                                                                            'required': 'required',
+                                                                            'ng-model': 'email',
+                                                                           }
+                                                                   ),
+                                            label='Электронная почта:',
+                                            )
+
     competitorMap = forms.CharField(widget=forms.HiddenInput())
 
     class Meta:
@@ -31,14 +62,6 @@ class RequestForm(forms.ModelForm):
         'email': {'required': 'Это обязательное поле'},
         'phone': {'required': 'Это обязательное поле'},
         'representative': {'required': 'Это обязательное поле'},
-        }
-
-        labels = {
-
-            'representative': ('Заявитель/Представитель команды:'),
-            'phone': ('Телефон:'),
-            'email': ('Электронная почта:'),
-
         }
 
 

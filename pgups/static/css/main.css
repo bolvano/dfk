@@ -73,6 +73,19 @@ label.error {
   margin-top: 5px;
   font-weight: normal;
 }
+.request-form input.ng-invalid.ng-dirty,
+.request-form select.ng-invalid.ng-dirty {
+  border-color: #5f021f;
+  box-shadow: 0 0 8px #5f021f;
+  transition: none;
+}
+.form-control {
+  transition: none;
+}
+.error-block {
+  color: #5f021f;
+  margin: 5px 0;
+}
 /* ---Footer---*/
 .footer {
   position: absolute;

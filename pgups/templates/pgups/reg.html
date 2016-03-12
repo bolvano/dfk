@@ -16,80 +16,130 @@
 				</div>
 		</div> <!-- End of Jumbotron -->
 		<!-- MEGAFORM -->
-	<form class="form-horizontal" role="form" action="../regrequest/" method="post">{% csrf_token %}
-			<div class="container">
-			<div id="left"> 
-				<div class="well row">
-					<div class="col-md-7">
-								<h3 class="gray">Заявитель</h3><br>
-							<p>Если заявка индивидуальная, оставьте поле "Команда" пустым.</p><br>
-						</div>
-					</div> <!-- End of well -->
-					<!-- Request form -->
-					{% for field in request_form.visible_fields %}
-							{% if field.errors %}
-									<div class="form-group has-error">
-											<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
-											<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-													{{ field|attr:"class:form-control" }}
-													<span class="help-block">
-														{% for error in  field.errors %}{{ error }}{% endfor %}
-													</span>
-											</div>
-									</div> <!-- End of form errors -->
-							{% else %}
-									<div class="form-group">
-											<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
-											<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-													{{ field|attr:"class:form-control" }}
-													{% if field.help_text %}
-															<p class="help-block"><small>{{ field.help_text }}</small></p>
-													{% endif %}
-											</div> <!-- End of form fields -->
+
+	<div ng-app="validationApp">
+
+		<form name="{{ request_form.form_name }}"class="request-form form-horizontal" role="form" action="../regrequest/" method="post" novalidate>{% csrf_token %}
+				<div class="container">
+				<div id="left"> 
+					<div class="well row">
+						<div class="col-md-7">
+									<h3 class="gray">Заявитель</h3><br>
+								<p>Если заявка индивидуальная, оставьте поле "Команда" пустым.</p><br>
+							</div>
+						</div> <!-- End of well -->
+
+
+						<!-- Request form -->
+
+						{{ request_form.non_field_errors }}
+
+						<!-- Competition -->
+							<div class="form-group">
+									<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="{{ request_form.competition.id_for_label }}">{{ request_form.competition.label }}</label>
+									<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
+										{{ request_form.competition }}
+									<p class="error-block" ng-show="request_form.competition.$dirty && request_form.competition.$invalid">Это обязательное поле</p>
 									</div>
-							{% endif %}
-					{% endfor %}
-					{% for field in request_form.hidden_fields %}
-				<div>{{ field.as_hidden }}</div> <!-- Hidden fields -->
-				{% endfor %}
-				<!-- End of Request form -->
-				<hr>
-			</div> <!-- End of #left -->
-			<div id="right">
-				<div class="well row">
-					<div class="col-md-7">
-						<h3 class="gray">Участники</h3><br>
-						<p>Если заявка командная, добавьте участников команды, если индивидуальная - то только себя.
-						Первая указанная дистанция идёт в зачёт. Для каждого участника будет учитываться только одна основная и одна дополнительная (по желанию) дистанция.
-							</p>
+									{{ request_form.competition.errors }}
+							</div>
+						<!-- End of Competition -->
+
+						<!-- Team -->
+							<div class="form-group">
+									<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="{{ request_form.team.id_for_label }}">{{ request_form.team.label }}</label>
+									<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
+										{{ request_form.team }}
+									</div>
+									{{ request_form.team.errors }}
+							</div>
+						<!-- End of Team -->
+
+						<!-- Representative -->
+						<div class="form-group">
+								<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="{{ request_form.representative.id_for_label }}">{{ request_form.representative.label }}</label>
+								<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
+									{{ request_form.representative }}
+								<p class="error-block" ng-show="request_form.representative.$dirty && request_form.representative.$error.required">Это обязательное поле</p>
+								<p class="error-block" ng-show="request_form.representative.$dirty && request_form.representative.$error.minlength">Слишком короткое имя</p>
+								</div>
+								{{ request_form.representative.errors }}
 						</div>
-					</div> <!-- End of well -->
-					<br>
-				{{ request_person_formset.management_form }}
-				{{ request_competitor_formset.management_form }}
-				<div id="persons-form-container"> <!-- Person form --> </div>
-				<hr>
-				<a href="#" id="add-person-button" class="btn btn-default btn-lg add-person">Добавить участника</a>
-			</div> <!-- End of #right -->
-			<br>
-		</div> <!-- End of container -->
-			<div class="jumbotron">
-					<div class="container">
-				<div class="row">
-					<div class="col-lg-3 col-md-4 col-sm-5 col-xs-6 col-centered">
-						<button id="submit-request" type="submit" class="btn btn-success btn-xxl" disabled>Отправить заявку</button>
-						{% if messages %}
-							{% for message in messages %}
-								<!--<br><h4{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h4>-->
-								<script src="{% static 'js/notie.js' %}"></script>
-								<script> notie.alert(1, 'Заявка сохранена!', 2.5); </script> <!-- Notie -->
+						<!-- End of Representative -->
+
+						<!-- Phone -->
+							<div class="form-group">
+									<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="{{ request_form.phone.id_for_label }}">{{ request_form.phone.label }}</label>
+									<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
+										{{ request_form.phone }}
+									<p class="error-block" ng-show="request_form.phone.$dirty && request_form.phone.$error.required">Это обязательное поле</p>
+									</div>
+									{{ request_form.phone.errors }}
+							</div>
+						<!-- End of Phone -->
+
+						<!-- Email -->
+							<div class="form-group">
+									<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="{{ request_form.email.id_for_label }}">{{ request_form.email.label }}</label>
+									<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
+										{{ request_form.email }}
+									<p class="error-block" ng-show="request_form.email.$dirty && request_form.email.$error.required">Это обязательное поле</p>
+									<p class="error-block" ng-show="request_form.email.$dirty && request_form.email.$error.email">Неверный формат 
+									электронной почты</p>
+									</div>
+									{{ request_form.email.errors }}
+							</div>
+						<!-- End of Email -->
+
+						<!-- Hidden fields -->
+							{% for field in request_form.hidden_fields %}
+								<div>{{ field.as_hidden }}</div> 
 							{% endfor %}
-						{% endif %}
-					</div>
-				</div>
+						<!-- End of Hidden fields -->
+
+					<hr>
+				</div> <!-- End of #left -->
+
+
+				<div id="right">
+					<div class="well row">
+						<div class="col-md-7">
+							<h3 class="gray">Участники</h3><br>
+							<p>Если заявка командная, добавьте участников команды, если индивидуальная - то только себя.
+							Первая указанная дистанция идёт в зачёт. Для каждого участника будет учитываться только одна основная и одна дополнительная (по желанию) дистанция.
+								</p>
+							</div>
+						</div> <!-- End of well -->
+						<br>
+					{{ request_person_formset.management_form }}
+					{{ request_competitor_formset.management_form }}
+					<div id="persons-form-container"> <!-- Person form --> </div>
+					<hr>
+					<a href="#" id="add-person-button" class="btn btn-default btn-lg add-person">Добавить участника</a>
+				</div> <!-- End of #right -->
+				<br>
 			</div> <!-- End of container -->
-		</div> <!-- End of jumbotron -->
-	</form> <!-- END OF MEGAFORM -->
+				<div class="jumbotron">
+						<div class="container">
+					<div class="row">
+						<div class="col-lg-3 col-md-4 col-sm-5 col-xs-6 col-centered">
+							<button id="submit-request" type="submit" class="btn btn-success btn-xxl" ng-disabled="request_form.$invalid">Отправить заявку</button>
+							{% if messages %}
+								{% for message in messages %}
+									<!--<br><h4{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h4>-->
+									<script src="{% static 'js/notie.js' %}"></script>
+									<script> notie.alert(1, 'Заявка сохранена!', 2.5); </script> <!-- Notie -->
+								{% endfor %}
+							{% endif %}
+						</div>
+					</div>
+				</div> <!-- End of container -->
+			</div> <!-- End of jumbotron -->
+		</form> <!-- END OF MEGAFORM -->
+
+	</div> <!-- End of validationApp -->
+
+
 	<!-- Templates -->
 	<script type="text/html" id="person-template">
 		<div id="person-__prefix__" class="row">
