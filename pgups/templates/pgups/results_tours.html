@@ -1,40 +1,52 @@
 {% extends 'pgups/base.html' %}
 {% load staticfiles %}
-{% load i18n widget_tweaks %}
 {% block content %}
-
-
-<h2>{{competition.name}} </h2>
-
- <h3>Результаты по турам</h3>
-
-{% for result in results %}
-
-
-{% if result.2|length > 0 or result.1|length > 0 %}
-<hr>
-<h4>{{result.0}}</h4>
-
-{% for c in result.1 %}
-<li>
-    {% if c.main_distance%}<b>{% endif %}
-    {{c.person.last_name}} {{c.person.first_name}} : {{c.result_set.all.0.time}}
-    {% if c.main_distance%}</b>{% endif %}
-</li>
-{% endfor %}
-
-<br>
-{%if result.2|length > 0 %}
-Не вышли:<br>
-{% for c in result.2 %}
-<li>{{c.person.last_name}} {{c.person.first_name}}</li>
-{% endfor %}
-{% endif %}
-
-{% endif %}
-
-{% endfor %}
-
-
-
+<div class="container">
+	<div class="heading">
+		<a href="{% url 'competition' competition_id=competition.id %}">
+			<h1 class="bold">{{competition.name}}</h1>
+		</a>
+		<h2>Результаты по турам</h2>
+	</div>
+	<!--<p class="note bold">* основная дистанция</p>-->
+	{% for result in results %}
+		{% if result.2|length > 0 or result.1|length > 0 %}
+			<div class="result-tour row">
+				<div class="result-tour-finished col-lg-7 col-md-7 col-sm-12 col-xs-12">
+					<h3>{{result.0}}</h3>
+					<table class="result-tour-table table table-hover table-bordered">
+						<tbody>
+							{% for c in result.1 %}
+								<tr>
+									<td class="result-tour-name">
+									{% if c.main_distance%}<span class="bold">{% endif %}
+										{{c.person.last_name}} {{c.person.first_name}}
+									{% if c.main_distance%}</span>{% endif %}
+									</td>
+									<td class="result-tour-result">
+										{% if c.main_distance%}<span class="bold">{% endif %}
+											{{c.result_set.all.0.time}}
+										{% if c.main_distance%}</span>{% endif %}
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+				<div class="result-tour-skipped col-lg-4 col-lg-offset-1 col-md-4 col-md-offset-1 col-sm 12 col-xs-12">
+					{%if result.2|length > 0 %}
+						<h4>Не вышли:</h4>
+						<ul>
+							{% for c in result.2 %}
+								<li class="alt-color">
+									{{c.person.last_name}} {{c.person.first_name}}
+								</li>
+							{% endfor %}
+						</ul>
+					{% endif %}
+				</div>
+			</div>
+		{% endif %}
+	{% endfor %}
+</div>
 {% endblock %}

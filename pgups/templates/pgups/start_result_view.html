@@ -5,7 +5,7 @@
 	<div class="result row">
 		<div class="single-cdsg-start-num">
 			<span class="start-num">Заплыв {{start_num}} ({{cdsg_name}})</span>
-			<a class="btn btn-info pull-right" href="../../all_starts/{{competition_id}}/">Все старты</a>
+			<a class="btn btn-info pull-right" href="../../starts/{{competition_id}}/">Все старты</a>
 		</div>
 		<table class="single-cdsg-table result-table table table-striped table-hover table-bordered">
 			<tbody>
@@ -14,12 +14,17 @@
 					<td class="order-name">{{result.competitor.person.first_name}} {{result.competitor.person.last_name}}</td>
 					<td class="order-team">{{result.competitor.userrequest.team.name}}</td>
 					<td class="order-age text-center">{{result.competitor.age}}</td>
-					<td class="order-prior-time order-time-animation text-center">{{result.time}}</td>
+					<td class="order-time order-time-animation text-center">{{result.time}}</td>
 				</tr>
 			{% endfor %}
 			</tbody>
 		</table>
 		<a class="btn btn-default pull-right" href="../../start_result/{{start_id}}/">Редактировать</a>
+		{% for message in messages %}
+			<!--<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>-->
+			<script src="{% static 'js/notie.js' %}"></script>
+			<script> notie.alert(1, 'Результат сохранён!', 0.5); </script> <!-- Notie -->
+		{% endfor %}
 	</div>
 	<div class="next-start row">
 	<hr>

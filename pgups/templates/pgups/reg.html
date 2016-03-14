@@ -33,9 +33,7 @@
 											<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
 													{{ field|attr:"class:form-control" }}
 													<span class="help-block">
-															<!-- {% for error in  field.errors %}{{ error }}{% endfor %} -->
-															<script src="{% static 'js/notie.js' %}"></script>
-									<script> notie.alert(3, 'Не все поля заполнены!', 2.5); </script>
+														{% for error in  field.errors %}{{ error }}{% endfor %}
 													</span>
 											</div>
 									</div> <!-- End of form errors -->
@@ -71,7 +69,7 @@
 				{{ request_competitor_formset.management_form }}
 				<div id="persons-form-container"> <!-- Person form --> </div>
 				<hr>
-				<a href="#" id="add-person-button" class="btn btn-success btn-lg add-person">Добавить участника</a>
+				<a href="#" id="add-person-button" class="btn btn-default btn-lg add-person">Добавить участника</a>
 			</div> <!-- End of #right -->
 			<br>
 		</div> <!-- End of container -->
@@ -79,14 +77,14 @@
 					<div class="container">
 				<div class="row">
 					<div class="col-lg-3 col-md-4 col-sm-5 col-xs-6 col-centered">
-						<button type="submit" class="btn btn-warning btn-xxl">Отправить заявку</button>
-							{% if messages %}
-									{% for message in messages %}
-										<!-- <br><h4{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h4> -->
-										<script src="{% static 'js/notie.js' %}"></script>
-						<script> notie.alert(1, 'Заявка сохранена!', 2.5); </script> <!-- Notie -->
-									{% endfor %}
-							{% endif %}
+						<button id="submit-request" type="submit" class="btn btn-success btn-xxl" disabled>Отправить заявку</button>
+						{% if messages %}
+							{% for message in messages %}
+								<!--<br><h4{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h4>-->
+								<script src="{% static 'js/notie.js' %}"></script>
+								<script> notie.alert(1, 'Заявка сохранена!', 2.5); </script> <!-- Notie -->
+							{% endfor %}
+						{% endif %}
 					</div>
 				</div>
 			</div> <!-- End of container -->
@@ -112,7 +110,7 @@
 									<div class="form-group">
 											<label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
 											<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
-													{{ field|attr:"class:form-control" }}
+													{{ field|attr:"class:form-control required" }}
 													{% if field.help_text %}
 															<p class="help-block"><small>{{ field.help_text }}</small></p>
 													{% endif %}
@@ -121,8 +119,8 @@
 							{% endif %}
 					{% endfor %}
 					{% for field in request_person_formset.empty_form.hidden_fields %}
-					<div>{{ field.as_hidden }}</div>
-				{% endfor %}
+						<div>{{ field.as_hidden }}</div>
+					{% endfor %}
 			</div>
 				<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
 					<a href="#" class="btn btn-danger btn-md btn-block remove_person">Удалить участника</a>
@@ -150,7 +148,7 @@
 										<div class="form-group">
 												<label class="col-md-2 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
 												<div class="col-md-10">
-														{{ field|attr:"class:form-control" }}
+														{{ field|attr:"class:form-control required" }}
 														{% if field.help_text %}
 																<p class="help-block"><small>{{ field.help_text }}</small></p>
 														{% endif %}

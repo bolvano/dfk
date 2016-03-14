@@ -1,15 +1,27 @@
 {% extends 'pgups/base.html' %}
 {% load staticfiles %}
 {% block content %}
-			<table class="single-cdsg-table table table-striped table-hover table-bordered">
-				<tbody>
-				{% for k,v in result.items %}
-					{{result_form.id}}
-					<tr>
-						<td class="order-lane text-center">{{k}}</td>
-						<td class="order-name">{{v}}</td>
-					</tr>
-				{% endfor %}
-				</tbody>
-			</table>
+<div class="container">
+	<div class="heading">
+		<a href="{% url 'competition' competition_id=competition.id %}">
+			<h1 class="bold">{{competition.name}}</h1>
+		</a>
+		<h2>Результаты по командам</h2>
+	</div>
+	<div class="row">
+			<div class="col-lg-6 col-md-7 col-sm-8 col-xs-10">
+				<table class="result-tour-table table table-striped table-hover table-bordered">
+					<tbody>
+					{% for k,v in result.items %}
+						{{result_form.id}}
+						<tr>
+							<td class="result-tour-name">{{k}}</td>
+							<td class="result-tour-result">{{v}}</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+	</div>
+</div>
 {% endblock %}

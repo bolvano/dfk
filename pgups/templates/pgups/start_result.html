@@ -18,27 +18,29 @@
 						<td class="order-name">{{result_form.instance.competitor.person.first_name}} {{result_form.instance.competitor.person.last_name}}</td>
 						<td class="order-team">{{result_form.instance.competitor.userrequest.team}}</td>
 						<td class="order-age text-center">{{result_form.instance.competitor.age}}</td>
-						<td class="order-time">{{result_form.time}}</td>
+						<td class="order-result">{{result_form.time}}</td>
 						<td class="hidden-field">{{result_form.competitor}}</td>
 					</tr>
 				{% endfor %}
 				</tbody>
 			</table>
 			<button class="btn btn-success pull-right" type="submit">Сохранить результат</button>
-			{% if messages %}
+			<!-- {% if messages %}
 				<ul class="messages">
 				{% for message in messages %}
-				<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+					<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+					<script src="{% static 'js/notie.js' %}"></script>
+					<script> notie.alert(1, 'Результат сохранён!', 1.5); </script>
 				{% endfor %}
 				</ul>
-			{% endif %}
+			{% endif %} -->
 		</form>
 	</div>
 	<div class="next-start row">
 		<hr>
 	{% if prev_start_id %}
 		<a class="btn btn-primary pull-left" href="../../start_result/{{prev_start_id}}/">
-			Предыдущий заплыв <span class="glyphicon glyphicon-chevron-left"></span>
+			<span class="glyphicon glyphicon-chevron-left"></span> Предыдущий заплыв
 		</a>
 	{% endif %}
 	{% if next_start_id %}

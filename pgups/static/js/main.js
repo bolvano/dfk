@@ -153,4 +153,44 @@ $(document).ready(function() {
     $("#right").on("keyup", 'input[id*="last_name"]', function(){
         console.log($(this).val());
     });
+
+// !!! Click not working, browser disabling DOM events on disabled elements
+    $("#right").on('click', '#submit-button-wrapper', function(){
+        var disabled = $('#submit-request').attr('disabled');
+        if (typeof disabled !== typeof undefined && disabled !== false) {
+            $('html, body').animate({
+                    scrollTop: $("#add-person-button").position().top-200
+                }, 800);
+            notie.alert(3, 'Не все поля заполнены', 1.5);
+        }
+    });
+
+// Form validation
+    var checkValues = function(selector, disable) {
+        var empty = false;
+        $(selector).each(function() {
+            if ($(this).val() == '') {
+                empty = true;
+            }
+        });
+        if (empty) {
+            $(disable).attr('disabled', 'disabled');
+        } else {
+            $(disable).removeAttr('disabled');
+        }
+    };
+
+    // checking for cashed values onload
+    checkValues('#left input', '#submit-request');
+
+    // checking values on key up
+    $('#left input').keyup( {selector: '#left input', disable: '#submit-request' }, function(event) {
+        checkValues(event.data.selector, event.data.disable)
+    });
+
+    // watching the changes of input fields values
+    $('#left input').change( {selector: '#left input', disable: '#submit-request' }, function(event) {
+        checkValues(event.data.selector, event.data.disable)
+    });
+
 });

@@ -1,117 +1,135 @@
-.form-horizontal .control-label.text-left{
-    text-align: left;
-}
-
-.col-centered{
-    float: none;
-    margin: 0 auto;
-}
-
-.jumbotron h1, .gray {
-  color: #3B444B;
-}
-
-.jumbotron p.aside {
-  font-size: 19px;
-}
-
-.btn-xxl {
-  padding: 16px 22px;
-  font-size: 28px;
-  border-radius: 10px;
-}
-
-#left .well,
-#right .well {
-  font-size: 16px;
-}
-
-
-/* Sticky footer styles
--------------------------------------------------- */
-
 html {
-  font-style: Helvetica, sans-serif;
   position: relative;
   min-height: 100%;
 }
+html,
 body {
-  /* Margin bottom by footer height */
+  padding: 0;
+  margin: 0;
+  font-size: 100%;
+}
+body {
   margin-bottom: 60px;
 }
+ul {
+  list-style: none;
+}
+.bold {
+  font-weight: bold;
+}
+.heading {
+  border-bottom: 1px solid #979a9d;
+  padding: 0 0 20px 0;
+  margin: 0 0 20px 0;
+}
+.list {
+  font-size: 1em;
+}
+.list li {
+  margin-bottom: 5px;
+}
+.list.larger {
+  font-size: 1.2em;
+}
+.alt-color {
+  color: #5f021f;
+}
+.note {
+  font-size: 0.9em;
+}
+.competition-menu {
+  margin-bottom: 20px;
+}
+.navbar__login {
+  margin: 13px 0;
+  color: #777;
+}
+/* ---MEGAFORM--- */
+.form-horizontal .control-label.text-left {
+  text-align: left;
+}
+.col-centered {
+  float: none;
+  margin: 0 auto;
+}
+.jumbotron h1,
+.jumbotron .gray {
+  color: #3b444b;
+}
+.jumbotron .aside {
+  font-size: 1em;
+}
+.btn-xxl {
+  padding: 16px 22px;
+  font-size: 1.7em;
+  border-radius: 10px;
+}
+#left .well,
+#right .well {
+  font-size: 1em;
+}
+label.error {
+  color: #a94442;
+  margin-top: 5px;
+  font-weight: normal;
+}
+/* ---Footer---*/
 .footer {
   position: absolute;
   bottom: 0;
   width: 100%;
-  /* Set the fixed height of the footer here */
   height: 60px;
   background-color: #f5f5f5;
 }
-
-
-/* Hidden form fields
-------------------------------------------------- */
-
-input[id*="DELETE"] { display: none; }
-label[for*="DELETE"] { display: none; }
-
-
-/* All starts area
-------------------------------------------------- */
-
+/* --- Hidden form field---*/
+input[id*="DELETE"] {
+  display: none;
+}
+label[for*="DELETE"] {
+  display: none;
+}
+/* ---Starts, results--- */
 .single-cdsg-table {
   table-layout: fixed;
   word-wrap: break-word;
 }
-
 .single-cdsg {
-  border-bottom: 1px solid #DDDDDD;
-  padding: 15px 0;
-  width: 90%;
+  border-bottom: 1px solid #979a9d;
+  padding: 0 0 15px;
+  margin-bottom: 15px;
 }
-
 .single-cdsg-heading {
   margin-bottom: 25px;
-  font-weight: bold;
 }
-
 .single-cdsg-start {
-  margin-bottom: 25px;
-  margin-left: 20px;
+  margin: 0 0 25px 20px;
 }
-
 .single-cdsg-start-num {
-  margin-bottom: 10px;
-  min-height: 40px
+  margin: 0 0 10px 0;
+  min-height: 40px;
 }
-
 .start-num {
   font-size: 1.5em;
   line-height: 2em;
 }
-
+/* Table */
 .order-lane {
-  background-color: #B9F2FF;
+  background-color: #b9f2ff;
   width: 4%;
 }
-
 .order-name {
   width: 50%;
 }
-
 .order-team {
   width: 20%;
 }
-
 .order-age {
   width: 13%;
 }
-
-.order-prior-time {
+.order-time {
   width: 13%;
   padding-top: 15px !important;
 }
-
 .order-lane,
 .order-name,
 .order-team,
@@ -119,47 +137,109 @@ label[for*="DELETE"] { display: none; }
   padding-top: 15px !important;
   padding-bottom: 15px !important;
 }
-
-
-/* Single start edit
-------------------------------------------------- */
-
+/* ---Result--- */
 .result {
-  margin-top: 15px;
+  margin: 15px 0 0 0;
   width: 90%;
 }
-
 .next-start {
   width: 90%;
 }
-
 .hidden-field {
   display: none;
 }
-
-.order-time {
+.order-result {
   padding-top: 10px !important;
 }
-
-.order-time > input {
+.order-result > input {
   width: 100%;
 }
-
-/* Chrome, Safari, Opera */
-@-webkit-keyframes greenish {
-    0% {background-color: rgba(128, 255, 128, 0.6);}
-    100% {background-color: #fff;}
-}
-
-/* Standard syntax */
-@keyframes greenish {
-    0% {background-color: rgba(128, 255, 128, 0.6);}
-    100% {background-color: #fff;}
-}
-
 .order-time-animation {
-  -webkit-animation-name: greenish; /* Chrome, Safari, Opera */
-  -webkit-animation-duration: 3s; /* Chrome, Safari, Opera */
+  -webkit-animation-name: greenish;
+  -webkit-animation-duration: 3s;
   animation-name: greenish;
   animation-duration: 3s;
+}
+.generate-starts {
+  display: block;
+  float: left;
+  clear: left;
+  margin-bottom: 40px;
+}
+.starts {
+  display: block;
+  float: left;
+  margin-bottom: 10px;
+}
+/* ---Results team--- */
+.team-name {
+  width: 30%;
+  padding: 20px !important;
+}
+.team-competitors {
+  width: 70%;
+  padding: 20px !important;
+}
+/* ---Results tour--- */
+.result-tour {
+  overflow: hidden;
+  border-bottom: 1px solid #979a9d;
+  padding: 0 0 20px;
+  margin-bottom: 20px;
+}
+.result-tour-finished {
+  float: left;
+}
+.result-tour-finished h3 {
+  margin-bottom: 20px;
+}
+.result-tour-finished .result-tour-table {
+  width: 100%;
+}
+.result-tour-finished .result-tour-table .result-tour-name {
+  padding: 10px !important;
+  width: 70%;
+}
+.result-tour-finished .result-tour-table .result-tour-result {
+  padding: 10px !important;
+  width: 30%;
+}
+.result-tour-skipped {
+  float: left;
+  margin-top: 16px;
+}
+.result-tour-skipped ul {
+  list-style-type: circle;
+}
+@-moz-keyframes greenish {
+  0% {
+    background-color: rgba(128,255,128,0.6);
+  }
+  100% {
+    background-color: #fff;
+  }
+}
+@-webkit-keyframes greenish {
+  0% {
+    background-color: rgba(128,255,128,0.6);
+  }
+  100% {
+    background-color: #fff;
+  }
+}
+@-o-keyframes greenish {
+  0% {
+    background-color: rgba(128,255,128,0.6);
+  }
+  100% {
+    background-color: #fff;
+  }
+}
+@keyframes greenish {
+  0% {
+    background-color: rgba(128,255,128,0.6);
+  }
+  100% {
+    background-color: #fff;
+  }
 }
