@@ -1,37 +1,45 @@
 {% extends 'pgups/base.html' %}
 {% load staticfiles %}
 {% block content %}
+
 <div class="container">
+	<!-- Heading -->
 	<div class="heading">
-		<h1 class="bold">{{competition.name}}</h2>
-	</div>
+		<h1><b>{{competition.name}}</b></h2>
+	</div> <!-- End of Heading -->
+
 	{% if not competition.finished %}
+		<!-- Requests -->
 		<h2>Заявки</h2>
-		<ul class="list">
+		<ul class="basic-list">
 			{% for userrequest in competition.userrequest_set.all %}
 				<li>
 					<a href="../../userrequest/{{userrequest.id}}/">{{userrequest.date|date:"d.m.Y"}}: 
 					{% if userrequest.team %}
-					{{userrequest.team}}
+						{{userrequest.team}}
 					{% else %}
-					индивидуальная заявка
+						индивидуальная заявка
 					{% endif %}
 					</a>
 				</li>
 			{% endfor %}
 		</ul>
-		<hr>
+		<hr> <!-- End of Requests -->
+
+		<!-- Teams -->
 		<h2>Составы команд</h2>
-		<ul class="list">
+		<ul class="basic-list">
 			{% for team in teams %}
 				<li>
 					<a href="../../competition/team/{{competition.id}}/{{team.id}}/">{{team}}</a>
 				</li>
 			{% endfor %}
 		</ul>
-		<hr>
+		<hr> <!-- End of Teams -->
+
+		<!-- Tours -->
 		<h2>Туры</h2>
-		<ul class="list">
+		<ul class="basic-list">
 			{% for tour in competition.tour_set.all %}
 			{% if tour.competitor_set.all|length > 0 %}
 				<li>
@@ -40,24 +48,45 @@
 			{% endif %}
 			{% endfor %}
 		</ul>
-		<hr>
+		<hr> <!-- End of Tours -->
+
+
 		<div class="row">
+
 			<a class="btn btn-lg btn-success starts" href="../../competition/starts/{{competition.id}}/">
 				<span>Текущая сетка стартов</span>
 			</a>
-			<form class="generate-starts" action="../../generate_starts/" method="POST" >{% csrf_token %}
-				<input type="hidden" name="competition_id" value="{{competition.id}}">
-				{% if user.is_authenticated %}
-					<input type="submit" class="btn btn-lg btn-default" value="Перегенерировать старты">
-				{% endif %}
-			</form>
+			
+			{% if user.is_authenticated %}
+				<form action="../../generate_starts/" method="POST" >{% csrf_token %}
+					<input type="hidden" name="competition_id" value="{{competition.id}}">
+					
+						<input type="submit" class="generate-starts btn btn-lg btn-default" value="Перегенерировать старты">
+				</form>
+			{% endif %}
+
 		</div>
+
 	{% else %}
-	<div class="competition-menu larger">
-		<p><a class="btn btn-lg btn-primary" href="../../results/starts/{{competition.id}}/">Результаты по заплывам и дорожкам</a></p>
-		<p><a class="btn btn-lg btn-primary" href="../../results/tours/{{competition.id}}/">Результаты по турам</a></p>
-		<p><a class="btn btn-lg btn-primary" href="../../results/teams/{{competition.id}}/">Результаты по командам</a></p>
+
+	<div class="competition-menu">
+
+		<p>
+			<a class="btn btn-lg btn-primary" href="../../results/starts/{{competition.id}}/">Результаты по заплывам и дорожкам</a>
+		</p>
+
+		<p>
+			<a class="btn btn-lg btn-primary" href="../../results/tours/{{competition.id}}/">Результаты по турам</a>
+		</p>
+
+		<p>
+			<a class="btn btn-lg btn-primary" href="../../results/teams/{{competition.id}}/">Результаты по командам</a>
+		</p>
+
 	</div>
+
 	{% endif %}
+
 </div>
+
 {% endblock %}

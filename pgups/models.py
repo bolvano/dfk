@@ -2,7 +2,6 @@
 
 from django.db import models
 
-# Create your models here.
 
 #Соревнования
 class Competition(models.Model):

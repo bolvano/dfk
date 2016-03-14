@@ -1,3 +1,4 @@
+/* basic styles */
 html {
   position: relative;
   min-height: 100%;
@@ -8,43 +9,55 @@ body {
   margin: 0;
   font-size: 100%;
 }
+/* sticky footer */
 body {
   margin-bottom: 60px;
 }
-ul {
-  list-style: none;
-}
-.bold {
-  font-weight: bold;
-}
-.heading {
-  border-bottom: 1px solid #979a9d;
-  padding: 0 0 20px 0;
-  margin: 0 0 20px 0;
-}
-.list {
-  font-size: 1em;
-}
-.list li {
-  margin-bottom: 5px;
-}
-.list.larger {
-  font-size: 1.2em;
-}
+/* helper styles */
 .alt-color {
   color: #5f021f;
 }
 .note {
   font-size: 0.9em;
 }
-.competition-menu {
-  margin-bottom: 20px;
+.heading {
+  border-bottom: 1px solid #979a9d;
+  padding: 0 0 20px 0;
+  margin: 0 0 20px 0;
 }
+.basic-list {
+  list-style-type: circle;
+}
+.basic-list li {
+  margin-bottom: 5px;
+}
+.basic-list-larger {
+  font-size: 1.2rem;
+}
+.btn-xxl {
+  padding: 16px 22px;
+  font-size: 1.7em;
+  border-radius: 10px;
+}
+/* index, login info, top right */
 .navbar__login {
   margin: 13px 0;
   color: #777;
 }
-/* ---MEGAFORM--- */
+/* competition page */
+.competition-menu {
+  margin-bottom: 20px;
+}
+.generate-starts {
+  float: left;
+  clear: both;
+  margin-bottom: 40px;
+}
+.starts {
+  float: left;
+  margin-bottom: 20px;
+}
+/* Request form */
 .form-horizontal .control-label.text-left {
   text-align: left;
 }
@@ -52,33 +65,7 @@ ul {
   float: none;
   margin: 0 auto;
 }
-.jumbotron h1,
-.jumbotron .gray {
-  color: #3b444b;
-}
-.jumbotron .aside {
-  font-size: 1em;
-}
-.btn-xxl {
-  padding: 16px 22px;
-  font-size: 1.7em;
-  border-radius: 10px;
-}
-#left .well,
-#right .well {
-  font-size: 1em;
-}
-label.error {
-  color: #a94442;
-  margin-top: 5px;
-  font-weight: normal;
-}
-.request-form input.ng-invalid.ng-dirty,
-.request-form select.ng-invalid.ng-dirty {
-  border-color: #5f021f;
-  box-shadow: 0 0 8px #5f021f;
-  transition: none;
-}
+/* overriding bootstrap transition */
 .form-control {
   transition: none;
 }
@@ -86,7 +73,13 @@ label.error {
   color: #5f021f;
   margin: 5px 0;
 }
-/* ---Footer---*/
+.request-form input.ng-invalid.ng-dirty,
+.request-form select.ng-invalid.ng-dirty {
+  border-color: #5f021f;
+  box-shadow: 0 0 8px #5f021f;
+  transition: none;
+}
+/* footer */
 .footer {
   position: absolute;
   bottom: 0;
@@ -172,17 +165,6 @@ label[for*="DELETE"] {
   -webkit-animation-duration: 3s;
   animation-name: greenish;
   animation-duration: 3s;
-}
-.generate-starts {
-  display: block;
-  float: left;
-  clear: left;
-  margin-bottom: 40px;
-}
-.starts {
-  display: block;
-  float: left;
-  margin-bottom: 10px;
 }
 /* ---Results team--- */
 .team-name {

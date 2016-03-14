@@ -2,18 +2,23 @@
 {% load staticfiles %}
 {% block content %}
 <div class="container">
+
 	<div class="heading">
 		<a href="{% url 'competition' competition_id=competition.id %}">
-			<h1 class="bold">{{competition.name}}</h1>
+			<h1><b>{{competition.name}}</b></h1>
 		</a>
 		<h2>Результаты по турам</h2>
 	</div>
+
 	<!--<p class="note bold">* основная дистанция</p>-->
 	{% for result in results %}
 		{% if result.2|length > 0 or result.1|length > 0 %}
+
 			<div class="result-tour row">
+
 				<div class="result-tour-finished col-lg-7 col-md-7 col-sm-12 col-xs-12">
 					<h3>{{result.0}}</h3>
+
 					<table class="result-tour-table table table-hover table-bordered">
 						<tbody>
 							{% for c in result.1 %}
@@ -32,8 +37,10 @@
 							{% endfor %}
 						</tbody>
 					</table>
+
 				</div>
-				<div class="result-tour-skipped col-lg-4 col-lg-offset-1 col-md-4 col-md-offset-1 col-sm 12 col-xs-12">
+
+				<div class="result-tour-skipped col-lg-4 col-lg-offset-1 col-md-4 col-md-offset-1 col-sm-12 col-xs-12">
 					{%if result.2|length > 0 %}
 						<h4>Не вышли:</h4>
 						<ul>
@@ -45,7 +52,9 @@
 						</ul>
 					{% endif %}
 				</div>
+
 			</div>
+
 		{% endif %}
 	{% endfor %}
 </div>
