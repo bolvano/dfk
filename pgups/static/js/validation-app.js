@@ -10,9 +10,9 @@ validationApp.config(function($interpolateProvider) {
 // form controller
 validationApp.controller('formCtrl', ['$scope', function($scope, $http) {
 
-    $scope.form = {};
-
     $scope.persons = [{ id: 'person-0'}, { id: 'person-1'}];
+
+    $scope.form = {persons: $scope.persons};
 
     $scope.addPerson = function() {
         var newPersonNum = $scope.persons.length;
