@@ -1,4 +1,5 @@
 /* basic styles */
+/*==============*/
 html {
   position: relative;
   min-height: 100%;
@@ -14,6 +15,7 @@ body {
   margin-bottom: 60px;
 }
 /* helper styles */
+/*===============*/
 .alt-color {
   color: #5f021f;
 }
@@ -22,8 +24,11 @@ body {
 }
 .heading {
   border-bottom: 1px solid #979a9d;
-  padding: 0 0 20px 0;
-  margin: 0 0 20px 0;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+.heading-no-margin {
+  margin-bottom: 0;
 }
 .basic-list {
   list-style-type: circle;
@@ -39,12 +44,16 @@ body {
   font-size: 1.7em;
   border-radius: 10px;
 }
+.hidden-field {
+  display: none;
+}
 /* index, login info, top right */
 .navbar__login {
   margin: 13px 0;
   color: #777;
 }
-/* competition page */
+/* Competition page */
+/*==================*/
 .competition-menu {
   margin-bottom: 20px;
 }
@@ -57,10 +66,16 @@ body {
   float: left;
   margin-bottom: 20px;
 }
-/* Request form */
-.form-horizontal .control-label.text-left {
+/* Forms       */
+/*=============*/
+.person-form {
+  margin-bottom: 20px;
+}
+/* left-aligning text inside labels */
+.control-label.text-left {
   text-align: left;
 }
+/* centering submit button */
 .col-centered {
   float: none;
   margin: 0 auto;
@@ -73,13 +88,14 @@ body {
   color: #5f021f;
   margin: 5px 0;
 }
-.request-form input.ng-invalid.ng-dirty,
-.request-form select.ng-invalid.ng-dirty {
+input.ng-invalid.ng-dirty,
+select.ng-invalid.ng-dirty {
   border-color: #5f021f;
   box-shadow: 0 0 8px #5f021f;
   transition: none;
 }
-/* footer */
+/* Footer */
+/*========*/
 .footer {
   position: absolute;
   bottom: 0;
@@ -87,99 +103,82 @@ body {
   height: 60px;
   background-color: #f5f5f5;
 }
-/* --- Hidden form field---*/
+/*     Hidden form field   */
+/*=========================*/
 input[id*="DELETE"] {
   display: none;
 }
 label[for*="DELETE"] {
   display: none;
 }
-/* ---Starts, results--- */
-.single-cdsg-table {
+/*    Tables         */
+/*===================*/
+/* allowing to set custom column width */
+.table {
   table-layout: fixed;
-  word-wrap: break-word;
 }
-.single-cdsg {
+.single-start-container {
   border-bottom: 1px solid #979a9d;
-  padding: 0 0 15px;
-  margin-bottom: 15px;
+  padding: 15px 0 15px;
 }
-.single-cdsg-heading {
-  margin-bottom: 25px;
+.start-number {
+  margin-bottom: 10px;
+  overflow: hidden;
 }
-.single-cdsg-start {
-  margin: 0 0 25px 20px;
+.btn-results {
+  margin-top: 10px;
 }
-.single-cdsg-start-num {
-  margin: 0 0 10px 0;
-  min-height: 40px;
-}
-.start-num {
-  font-size: 1.5em;
-  line-height: 2em;
-}
-/* Table */
-.order-lane {
+/* Table columns */
+.column-lane {
   background-color: #b9f2ff;
   width: 4%;
 }
-.order-name {
+.column-name {
   width: 50%;
 }
-.order-team {
+.column-team {
   width: 20%;
 }
-.order-age {
+.column-age {
   width: 13%;
 }
-.order-time {
+.column-time {
   width: 13%;
-  padding-top: 15px !important;
-}
-.order-lane,
-.order-name,
-.order-team,
-.order-age {
-  padding-top: 15px !important;
-  padding-bottom: 15px !important;
-}
-/* ---Result--- */
-.result {
-  margin: 15px 0 0 0;
-  width: 90%;
-}
-.next-start {
-  width: 90%;
-}
-.hidden-field {
-  display: none;
-}
-.order-result {
   padding-top: 10px !important;
 }
-.order-result > input {
+/* padding overriding bootstrap */
+.column-lane,
+.column-name,
+.column-team,
+.column-age {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+.column-result {
+  padding-top: 10px !important;
+}
+.column-result > input {
   width: 100%;
 }
-.order-time-animation {
+.column-time-animation {
   -webkit-animation-name: greenish;
   -webkit-animation-duration: 3s;
   animation-name: greenish;
   animation-duration: 3s;
 }
-/* ---Results team--- */
-.team-name {
-  width: 30%;
-  padding: 20px !important;
-}
-.team-competitors {
+.column-name-wide {
+  padding: 10px !important;
   width: 70%;
-  padding: 20px !important;
 }
-/* ---Results tour--- */
+.column-result-wide {
+  padding: 10px !important;
+  width: 30%;
+}
+/*    Results tour    */
 .result-tour {
   overflow: hidden;
   border-bottom: 1px solid #979a9d;
-  padding: 0 0 20px;
+  padding-bottom: 20px;
   margin-bottom: 20px;
 }
 .result-tour-finished {
@@ -188,23 +187,9 @@ label[for*="DELETE"] {
 .result-tour-finished h3 {
   margin-bottom: 20px;
 }
-.result-tour-finished .result-tour-table {
-  width: 100%;
-}
-.result-tour-finished .result-tour-table .result-tour-name {
-  padding: 10px !important;
-  width: 70%;
-}
-.result-tour-finished .result-tour-table .result-tour-result {
-  padding: 10px !important;
-  width: 30%;
-}
 .result-tour-skipped {
   float: left;
   margin-top: 16px;
-}
-.result-tour-skipped ul {
-  list-style-type: circle;
 }
 @-moz-keyframes greenish {
   0% {

@@ -119,7 +119,7 @@
 			<br>
 
 			<!-- Person form -->
-			<form name="personsForm" role="form" novalidate>
+			<form class="person-form" name="personsForm" role="form" novalidate>
 
 				<!-- Persons -->
 				<div class="row" ng-repeat="person in persons">
@@ -135,7 +135,7 @@
 							<div class="form-group row">
 								<label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label text-left" for="first_name">Имя:</label>
 								<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
-									<input maxlength="255" name="first_name" ng-model="person.first_name" type="text" required/>
+									<input class="form-control" maxlength="255" name="first_name" ng-model="person.first_name" type="text" required/>
 									<p class="error-block" ng-show="personForm.first_name.$dirty && personForm.first_name.$error.required">Это обязательное поле</p>
 								</div>
 							</div> <!-- End of First name -->
@@ -144,7 +144,7 @@
 							<div class="form-group row">
 								<label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label text-left" for="last_name">Фамилия:</label>
 								<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
-									<input maxlength="255" name="last_name" ng-model="person.last_name" type="text" required/>
+									<input class="form-control" maxlength="255" name="last_name" ng-model="person.last_name" type="text" required/>
 									<p class="error-block" ng-show="personForm.last_name.$dirty && personForm.last_name.$error.required">Это обязательное поле</p>
 								</div>
 							</div> <!-- End of Last name -->
@@ -153,7 +153,7 @@
 							<div class="form-group row">
 								<label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label text-left" for="birth_year">Год рождения:</label>
 								<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
-									<select name="birth_year" ng-model="person.birth_year" required>
+									<select class="form-control" name="birth_year" ng-model="person.birth_year" required>
 										<option value="1929">1929</option>
 									</select>
 									<p class="error-block" ng-show="personForm.birth_year.$dirty && personForm.birth_year.$error.required">Это обязательное поле</p>
@@ -164,7 +164,7 @@
 							<div class="form-group row">
 								<label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label text-left" for="gender">Пол:</label>
 								<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
-									<select name="gender" ng-model="person.gender" required>
+									<select class="form-control" name="gender" ng-model="person.gender" required>
 										<option value="М">М</option>
 										<option value="Ж" selected="selected">Ж</option>
 									</select>
@@ -173,7 +173,7 @@
 							</div> <!-- End of Gender -->
 
 							{$ person $}
-							
+
 
 						</div>
 
@@ -181,7 +181,7 @@
 						<!-- Buttons -->
 						<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
 							<a href="#" class="btn btn-danger btn-md btn-block" ng-click="removePerson($index)">Удалить участника</a>
-							<a href="#" class="btn btn-success btn-md btn-block add-competitor">Добавить заплыв</a>
+							<a href="#" class="btn btn-success btn-md btn-block">Добавить заплыв</a>
 						</div>
 
 						<!-- Competitors -->

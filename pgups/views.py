@@ -295,7 +295,10 @@ def competition_starts(request, competition_id):
 
     cdsg_list = Cdsg.objects.filter(competition=competition)
 
-    return render(request, 'pgups/competition_starts.html', {'cdsg_list': cdsg_list, 'competition_id':competition_id},)
+    return render(request, 'pgups/competition_starts.html', {'cdsg_list': cdsg_list,
+                                                             'competition_id':competition_id,
+                                                             'competition': competition, 
+                                                            },)
 
 def generate_starts(request):
 
