@@ -7,20 +7,27 @@ validationApp.config(function($interpolateProvider) {
         $interpolateProvider.endSymbol('$}');
 });
 
+
 // form controller
-validationApp.controller('formCtrl', ['$scope', function($scope, $http) {
+validationApp.controller('formCtrl', ['$scope',
 
-    $scope.persons = [{ id: 'person-0'}, { id: 'person-1'}];
+    function($scope, $http) {
 
-    $scope.form = {persons: $scope.persons};
+        $scope.persons = [{ id: 'person-0'}, { id: 'person-1'}];
 
-    $scope.addPerson = function() {
-        var newPersonNum = $scope.persons.length;
-        $scope.persons.push({'id':'person-'+newPersonNum});
-    };
+        $scope.form = {persons: $scope.persons};
 
-    $scope.removePerson = function(idx) {
-        $scope.persons.splice(idx, 1);
-    };
+        // counter resets on document load
+        var personCounter = 2;
 
-}]);
+        $scope.addPerson = function() {
+            $scope.persons.push({ 'id':'person-' + personCounter });
+            personCounter++;
+        };
+
+        $scope.removePerson = function(idx) {
+            $scope.persons.splice(idx, 1);
+        };
+
+    }
+]);
