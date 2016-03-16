@@ -28,7 +28,7 @@
 					<li><a href="{% url 'index' %}">Главная</a></li>
 					<li><a href="{% url 'regrequest' %}">Подать заявку</a></li>
 				</ul>
-				<div class="navbar__login pull-right">
+				<div class="login pull-right">
 					<span>
 						{% if user.is_authenticated %}
 							Здравствуйте, {{user.username}}

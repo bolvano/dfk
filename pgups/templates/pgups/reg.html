@@ -16,22 +16,26 @@
 		</div>
 	</div> <!-- End of Jumbotron -->
 
+	<br>
 
-	<!-- Request form -->
 	<div ng-app="validationApp" ng-controller="formCtrl">
 
+		<!-- Request form -->
 		<form name="requestForm" class="request-form form-horizontal" role="form" novalidate>
 
-				<div class="container">
+			<div class="container">
 
-					<!-- Well -->
-					<div class="well row">
-						<div class="col-md-7 col-xs-12">
-							<h3>Заявитель</h3><br>
-							<p>Если заявка индивидуальная, оставьте поле "Команда" пустым.</p><br>
-						</div>
-					</div> <!-- End of well -->
+				<!-- Well -->
+				<div class="well row">
+					<div class="col-md-7 col-xs-12">
+						<h3>Заявитель</h3><br>
+						<p>Если заявка индивидуальная, оставьте поле "Команда" пустым.</p><br>
+					</div>
+				</div> <!-- End of well -->
 
+				<br>
+
+				<div class="request-form">
 
 					<!-- Competition -->
 					<div class="form-group">
@@ -88,21 +92,11 @@
 						</div>
 					</div> <!-- End of Email -->
 
-					<!-- Hidden fields -->
-					<div>
-						<input id="id_competitorMap" name="competitorMap" type="hidden" />
-					</div> <!-- End of Hidden fields -->
-
-
-			{$ form $}
+				</div>
 
 			</div>
 
-		</form>
-
-		
-
-
+		</form> <!-- End of Request form -->
 
 		<div class="container">
 
@@ -116,8 +110,6 @@
 				</div>
 			</div> <!-- End of well -->
 
-			<br>
-
 			<!-- Person form -->
 			<form class="person-form" name="personsForm" role="form" novalidate>
 
@@ -127,7 +119,6 @@
 					<hr><br>
 
 					<ng-form name="personForm">
-
 
 						<div class="col-lg-5 col-md-4 col-sm-8 col-xs-12">
 
@@ -153,8 +144,7 @@
 							<div class="form-group row">
 								<label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label text-left" for="birth_year">Год рождения:</label>
 								<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
-									<select class="form-control" name="birth_year" ng-model="person.birth_year" required>
-										<option value="1929">1929</option>
+									<select class="form-control" name="birth_year" ng-model="person.birth_year" ng-options="year for year in years" required>
 									</select>
 									<p class="error-block" ng-show="personForm.birth_year.$dirty && personForm.birth_year.$error.required">Это обязательное поле</p>
 								</div>
@@ -166,42 +156,90 @@
 								<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
 									<select class="form-control" name="gender" ng-model="person.gender" required>
 										<option value="М">М</option>
-										<option value="Ж" selected="selected">Ж</option>
+										<option value="Ж">Ж</option>
 									</select>
 									<p class="error-block" ng-show="personForm.gender.$dirty && personForm.gender.$error.required">Это обязательное поле</p>
 								</div>
 							</div> <!-- End of Gender -->
 
-							{$ person $}
-
-
 						</div>
-
 
 						<!-- Buttons -->
 						<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-							<a href="#" class="btn btn-danger btn-md btn-block" ng-click="removePerson($index)">Удалить участника</a>
-							<a href="#" class="btn btn-success btn-md btn-block">Добавить заплыв</a>
+							<a id="remove-person-{$ person.personId $}" href="#" class="btn btn-danger btn-md btn-block" ng-click="removePerson($index)">Удалить участника</a>
+							<a id="add-competitor-{$ person.personId $}" href="#" class="btn btn-success btn-md btn-block" ng-click="addCompetitor($index)">Добавить заплыв</a>
 						</div>
 
 						<!-- Competitors -->
-						<div id="competitor-col" class="col-lg-5 col-md-5 col-sm-12 col-xs-12"></div> <!-- End of Conpetitors -->
+						<div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
 
+						<div ng-repeat="competitor in person.competitors">
+
+							<div class="row single-competitor">
+
+								<ng-form name="competitorForm">
+
+									<div class="col-lg-10 col-md-10 col-sm-8 col-xs-12">
+
+										<!-- Tour -->
+										<div class="form-group row">
+
+											<label class="col-md-2 control-label text-left" for="tour">Тур:</label>
+
+											<div class="col-md-10">
+
+												<select class="form-control" name="tour" ng-model="competitor.tour" required>
+													<option value="" selected="selected">Empty</option>
+													<option value="example_tour">Example Tour</option>
+												</select>
+
+												<p class="error-block" ng-show="competitorForm.tour.$dirty && competitorForm.tour.$error.required">Выберите тур из списка</p>
+
+											</div>
+
+										</div> <!-- End of Tour -->
+
+										<!-- Prior time -->
+										<div class="form-group row">
+
+												<label class="col-md-2 control-label text-left" for="prior_time">Время:</label>
+
+												<div class="col-md-10">
+
+													<input class="form-control" maxlength="6" name="prior_time" ng-model="competitor.prior_time" type="number" step="0.01" placeholder="0,00" required/>
+
+													<p class="error-block" ng-show="competitorForm.prior_time.$dirty && competitorForm.prior_time.$error.required">Введите предварительное время</p>
+													<p class="error-block" ng-show="competitorForm.prior_time.$dirty && competitorForm.prior_time.$error.number">Введите время в формате <i>10,00</i></p>
+													<p class="error-block" ng-show="competitorForm.prior_time.$dirty && competitorForm.prior_time.$error.maxlength">Округлите время до сотых</p>
+												</div>
+
+										</div> <!-- End of Prior time -->
+
+									</div>
+
+									<!-- Remove competitor -->
+									<div class="col-lg-2 col-md-2 col-sm-8 col-xs-12 ">
+										<a href="#" class="remove-competitor-{$ competitor.competitorId $} remove-competitor-btn btn btn-danger btn-sm" ng-click="removeCompetitor($parent.$index, $index)"><span class="glyphicon glyphicon-remove"></span></a>
+									</div> <!-- End of Remove competitor -->
+
+								</ng-form>
+
+							</div>
+
+						</div>
+
+						</div> <!-- End of Competitors -->
 
 					</ng-form>
 
 				</div> <!-- End of Persons -->
 
-			<form> <!-- End of Person form -->
-
-
-
-
+			</form> <!-- End of Person form -->
 
 			<hr>
 
 			<!-- Add person button -->
-			<a id="addPersonBtn" href="#" class="btn btn-default btn-lg" ng-click="addPerson()">Добавить участника</a>
+			<a id="add-person-button" href="#" class="add-person-button btn btn-default btn-lg" ng-click="addPerson()">Добавить участника</a>
 
 			<br>
 
@@ -210,67 +248,24 @@
 			<!-- Jumbotron -->
 			<div class="jumbotron">
 				<div class="container">
+
+					{$ form $}
+
 					<div class="row">
 						<div class="col-lg-3 col-md-4 col-sm-5 col-xs-6 col-centered">
 
-							<button id="submit-request" type="submit" class="btn btn-success btn-xxl" ng-disabled="request_form.$invalid">Отправить заявку</button>
+							<button type="submit" class="btn btn-success btn-xxl" ng-disabled="requestForm.$invalid || personsForm.$invalid">Отправить заявку</button>
 
-							{% if messages %}
-								{% for message in messages %}
+								<!--
 									<script src="{% static 'js/notie.js' %}"></script>
-									<script> notie.alert(1, 'Заявка сохранена!', 2.5); </script> <!-- Notie -->
-								{% endfor %}
-							{% endif %}
+									<script> notie.alert(1, 'Заявка сохранена!', 2.5); </script> 
+								Notie -->
 
 						</div>
 					</div>
 				</div>
 			</div> <!-- End of jumbotron -->
 
-
-
 	</div> <!-- End of validationApp -->
-
-
-	<!-- Templates -->
-	<script type="text/html" id="competitor-template">
-		<div id="competitor-__prefix__" class="competitor_div">
-			<div class="row">
-				<div class="col-lg-10 col-md-10 col-sm-8 col-xs-12">
-						{% for field in request_competitor_formset.empty_form.visible_fields %}
-								{% if field.errors %}
-										<div class="form-group has-error">
-												<label class="col-md-2 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
-												<div class="col-md-10">
-														{{ field }}
-														<span class="help-block">
-																{% for error in  field.errors %}{{ error }}{% endfor %}
-														</span>
-												</div>
-										</div>
-								{% else %}
-										<div class="form-group">
-												<label class="col-md-2 control-label text-left" for="id_{{ field.name }}">{{ field.label }}</label>
-												<div class="col-md-10">
-														{{ field }}
-														{% if field.help_text %}
-																<p class="help-block"><small>{{ field.help_text }}</small></p>
-														{% endif %}
-												</div>
-										</div>
-								{% endif %}
-						{% endfor %}
-						{% for field in request_competitor_formset.empty_form.hidden_fields %}
-						<div>{{ field.as_hidden }}</div>
-					{% endfor %}
-				</div>
-				<div class="col-lg-2 col-md-2 col-sm-8 col-xs-12 ">
-					<a href="#" class="btn btn-danger btn-sm remove-competitor">Удалить заплыв</a>
-				</div>
-			</div>
-			<hr>
-		</div>
-	</script>
-
 
 {% endblock %}
