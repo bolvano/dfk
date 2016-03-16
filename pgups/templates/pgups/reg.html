@@ -45,7 +45,7 @@
 								<option value="" selected="selected">Выберите соревнование из списка:</option>
 								<option value="2">Брюквота</option>
 							</select>
-							<p class="error-block" ng-show="requestForm.competition.$dirty && requestForm.competition.$invalid">Это обязательное поле</p>
+							<p class="error-block" ng-show="requestForm.competition.$dirty && requestForm.competition.$invalid">Выберите соревнование</p>
 						</div>
 					</div> <!-- End of Competition -->
 
@@ -67,7 +67,7 @@
 						<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="representative">Заявитель/Представитель команды:</label>
 						<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
 							<input class="form-control" name="representative" ng-minlength="2" ng-model="form.representative" ng-model-options="{ updateOn: 'blur' }" type="text" required/>
-							<p class="error-block" ng-show="requestForm.representative.$dirty && requestForm.representative.$error.required">Это обязательное поле</p>
+							<p class="error-block" ng-show="requestForm.representative.$dirty && requestForm.representative.$error.required">Введите имя заявителя</p>
 							<p class="error-block" ng-show="requestForm.representative.$dirty && requestForm.representative.$error.minlength">Слишком короткое имя</p>
 						</div>
 					</div> <!-- End of Representative -->
@@ -77,7 +77,7 @@
 						<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="phone">Телефон:</label>
 						<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
 							<input class="form-control" name="phone" ng-model="form.phone" ng-model-options="{ updateOn: 'blur' }" type="text" required/>
-							<p class="error-block" ng-show="requestForm.phone.$dirty && requestForm.phone.$error.required">Это обязательное поле</p>
+							<p class="error-block" ng-show="requestForm.phone.$dirty && requestForm.phone.$error.required">Введите номер телефона</p>
 						</div>
 					</div> <!-- End of Phone -->
 
@@ -85,10 +85,9 @@
 					<div class="form-group">
 						<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="email">Электронная почта:</label>
 						<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-							<input class="form-control" name="email" ng-model="form.email" ng-model-options="{ updateOn: 'blur' }" type="email" required/>
-							<p class="error-block" ng-show="requestForm.email.$dirty && requestForm.email.$error.required">Это обязательное поле</p>
-							<p class="error-block" ng-show="requestForm.email.$dirty && requestForm.email.$error.email">Неверный формат 
-							электронной почты</p>
+							<input class="form-control" name="email" ng-model="form.email" ng-model-options="{ updateOn: 'blur' }" type="email" placeholder="mail@example.ru" required/>
+							<p class="error-block" ng-show="requestForm.email.$dirty && requestForm.email.$error.required">Введите адрес электронной почты</p>
+							<p class="error-block" ng-show="requestForm.email.$dirty && requestForm.email.$error.email">Неверный формат электронной почты</p>
 						</div>
 					</div> <!-- End of Email -->
 
@@ -127,7 +126,7 @@
 								<label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label text-left" for="first_name">Имя:</label>
 								<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
 									<input class="form-control" maxlength="255" name="first_name" ng-model="person.first_name" type="text" required/>
-									<p class="error-block" ng-show="personForm.first_name.$dirty && personForm.first_name.$error.required">Это обязательное поле</p>
+									<p class="error-block" ng-show="personForm.first_name.$dirty && personForm.first_name.$error.required">Введите имя участника</p>
 								</div>
 							</div> <!-- End of First name -->
 
@@ -136,7 +135,7 @@
 								<label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label text-left" for="last_name">Фамилия:</label>
 								<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
 									<input class="form-control" maxlength="255" name="last_name" ng-model="person.last_name" type="text" required/>
-									<p class="error-block" ng-show="personForm.last_name.$dirty && personForm.last_name.$error.required">Это обязательное поле</p>
+									<p class="error-block" ng-show="personForm.last_name.$dirty && personForm.last_name.$error.required">Введите фамилию участника</p>
 								</div>
 							</div> <!-- End of Last name -->
 
@@ -146,7 +145,7 @@
 								<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
 									<select class="form-control" name="birth_year" ng-model="person.birth_year" ng-options="year for year in years" required>
 									</select>
-									<p class="error-block" ng-show="personForm.birth_year.$dirty && personForm.birth_year.$error.required">Это обязательное поле</p>
+									<!--<p class="error-block" ng-show="personForm.birth_year.$dirty && personForm.birth_year.$error.required">Это обязательное поле</p>-->
 								</div>
 							</div> <!-- End of Birth year -->
 
@@ -158,7 +157,7 @@
 										<option value="М">М</option>
 										<option value="Ж">Ж</option>
 									</select>
-									<p class="error-block" ng-show="personForm.gender.$dirty && personForm.gender.$error.required">Это обязательное поле</p>
+									<!--<p class="error-block" ng-show="personForm.gender.$dirty && personForm.gender.$error.required">Это обязательное поле</p>-->
 								</div>
 							</div> <!-- End of Gender -->
 
