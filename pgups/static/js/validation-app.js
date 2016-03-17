@@ -1,3 +1,5 @@
+'use strict';
+
 var validationApp = angular.module('validationApp', []);
 
 
@@ -13,8 +15,6 @@ validationApp.config(function($interpolateProvider) {
 validationApp.controller('formCtrl', ['$scope',
 
     function($scope, $http) {
-
-        'use strict';
 
         // adding initial element on load (at least one person per request required)
         $scope.persons = [ { personId: 'person-0',
@@ -50,6 +50,7 @@ validationApp.controller('formCtrl', ['$scope',
         // max number of competitors per person
         var maxCompetitorsNum = 2;
 
+
         // add person
         $scope.addPerson = function() {
 
@@ -63,6 +64,7 @@ validationApp.controller('formCtrl', ['$scope',
             basicAnimation( '#add-person-button' );
         };
 
+
         // remove person
         $scope.removePerson = function(idx) {
 
@@ -71,13 +73,14 @@ validationApp.controller('formCtrl', ['$scope',
             basicAnimation( '#remove-person-' + $scope.persons[idx-1].personId );
         };
 
+
         // add competitor
         $scope.addCompetitor = function(idx) {
 
             var newCompetitor = $scope.persons[idx].competitors.length;
             $scope.persons[idx].competitors.push({ 'competitorId':'competitor-' + newCompetitor });
 
-            // if max number of competitors achieved, disable add-competitor button
+            // if max number of competitors reached, disable add-competitor button
             if ( $scope.persons[idx].competitors.length === maxCompetitorsNum ) {
                 $( '#add-competitor-' + $scope.persons[idx].personId ).addClass('disabled');
             };
@@ -85,6 +88,7 @@ validationApp.controller('formCtrl', ['$scope',
             basicAnimation( '#add-competitor-' + $scope.persons[idx].personId );
 
         };
+
 
         // remove competitor
         $scope.removeCompetitor = function(personIdx, idx) {

@@ -188,7 +188,7 @@
 											<div class="col-md-10">
 
 												<select class="form-control" name="tour" ng-model="competitor.tour" required>
-													<option value="" selected="selected">Empty</option>
+													<option value="" selected="selected">Выберите тур из списка:</option>
 													<option value="example_tour">Example Tour</option>
 												</select>
 
@@ -208,7 +208,7 @@
 													<input class="form-control" maxlength="6" name="prior_time" ng-model="competitor.prior_time" type="number" step="0.01" placeholder="0,00" required/>
 
 													<p class="error-block" ng-show="competitorForm.prior_time.$dirty && competitorForm.prior_time.$error.required">Введите предварительное время</p>
-													<p class="error-block" ng-show="competitorForm.prior_time.$dirty && competitorForm.prior_time.$error.number">Введите время в формате <i>10,00</i></p>
+													<p class="error-block" ng-show="competitorForm.prior_time.$dirty && competitorForm.prior_time.$error.number">Введите время в секундах в формате <i>10,00</i></p>
 													<p class="error-block" ng-show="competitorForm.prior_time.$dirty && competitorForm.prior_time.$error.maxlength">Округлите время до сотых</p>
 												</div>
 
