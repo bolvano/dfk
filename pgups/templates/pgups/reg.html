@@ -11,6 +11,11 @@
 							<p class="lead">Пожалуйста, внимательно заполните заявку. Укажите имена и фамилии участников, год рождения,
 						основную и при необходимости дополнительную дистанцию, а также предварительное время.</p>
 							<p class="aside"><i>Все поля, кроме специально отмеченных, обязательны для заполнения.</i></p>
+							{% if messages %}
+								{% for message in messages %}
+									<br><h3{% if message.tags %} class="{{ message.tags }} alt-color"{% endif %}>{{ message }}</h3>
+								{% endfor %}
+							{% endif %}
 					</div>
 			</div>
 				</div>
@@ -80,13 +85,6 @@
 				<div class="row">
 					<div class="col-lg-3 col-md-4 col-sm-5 col-xs-6 col-centered">
 						<button id="submit-request" type="submit" class="btn btn-success btn-xxl" disabled>Отправить заявку</button>
-						{% if messages %}
-							{% for message in messages %}
-								<!--<br><h4{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h4>-->
-								<script src="{% static 'js/notie.js' %}"></script>
-								<script> notie.alert(1, 'Заявка сохранена!', 2.5); </script> <!-- Notie -->
-							{% endfor %}
-						{% endif %}
 					</div>
 				</div>
 			</div> <!-- End of container -->

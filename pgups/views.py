@@ -258,6 +258,9 @@ def reg_request(request):
 
             # Редирект на страницу с пустой формой
             return HttpResponseRedirect('')
+
+        else:
+            messages.error(request, 'Форма заполнена некорректно! Проверьте правильность заполнения всех полей.')
         
     else:
 
