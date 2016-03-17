@@ -450,5 +450,18 @@ def get_tours(request, age, gender, competition_id):
         tour_dict[tour.id] = tour.__str__()
     return HttpResponse(json.dumps(tour_dict), content_type="application/json")
 
+def get_competitions(request):
+    competition_list = []
+    competitions = Competition.objects.filter(finished=False)
+    for c in competitions:
+        tours = []
+        competition = {'name': c.name, 'id': c.id, 'type':c.typ}
+        tour_objects = Tour.objects.filter(competition=c)
+        for t in tour_objects:
+            tours.append({'id':t.id, 'min_age': t.age.min_age, 'max_age': t.age.max_age, 'gender':t.gender, 'name':t.__str__()})
+        competition['tours'] = tours
+        competition_list.append(competition)
+    return HttpResponse(json.dumps(competition_list), content_type="application/json")
+
 
 
