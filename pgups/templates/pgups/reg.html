@@ -121,15 +121,6 @@
 
 						<div class="col-lg-5 col-md-4 col-sm-8 col-xs-12">
 
-							<!-- First name -->
-							<div class="form-group row">
-								<label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label text-left" for="first_name">Имя:</label>
-								<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
-									<input class="form-control" maxlength="255" name="first_name" ng-model="person.first_name" type="text" required/>
-									<p class="error-block" ng-show="personForm.first_name.$dirty && personForm.first_name.$error.required">Введите имя участника</p>
-								</div>
-							</div> <!-- End of First name -->
-
 							<!-- Last name -->
 							<div class="form-group row">
 								<label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label text-left" for="last_name">Фамилия:</label>
@@ -138,6 +129,15 @@
 									<p class="error-block" ng-show="personForm.last_name.$dirty && personForm.last_name.$error.required">Введите фамилию участника</p>
 								</div>
 							</div> <!-- End of Last name -->
+
+							<!-- First name -->
+							<div class="form-group row">
+								<label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label text-left" for="first_name">Имя:</label>
+								<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+									<input class="form-control" maxlength="255" name="first_name" ng-model="person.first_name" type="text" required/>
+									<p class="error-block" ng-show="personForm.first_name.$dirty && personForm.first_name.$error.required">Введите имя участника</p>
+								</div>
+							</div> <!-- End of First name -->
 
 							<!-- Birth year -->
 							<div class="form-group row">
@@ -154,8 +154,8 @@
 								<label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label text-left" for="gender">Пол:</label>
 								<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
 									<select class="form-control" name="gender" ng-model="person.gender" required>
-										<option value="М">М</option>
-										<option value="Ж">Ж</option>
+										<option value="М">мужской</option>
+										<option value="Ж">женский</option>
 									</select>
 									<!--<p class="error-block" ng-show="personForm.gender.$dirty && personForm.gender.$error.required">Это обязательное поле</p>-->
 								</div>
@@ -260,11 +260,6 @@
 						<div class="col-lg-3 col-md-4 col-sm-5 col-xs-6 col-centered">
 
 							<button type="submit" class="btn btn-success btn-xxl" ng-disabled="requestForm.$invalid || personsForm.$invalid" ng-click="submitRequest()">Отправить заявку</button>
-
-								<!--
-									<script src="{% static 'js/notie.js' %}"></script>
-									<script> notie.alert(1, 'Заявка сохранена!', 2.5); </script> 
-								Notie -->
 
 						</div>
 					</div>
