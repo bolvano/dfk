@@ -53,7 +53,7 @@
 					<div class="form-group">
 						<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="team">Команда (необязательно):</label>
 						<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-							<select class="form-control" name="team" ng-model="form.team">
+							<select class="form-control" name="team" ng-model="form.team" ng-change="clearPersons()">
 								<option value="" selected="selected">Выберите команду:</option>
 								<option value="1">ДФК</option>
 								<option value="2">MEVIS</option>
@@ -205,14 +205,20 @@
 
 												<div class="col-md-10">
 
-													<input class="form-control" maxlength="6" name="prior_time" ng-model="competitor.prior_time" type="number" step="0.01" placeholder="0,00" required/>
+													<input class="form-control" min="0" name="prior_time" ng-model="competitor.prior_time" type="number" step="0.01" placeholder="0,00" required/>
 
 													<p class="error-block" ng-show="competitorForm.prior_time.$dirty && competitorForm.prior_time.$error.required">Введите предварительное время</p>
 													<p class="error-block" ng-show="competitorForm.prior_time.$dirty && competitorForm.prior_time.$error.number">Введите время в секундах в формате <i>10,00</i></p>
-													<p class="error-block" ng-show="competitorForm.prior_time.$dirty && competitorForm.prior_time.$error.maxlength">Округлите время до сотых</p>
+													<!--<p class="error-block" ng-show="competitorForm.prior_time.$dirty && competitorForm.prior_time.$error.maxlength">Округлите время до сотых</p>-->
+													<p class="error-block" ng-show="competitorForm.prior_time.$dirty && competitorForm.prior_time.$error.min">Время не может быть отрицательным!</p>
 												</div>
 
 										</div> <!-- End of Prior time -->
+
+										<!-- Main distance -->
+										<div class="col-lg-10 col-lg-offset-2 col-md-10 col-sm-8 col-xs-12" ng-show="competitor.competitorId === 'competitor-0'">
+											<p class="note"><i><b>* основная дистанция</b></i></p>
+										</div> <!-- End of Main distance -->
 
 									</div>
 
@@ -238,7 +244,7 @@
 			<hr>
 
 			<!-- Add person button -->
-			<a id="add-person-button" href="#" class="add-person-button btn btn-default btn-lg" ng-click="addPerson()">Добавить участника</a>
+			<button id="add-person-button" href="#" class="add-person-button btn btn-default btn-lg" ng-click="addPerson()" ng-disabled="indRequestOnePerson && (form.team === undefined || form.team === '')">Добавить участника</button>
 
 			<br>
 

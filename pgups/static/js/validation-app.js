@@ -3,7 +3,7 @@
 var validationApp = angular.module('validationApp', []);
 
 
-// handling conflicting django/angular template tags 
+// handling conflicting django/angular template tags
 // (setting {$ $} tags for angular stuff)
 validationApp.config(function($interpolateProvider) {
         $interpolateProvider.startSymbol('{$');
@@ -50,6 +50,21 @@ validationApp.controller('formCtrl', ['$scope',
         // max number of competitors per person
         var maxCompetitorsNum = 2;
 
+        // if no team selected, forbids adding more than one person (true/false)
+        $scope.indRequestOnePerson = false;
+
+
+        // remove all but one persons if team changes to none
+        $scope.clearPersons = function() {
+
+            if ( $scope.indRequestOnePerson && $scope.form.team === '' && $scope.persons.length > 1 ) {
+                for ( var i = $scope.persons.length - 1; i >= 1; i-- ) {
+                    $scope.persons.splice(i, 1);
+                }
+            }
+
+        };
+
 
         // add person
         $scope.addPerson = function() {
@@ -57,11 +72,12 @@ validationApp.controller('formCtrl', ['$scope',
             $scope.persons.push({ 'personId':'person-' + personCounter,
                                   'gender': 'М',
                                   'birth_year': 1998,
-                                  'competitors': [{ competitorId: 'competitor-0'}] 
+                                  'competitors': [{ competitorId: 'competitor-0'}]
                                 });
             personCounter++;
 
             basicAnimation( '#add-person-button' );
+
         };
 
 
@@ -71,6 +87,7 @@ validationApp.controller('formCtrl', ['$scope',
             $scope.persons.splice(idx, 1);
 
             basicAnimation( '#remove-person-' + $scope.persons[idx-1].personId );
+
         };
 
 
@@ -99,6 +116,7 @@ validationApp.controller('formCtrl', ['$scope',
             $( '#add-competitor-' + $scope.persons[personIdx].personId ).removeClass('disabled');
 
             basicAnimation( '#add-competitor-' + $scope.persons[personIdx].personId );
+
         };
 
     }
