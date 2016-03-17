@@ -258,6 +258,9 @@ def reg_request(request):
 
             # Редирект на страницу с пустой формой
             return HttpResponseRedirect('')
+
+        else:
+            messages.error(request, 'Форма заполнена некорректно! Проверьте правильность заполнения всех полей.')
         
     else:
 
@@ -270,12 +273,16 @@ def reg_request(request):
         'request_competitor_formset': request_competitor_formset}, )
 
 
-def generate_tours(request, competition_id):
+def generate_tours(request, competition_id, kids):
     competition = Competition.objects.get(pk=competition_id)
     distance50 = Distance.objects.get(meters=50)
     distance100 = Distance.objects.get(meters=100)
     styles = Style.objects.all()
-    ages = Age.objects.all()
+    if kids:
+        ages = Age.objects.filter(kids=True)
+    else:
+        ages = Age.objects.filter(kids=False)
+
 
     for age in ages:
         for style in styles:
