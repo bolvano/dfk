@@ -12,9 +12,23 @@ validationApp.config(function($interpolateProvider) {
 
 
 // form controller
-validationApp.controller('formCtrl', ['$scope',
+validationApp.controller( 'formCtrl', function( $scope, $http, $timeout, $document ) {
 
-    function($scope, $http) {
+        // person counter resets on document load, setting initial value = 1
+        var personCounter = 1;
+
+        // max number of competitors per person
+        var maxCompetitorsNum = 2;
+
+        // calculating year of birth options
+        var year = new Date().getFullYear();
+        var range = [];
+        for ( var i = 1929; i <= ( year - 18 ); i++) {
+          range.push(i);
+        }
+
+        // if no team selected, forbids adding more than one person (true/false)
+        $scope.indRequestOnePerson = false;
 
         // adding initial element on load (at least one person per request required)
         $scope.persons = [ { personId: 'person-0',
@@ -27,14 +41,11 @@ validationApp.controller('formCtrl', ['$scope',
         // adding persons list to form object
         $scope.form = {persons: $scope.persons};
 
-        // calculating year of birth options
-        var year = new Date().getFullYear();
-        var range = [];
-        for ( var i = 1929; i <= ( year - 18 ); i++) {
-          range.push(i);
-        }
-
         $scope.years = range;
+
+        // initial requests will go here (tours, competitions, age group)
+        $document.ready(function() {});
+
 
         // jQuery animation function
         function basicAnimation(id) {
@@ -43,15 +54,6 @@ validationApp.controller('formCtrl', ['$scope',
                 scrollTop: $(id).offset().top
             });
         };
-
-        // person counter resets on document load, setting initial value = 1
-        var personCounter = 1;
-
-        // max number of competitors per person
-        var maxCompetitorsNum = 2;
-
-        // if no team selected, forbids adding more than one person (true/false)
-        $scope.indRequestOnePerson = false;
 
 
         // remove all but one persons if team changes to none
@@ -119,5 +121,21 @@ validationApp.controller('formCtrl', ['$scope',
 
         };
 
+
+        // submit form data
+        $scope.submitRequest = function() {
+
+            console.log($scope.form);
+
+            // displaying success message
+            notie.alert(1, 'Заявка отправлена! Страница сейчас обновится', 1.5);
+
+            // delayed page refreshing
+            $timeout(function() {
+                location.reload();
+            }, 2000);
+
+        };
+
     }
-]);
+);
