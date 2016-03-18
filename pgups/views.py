@@ -353,18 +353,7 @@ def tour(request, id):
     return render(request, 'pgups/tour.html', {'res': res, 'tour_name': tour_name},)    
 
 
-# ajax для селектора туров в заявке
-def get_tours(request, age, gender, competition_id):
-    now = datetime.datetime.now()
-    age = now.year - int(age)
-    age = Age.objects.get(min_age__lte=age, max_age__gte=age)
-    competition = get_object_or_404(Competition, pk=competition_id)
-    tours = Tour.objects.filter(age=age, gender=gender, competition=competition)
-    tour_dict = {}
-    for tour in tours:
-        tour_dict[tour.id] = tour.__str__()
-    return HttpResponse(json.dumps(tour_dict), content_type="application/json")
-
+# ajax-контроллер
 def get_competitions(request):
     competition_list = []
     competitions = Competition.objects.filter(finished=False)
