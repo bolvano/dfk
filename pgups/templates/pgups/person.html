@@ -14,7 +14,7 @@
 		<li>
 			{{competitor.userrequest.competition}}: {{competitor.tour}}
 			{% if competitor.userrequest.competition.finished %}
-				(<b>{{competitor.result_set.all.0.time}}, {{competitor.result_set.all.0.result}}</b>)
+				(<b>{{competitor.time}}, {{competitor.result}}</b>)
 			{% endif %}
 		</li>
 		{% endfor %}

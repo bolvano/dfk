@@ -131,13 +131,24 @@ class Competitor(models.Model):
     tour = models.ForeignKey('Tour')
     prior_time = models.FloatField()
     main_distance = models.BooleanField()
-    
+
+    time = models.DecimalField(max_digits=7, decimal_places=2, null=True)
+    result = models.PositiveSmallIntegerField(null=True)
+    points = models.PositiveSmallIntegerField(null=True)
+    disqualification = models.PositiveSmallIntegerField(default=0)
+
+    lane = models.PositiveIntegerField(null=True)
+    start = models.ForeignKey('Start', null=True)
+
     def __str__(self):
         if self.userrequest.team:
             team = self.userrequest.team.name
         else:
             team = 'Инд.'
         return self.person.last_name + ' ' + self.person.first_name + ' ('+ team +')' +': ' + self.tour.age.name + ' ' + self.tour.style.name + ' (' + str(self.prior_time) + ')'
+
+    class Meta:
+        ordering = ['lane']
 
 # CDSG
 class Cdsg(models.Model):
@@ -159,37 +170,3 @@ class Start(models.Model):
     
     def __str__(self):
         return self.name + ' #' + str(self.num)
-
-class Order(models.Model):
-    """Start-Competitors bind model w/ lane position"""
-
-    lane = models.PositiveIntegerField()
-    start = models.ForeignKey('Start')
-    competitor = models.ForeignKey('Competitor')   
-
-    def __str__(self):
-        return self.start.name + ' ' + self.competitor.person.last_name + ' (' + str(self.competitor.prior_time) + ')' + ' ' + str(self.lane)
-
-    class Meta:
-        ordering = ['lane']
-
-#Результаты
-class Result(models.Model):
-    """Result  model"""
-
-    competitor = models.ForeignKey('Competitor')
-#    tour = models.ForeignKey('Tour')
-#    start = models.ForeignKey('Start')
-    time = models.DecimalField(max_digits=7, decimal_places=2)
-    result = models.PositiveSmallIntegerField()
-    points = models.PositiveSmallIntegerField()
-    disqualification = models.PositiveSmallIntegerField(default=0)
-
-    def __str__(self):
-        return self.competitor.__str__() + ' ' + self.competitor.tour.__str__() + ' ' + str(self.time)
-
-
-
-'''
-Пользователи
-'''

@@ -30,13 +30,13 @@
 
 				<table class="table table-striped table-hover table-bordered">
 					<tbody>
-					{% for order in start.order_set.all %}
+					{% for competitor in start.competitor_set.all %}
 						<tr>
-							<td class="column-lane text-center">{{order.lane}}</td>
-							<td class="column-name">{{order.competitor.person.first_name}} {{order.competitor.person.last_name}}</td>
-							<td class="column-team">{{order.competitor.userrequest.team}}</td>
-							<td class="column-age text-center">{{order.competitor.age}}</td>
-							<td class="column-time text-center">{{order.competitor.prior_time}}</td>
+							<td class="column-lane text-center">{{competitor.lane}}</td>
+							<td class="column-name">{{competitor.person.first_name}} {{competitor.person.last_name}}</td>
+							<td class="column-team">{{competitor.userrequest.team}}</td>
+							<td class="column-age text-center">{{competitor.age}}</td>
+							<td class="column-time text-center">{{competitor.prior_time}}</td>
 						</tr>
 					{% endfor %}
 					</tbody>
