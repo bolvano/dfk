@@ -12,7 +12,18 @@ validationApp.config(function($interpolateProvider) {
 
 
 // form controller
-validationApp.controller( 'formCtrl', function( $scope, $http, $timeout, $document ) {
+validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
+
+
+        // initial data request
+        var initRequest = $http.get( 'http://127.0.0.1:8000/get_competitions/' )
+            .then(function(response) {
+
+                console.log('data fetched');
+                $scope.fetchedData = angular.fromJson(response);
+                return response;
+
+            });
 
         // person counter resets on document load, setting initial value = 1
         var personCounter = 1;
@@ -20,34 +31,72 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout, $docume
         // max number of competitors per person
         var maxCompetitorsNum = 2;
 
-        // calculating year of birth options
+        // saving year of birth options
         var year = new Date().getFullYear();
         var range = [];
-        for ( var i = 1929; i <= ( year - 18 ); i++) {
+        for ( var i = 1936; i <= ( year - 3 ); i++) {
           range.push(i);
-        }
+        };
 
         // if no team selected, forbids adding more than one person (true/false)
         $scope.indRequestOnePerson = false;
 
         // adding initial element on load (at least one person per request required)
         $scope.persons = [ { personId: 'person-0',
-                             gender: 'М',
-                             birth_year: 1998,
                              competitors: [{ competitorId: 'competitor-0'}]
                            }
                          ];
 
         // adding persons list to form object
-        $scope.form = {persons: $scope.persons};
+        $scope.form = { persons: $scope.persons };
 
+        // birth year options
         $scope.years = range;
 
-        // initial requests will go here (tours, competitions, age group)
-        $document.ready(function() {});
+
+        // filtering data in personsForm based on selected competition
+        $scope.filterCompetition = function() {
+
+            // filtering birth year options by competition type
+            if ( $scope.form.competition.type.toLowerCase() === 'детские' ) {
+
+                $scope.years = range.slice(-15);
+
+            } else {
+
+                $scope.years = range.slice(0, -15);
+
+            };
+
+            // adding tour options to competitorForm
+            $scope.tours = $scope.form.competition.tours;
+
+        };
 
 
-        // jQuery animation function
+        // filtering tours by age
+        $scope.filterToursByAge = function (birth_year) {
+
+            return function(item) {
+
+                // calculating persons age
+                var age = year - birth_year;
+
+                return  item['max_age'] >= age && item['min_age'] <= age;
+
+            }
+        };
+
+
+        // disabling option on tour select if already selected earlier
+        $scope.tourDisabled = function() {
+
+            return false;
+
+        };
+
+
+        // jQuery animation
         function basicAnimation(id) {
 
             $('html, body').animate({
@@ -72,8 +121,6 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout, $docume
         $scope.addPerson = function() {
 
             $scope.persons.push({ 'personId':'person-' + personCounter,
-                                  'gender': 'М',
-                                  'birth_year': 1998,
                                   'competitors': [{ competitorId: 'competitor-0'}]
                                 });
             personCounter++;
