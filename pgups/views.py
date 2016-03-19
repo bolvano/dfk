@@ -182,7 +182,29 @@ def start_result_view(request, start_id):
 
 def reg_request(request):
     if request.method == "POST":
-        pass
+
+        body_unicode = request.body.decode('utf-8')
+        data = json.loads(body_unicode)
+
+        competition = Competition.objects.get(pk=data['competition']['id'])
+        team = Team.objects.get(pk=data['team'])
+        representative = data['representative']
+        phone = data['phone']
+        email = data['email']
+        ip = get_client_ip(request)
+        userrequest = Userrequest(competition=competition, team=team, representative=representative, phone=phone, email=email, ip=ip)
+        userrequest.save()
+
+        for person in data['persons']:
+            new_person = Person(first_name=person['first_name'], last_name=person['last_name'], birth_year=person['birth_year'], gender=person['gender'], userrequest=userrequest)
+            new_person.save()
+            main_distance = True
+            for competitor in person['competitors']:
+                tour = Tour.objects.get(pk=competitor['tour']['id'])
+                age = Age.objects.get(pk=competitor['tour']['age_id'])
+                new_competitor = Competitor(person=new_person, userrequest=userrequest, tour=tour, age=age, prior_time=float(competitor['prior_time']), main_distance=main_distance)
+                new_competitor.save()
+                main_distance = False
     else:
         pass
     return render(request, 'pgups/reg.html', {}, )
@@ -362,7 +384,7 @@ def get_competitions(request):
         competition = {'name': c.name, 'id': c.id, 'type':c.typ}
         tour_objects = Tour.objects.filter(competition=c)
         for t in tour_objects:
-            tours.append({'id':t.id, 'min_age': t.age.min_age, 'max_age': t.age.max_age, 'gender':t.gender, 'name':t.__str__()})
+            tours.append({'id':t.id, 'age_id':t.age.id, 'min_age': t.age.min_age, 'max_age': t.age.max_age, 'gender':t.gender, 'name':t.__str__()})
         competition['tours'] = tours
         competition_list.append(competition)
     return HttpResponse(json.dumps(competition_list), content_type="application/json")

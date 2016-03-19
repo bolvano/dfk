@@ -1,6 +1,6 @@
 'use strict';
 
-var validationApp = angular.module('validationApp', []);
+var validationApp = angular.module('validationApp', ['ngCookies']);
 
 
 // handling conflicting django/angular template tags
@@ -12,7 +12,7 @@ validationApp.config(function($interpolateProvider) {
 
 
 // form controller
-validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
+validationApp.controller( 'formCtrl', function( $scope, $http, $timeout, $cookies ) {
 
 
         // initial data request
@@ -20,10 +20,14 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
             .then(function(response) {
 
                 console.log('data fetched');
+                console.log($cookies.get('csrftoken'));
+                console.log($cookies);
                 $scope.fetchedData = angular.fromJson(response);
                 return response;
 
             });
+
+            console.log($cookies.get('csrftoken'));
 
         // person counter resets on document load, setting initial value = 1
         var personCounter = 1;
@@ -202,13 +206,34 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
 
             console.log($scope.form);
 
-            // displaying success message
-            notie.alert(1, 'Заявка отправлена! Страница сейчас обновится', 1.5);
+            var req = {
+             method: 'POST',
+             url: 'http://127.0.0.1:8000/regrequest/',
+             headers: {
+                'X-CSRFToken' : $cookies.get('csrftoken'),
+                'Content-Type': 'application/x-www-form-urlencoded'
+             },
+             data: angular.toJson($scope.form)
+            }
 
-            // delayed page refreshing
-            $timeout(function() {
-                location.reload();
-            }, 2000);
+            var postRequest = $http(req)
+                .then(function(response) {
+
+                    // displaying success message
+                    notie.alert(1, 'Заявка отправлена! Страница сейчас обновится', 1.5);
+
+                    // delayed page refreshing
+                    $timeout(function() {
+                        location.reload();
+                    }, 2000);
+
+                }, function(response) {
+                    notie.alert(3, 'Произошла ошибка!', 1.5);
+                });
+
+
+
+
 
         };
 
