@@ -67,7 +67,7 @@
 					<div class="form-group">
 						<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="representative">Заявитель/Представитель команды:</label>
 						<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-							<input class="form-control" name="representative" ng-minlength="2" ng-model="form.representative" ng-model-options="{ updateOn: 'blur' }" type="text" required/>
+							<input class="form-control" name="representative" ng-minlength="2" ng-model="form.representative" type="text" required/>
 							<p class="error-block" ng-show="requestForm.representative.$dirty && requestForm.representative.$error.required">Введите имя заявителя</p>
 							<p class="error-block" ng-show="requestForm.representative.$dirty && requestForm.representative.$error.minlength">Слишком короткое имя</p>
 						</div>
@@ -77,7 +77,7 @@
 					<div class="form-group">
 						<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="phone">Телефон:</label>
 						<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-							<input mask data-mask="(999) 999-99-99" class="form-control" name="phone" ng-model="form.phone" ng-model-options="{ updateOn: 'blur' }" type="text" required/>
+							<input class="form-control" name="phone" ng-model="form.phone" type="text" required/>
 							<p class="error-block" ng-show="requestForm.phone.$dirty && requestForm.phone.$error.required">Введите номер телефона</p>
 						</div>
 					</div> <!-- End of Phone -->
@@ -86,7 +86,7 @@
 					<div class="form-group">
 						<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="email">Электронная почта:</label>
 						<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-							<input class="form-control" name="email" ng-model="form.email" ng-model-options="{ updateOn: 'blur' }" type="email" placeholder="mail@example.ru" required/>
+							<input class="form-control" name="email" ng-model="form.email" type="email" placeholder="mail@example.ru" required/>
 							<p class="error-block" ng-show="requestForm.email.$dirty && requestForm.email.$error.required">Введите адрес электронной почты</p>
 							<p class="error-block" ng-show="requestForm.email.$dirty && requestForm.email.$error.email">Неверный формат электронной почты</p>
 						</div>
@@ -191,8 +191,6 @@
 											<div class="col-md-10">
 
 												<select class="{$ person.personId $}-tour-select form-control" name="tour" ng-model="competitor.tour" ng-options="tour.name for tour in (tours | filter: { gender: person.gender } | filter: filterToursByAge(person.birth_year) ) track by tour.id" ng-change="tourDisable($parent.$index)" required>
-
-
 
 												</select>
 
