@@ -75,25 +75,43 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
 
 
         // filtering tours by age
-        $scope.filterToursByAge = function (birth_year) {
+        $scope.filterToursByAge = function(birth_year) {
 
             return function(item) {
 
                 // calculating persons age
                 var age = year - birth_year;
 
-                return  item['max_age'] >= age && item['min_age'] <= age;
+                return item['max_age'] >= age && item['min_age'] <= age;
 
             }
         };
 
 
-        // disabling option on tour select if already selected earlier
-        $scope.tourDisabled = function() {
+        // disabling tour option if already selected elsewhere
+        var tourDisable = function(personIdx) {
 
-            return false;
+            // setting everything to enabled
+            $('.person-' + personIdx + '-tour-select option').attr('disabled', false);
+
+            // loop each select and set the selected value to disabled in all other selects
+            $('.person-' + personIdx + '-tour-select').each(function() {
+
+                var $this = $(this);
+
+                $('.person-' + personIdx + '-tour-select').not($this).find('option').each( function(){
+
+                    if($(this).attr('value') == $this.val())
+                        $(this).attr('disabled', true);
+
+                });
+
+            }); 
 
         };
+
+
+        $scope.tourDisable = tourDisable;
 
 
         // jQuery animation
@@ -153,6 +171,11 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
 
             basicAnimation( '#add-competitor-' + $scope.persons[idx].personId );
 
+            // delayed call, waiting for DOM to update
+            $timeout(function() {
+                tourDisable(idx);
+            }, 500);
+
         };
 
 
@@ -165,6 +188,11 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
             $( '#add-competitor-' + $scope.persons[personIdx].personId ).removeClass('disabled');
 
             basicAnimation( '#add-competitor-' + $scope.persons[personIdx].personId );
+
+            // delayed call, waiting for DOM to update
+            $timeout(function() {
+                tourDisable(personIdx);
+            }, 500);
 
         };
 

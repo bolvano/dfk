@@ -190,8 +190,10 @@
 
 											<div class="col-md-10">
 
-												<select class="form-control" name="tour" ng-model="competitor.tour" ng-options="tour.name disable when tourDisabled() for tour in (tours | filter: { gender: person.gender } | filter: filterToursByAge(person.birth_year) ) track by tour.id" required>
-													<option value="" selected disabled>Выберите тур:</option>
+												<select class="{$ person.personId $}-tour-select form-control" name="tour" ng-model="competitor.tour" ng-options="tour.name for tour in (tours | filter: { gender: person.gender } | filter: filterToursByAge(person.birth_year) ) track by tour.id" ng-change="tourDisable($parent.$index)" required>
+
+
+
 												</select>
 
 												<p class="error-block" ng-show="competitorForm.tour.$dirty && competitorForm.tour.$error.required">Выберите тур из списка</p>
