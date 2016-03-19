@@ -1,6 +1,6 @@
 'use strict';
 
-var validationApp = angular.module('validationApp', []);
+var validationApp = angular.module('validationApp', ['angular-jquery-maskedinput']);
 
 
 // handling conflicting django/angular template tags
