@@ -36,8 +36,6 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
 
             });
 
-        console.log($cookies.get('csrftoken'));
-
         // person counter resets on document load, setting initial value = 1
         var personCounter = 1;
 

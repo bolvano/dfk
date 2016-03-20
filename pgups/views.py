@@ -191,8 +191,11 @@ def reg_request(request):
         phone = data['phone']
         email = data['email']
         ip = get_client_ip(request)
-        if 'team' in data and data['team']!='':
-            team = Team.objects.get(pk=data['team'])
+
+        #import ipdb; ipdb.set_trace()
+
+        if 'team' in data and data['team']!=None:
+            team = Team.objects.get(pk=data['team']['id'])
         else:
             team = None
 
