@@ -1,3 +1,5 @@
+/* basic styles */
+/*==============*/
 html {
   position: relative;
   min-height: 100%;
@@ -8,72 +10,120 @@ body {
   margin: 0;
   font-size: 100%;
 }
+/* sticky footer */
 body {
   margin-bottom: 60px;
 }
-ul {
-  list-style: none;
-}
-.bold {
-  font-weight: bold;
-}
-.heading {
-  border-bottom: 1px solid #979a9d;
-  padding: 0 0 20px 0;
-  margin: 0 0 20px 0;
-}
-.list {
-  font-size: 1em;
-}
-.list li {
-  margin-bottom: 5px;
-}
-.list.larger {
-  font-size: 1.2em;
-}
+/* helper styles */
+/*===============*/
 .alt-color {
   color: #5f021f;
 }
 .note {
-  font-size: 0.9em;
+  font-size: 0.8em;
 }
-.competition-menu {
+.heading {
+  border-bottom: 1px solid #979a9d;
+  padding-bottom: 20px;
   margin-bottom: 20px;
 }
-.navbar__login {
-  margin: 13px 0;
-  color: #777;
+.heading-no-margin {
+  margin-bottom: 0;
 }
-/* ---MEGAFORM--- */
-.form-horizontal .control-label.text-left {
-  text-align: left;
+.basic-list {
+  list-style-type: circle;
 }
-.col-centered {
-  float: none;
-  margin: 0 auto;
+.basic-list li {
+  margin-bottom: 5px;
 }
-.jumbotron h1,
-.jumbotron .gray {
-  color: #3b444b;
-}
-.jumbotron .aside {
-  font-size: 1em;
+.basic-list-larger {
+  font-size: 1.2rem;
 }
 .btn-xxl {
   padding: 16px 22px;
   font-size: 1.7em;
   border-radius: 10px;
 }
-#left .well,
-#right .well {
-  font-size: 1em;
+.hidden-field {
+  display: none;
 }
-label.error {
-  color: #a94442;
-  margin-top: 5px;
-  font-weight: normal;
+/* index, login info, top right */
+.navbar .login {
+  margin: 13px 0;
+  color: #777;
 }
-/* ---Footer---*/
+/* Competition page */
+/*==================*/
+.competition-menu {
+  margin-bottom: 20px;
+}
+.generate-starts {
+  float: left;
+  clear: both;
+  margin-bottom: 40px;
+}
+.starts {
+  float: left;
+  margin-bottom: 20px;
+}
+/* Forms       */
+/*=============*/
+.person-form {
+  margin-bottom: 20px;
+}
+/* left-aligning text inside labels */
+.control-label.text-left {
+  text-align: left;
+}
+/* centering submit button */
+.col-centered {
+  float: none;
+  margin: 0 auto;
+}
+/* overriding bootstrap transition */
+.form-control {
+  transition: none;
+}
+.error-block {
+  color: #5f021f;
+  margin: 5px 0;
+}
+input.ng-invalid.ng-dirty,
+select.ng-invalid.ng-dirty {
+  border-color: #5f021f;
+  box-shadow: 0 0 8px #5f021f;
+  transition: none;
+}
+.request-form {
+  margin-bottom: 30px;
+}
+.add-person-button {
+  margin-bottom: 20px;
+}
+.remove-competitor-btn {
+  padding: 5px 8px 3px;
+}
+/* zeroing margin because 
+   top button is hidden */
+#add-competitor-person-0 {
+  margin-top: 0;
+}
+/* hiding first persons remove button on load
+   (at least one person per request required) */
+#remove-person-person-0 {
+  display: none;
+}
+/* hiding remove-competitor-0 button of each person
+   (at least one competitor per person required) */
+.remove-competitor-competitor-0 {
+  display: none;
+}
+.single-competitor {
+  border-bottom: 1px solid #eee;
+  margin-bottom: 15px;
+}
+/* Footer */
+/*========*/
 .footer {
   position: absolute;
   bottom: 0;
@@ -81,110 +131,74 @@ label.error {
   height: 60px;
   background-color: #f5f5f5;
 }
-/* --- Hidden form field---*/
-input[id*="DELETE"] {
-  display: none;
-}
-label[for*="DELETE"] {
-  display: none;
-}
-/* ---Starts, results--- */
-.single-cdsg-table {
+/*    Tables         */
+/*===================*/
+/* allowing to set custom column width */
+.table {
   table-layout: fixed;
-  word-wrap: break-word;
 }
-.single-cdsg {
+.single-start-container {
   border-bottom: 1px solid #979a9d;
-  padding: 0 0 15px;
-  margin-bottom: 15px;
+  padding: 15px 0 15px;
 }
-.single-cdsg-heading {
-  margin-bottom: 25px;
+.start-number {
+  margin-bottom: 10px;
+  overflow: hidden;
 }
-.single-cdsg-start {
-  margin: 0 0 25px 20px;
+.btn-results {
+  margin-top: 10px;
 }
-.single-cdsg-start-num {
-  margin: 0 0 10px 0;
-  min-height: 40px;
-}
-.start-num {
-  font-size: 1.5em;
-  line-height: 2em;
-}
-/* Table */
-.order-lane {
+/* Table columns */
+.column-lane {
   background-color: #b9f2ff;
   width: 4%;
 }
-.order-name {
+.column-name {
   width: 50%;
 }
-.order-team {
+.column-team {
   width: 20%;
 }
-.order-age {
+.column-age {
   width: 13%;
 }
-.order-time {
+.column-time {
   width: 13%;
-  padding-top: 15px !important;
-}
-.order-lane,
-.order-name,
-.order-team,
-.order-age {
-  padding-top: 15px !important;
-  padding-bottom: 15px !important;
-}
-/* ---Result--- */
-.result {
-  margin: 15px 0 0 0;
-  width: 90%;
-}
-.next-start {
-  width: 90%;
-}
-.hidden-field {
-  display: none;
-}
-.order-result {
   padding-top: 10px !important;
 }
-.order-result > input {
+/* padding overriding bootstrap */
+.column-lane,
+.column-name,
+.column-team,
+.column-age {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+.column-result {
+  padding-top: 10px !important;
+}
+.column-result > input {
   width: 100%;
 }
-.order-time-animation {
+.column-time-animation {
   -webkit-animation-name: greenish;
   -webkit-animation-duration: 3s;
   animation-name: greenish;
   animation-duration: 3s;
 }
-.generate-starts {
-  display: block;
-  float: left;
-  clear: left;
-  margin-bottom: 40px;
-}
-.starts {
-  display: block;
-  float: left;
-  margin-bottom: 10px;
-}
-/* ---Results team--- */
-.team-name {
-  width: 30%;
-  padding: 20px !important;
-}
-.team-competitors {
+.column-name-wide {
+  padding: 10px !important;
   width: 70%;
-  padding: 20px !important;
 }
-/* ---Results tour--- */
+.column-result-wide {
+  padding: 10px !important;
+  width: 30%;
+}
+/*    Results tour    */
 .result-tour {
   overflow: hidden;
   border-bottom: 1px solid #979a9d;
-  padding: 0 0 20px;
+  padding-bottom: 20px;
   margin-bottom: 20px;
 }
 .result-tour-finished {
@@ -193,23 +207,9 @@ label[for*="DELETE"] {
 .result-tour-finished h3 {
   margin-bottom: 20px;
 }
-.result-tour-finished .result-tour-table {
-  width: 100%;
-}
-.result-tour-finished .result-tour-table .result-tour-name {
-  padding: 10px !important;
-  width: 70%;
-}
-.result-tour-finished .result-tour-table .result-tour-result {
-  padding: 10px !important;
-  width: 30%;
-}
 .result-tour-skipped {
   float: left;
   margin-top: 16px;
-}
-.result-tour-skipped ul {
-  list-style-type: circle;
 }
 @-moz-keyframes greenish {
   0% {

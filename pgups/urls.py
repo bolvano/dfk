@@ -12,17 +12,19 @@ urlpatterns = [
     url(r'^results/tours/(?P<competition_id>\d+)/$', views.results_tours),
     url(r'^results/teams/(?P<competition_id>\d+)/$', views.results_teams),
     url(r'^competition/starts/(?P<competition_id>\d+)/$', views.competition_starts, name='competition_starts'),
-    url(r'^generate_starts/$', views.generate_starts),
     url(r'^competition/start_result/(?P<start_id>\d+)/$', views.start_result),
     url(r'^competition/start_result_view/(?P<start_id>\d+)/$', views.start_result_view),
     url(r'^tour/(?P<id>\d+)/$', views.tour),
     url(r'^competition/team/(?P<competition_id>\d+)/(?P<team_id>\d+)/$', views.competition_team),
 
+    # ajax
+    url(r'^get_competitions/$', views.get_competitions),
+    url(r'^get_teams/$', views.get_teams),
 
-
-    url(r'^get_tours/(?P<age>\d+)/(?P<gender>\w+)/(?P<competition_id>\d+)/$', views.get_tours),
+    # starts and tours
     url(r'^generate_tours/(?P<competition_id>\d+)/(?P<kids>(0|1))/$', views.generate_tours),
-    #url(r'^generate_starts/(?P<competition_id>\d+)/$', views.generate_starts),
-    #(r'^user/(?P<username>\w{0,50})/$', views.profile_page,),
-    #url(r'^person_form$', views.person_form) # ajax
+    url(r'^generate_starts/$', views.generate_starts),
+
+    # competition create
+    url(r'^competition_create/$', views.create_competition),
 ]

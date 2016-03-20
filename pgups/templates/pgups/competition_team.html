@@ -4,16 +4,17 @@
 
 <div class="container">
 
+	<!-- Heading -->
 	<div class="heading">
-		<h2 class="bold">Команда {{team.name}}</h2>
-	</div>
+		<h2><b>Команда {{team.name}}</b></h2>
+	</div> <!-- End of Heading -->
 
-	<table class="single-cdsg-table table table-striped table-hover table-bordered">
+	<table class="table table-striped table-hover table-bordered">
 		<tbody>
 				{% for item in result  %}
 					<tr>
-						<td class="team-name">{{item.0.last_name}} {{item.0.first_name}}</td>
-						<td class="team-competitors">
+						<td class="column-name-wide">{{item.0.last_name}} {{item.0.first_name}}</td>
+						<td class="column-result-wide">
 							{% for competitor in item.1  %} 
 								{{competitor.tour}} <br> 
 							{% endfor %}

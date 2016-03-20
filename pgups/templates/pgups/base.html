@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,14 +10,16 @@
 		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
-	<link href="{% static 'css/bootstrap.css' %}" rel="stylesheet"> <!-- Bootstrap CSS-->
-	<link href="{% static 'css/main.css' %}" rel="stylesheet"> <!-- CSS -->
-	<script src="{% static 'js/jquery-1.11.3.min.js' %}"></script> <!-- jQuery core -->
-	<script src="{% static 'js/bootstrap.min.js' %}"></script> <!-- Bootstrap JS -->
-	<script src="{% static 'js/main.js' %}"></script>  <!-- JS -->
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"> <!-- Bootstrap CSS-->
+	<link href="{% static 'css/main.css' %}" rel="stylesheet"> <!-- Main CSS -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> <!-- jQuery core -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> <!-- Bootstrap JS -->
+
 </head>
+
 <body>
-	<!-- Menu -->
+
+	<!-- Nav -->
 	<nav class="navbar navbar-default navbar-static-top">
 		<div class="container">
 			<div id="navbar">
@@ -24,24 +27,32 @@
 					<li><a href="{% url 'index' %}">Главная</a></li>
 					<li><a href="{% url 'regrequest' %}">Подать заявку</a></li>
 				</ul>
-				<div class="navbar__login pull-right">
-				<span>
-				{% if user.is_authenticated %}
-					Здравствуйте, {{user.username}}
-				{% else %}
-					Вы не залогинены
-				{% endif %}
-				</span>
+				<div class="login pull-right">
+					<span>
+						{% if user.is_authenticated %}
+							Здравствуйте, {{user.username}}
+						{% else %}
+							Вы не залогинены
+						{% endif %}
+					</span>
 				</div>
 			</div>
 		</div>
-	</nav>
+	</nav> <!-- End of Nav -->
+
 	{% block content %}
 	{% endblock %}
+
 	<!-- Footer -->
 	<footer class="footer">
-		<div class="container">
-		</div>
-	</footer>
+		<div class="container"></div>
+	</footer> <!-- End of Footer -->
+
+	<!-- Additional JS -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script> <!-- AngularJS -->
+	<script src="{% static 'js/notie.js' %}"></script> <!-- Notie -->
+	<script src="{% static 'js/validation-app.js' %}"></script> <!-- Validation App -->
+	<script src="{% static 'js/create-competition-app.js' %}"></script> <!-- Competition reg App -->
+
 </body>
 </html>
