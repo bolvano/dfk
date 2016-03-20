@@ -19,6 +19,7 @@ urlpatterns = [
 
     # ajax
     url(r'^get_competitions/$', views.get_competitions),
+    url(r'^get_teams/$', views.get_teams),
 
     # starts and tours
     url(r'^generate_tours/(?P<competition_id>\d+)/(?P<kids>(0|1))/$', views.generate_tours),

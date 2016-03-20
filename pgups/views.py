@@ -186,12 +186,18 @@ def reg_request(request):
         body_unicode = request.body.decode('utf-8')
         data = json.loads(body_unicode)
 
+        import ipdb; ipdb.set_trace()
+
         competition = Competition.objects.get(pk=data['competition']['id'])
-        team = Team.objects.get(pk=data['team'])
         representative = data['representative']
         phone = data['phone']
         email = data['email']
         ip = get_client_ip(request)
+        if 'team' in data and data['team']!='':
+            team = Team.objects.get(pk=data['team'])
+        else:
+            team = None
+
         userrequest = Userrequest(competition=competition, team=team, representative=representative, phone=phone, email=email, ip=ip)
         userrequest.save()
 
@@ -388,6 +394,14 @@ def get_competitions(request):
         competition['tours'] = tours
         competition_list.append(competition)
     return HttpResponse(json.dumps(competition_list), content_type="application/json")
+
+def get_teams(request):
+    team_list = []
+    teams = Team.objects.all()
+    for t in teams:
+        team = {'id':t.id, 'name':t.name}
+        team_list.append(team)
+    return HttpResponse(json.dumps(team_list), content_type="application/json")
 
 
 # форма создания соревнований
