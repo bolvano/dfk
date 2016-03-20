@@ -54,11 +54,8 @@
 					<div class="form-group">
 						<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="team">Команда (необязательно):</label>
 						<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-							<select class="form-control" name="team" ng-model="form.team" ng-change="clearPersons()">
+							<select class="form-control" name="team" ng-options="team.name for team in teamsData.data track by team.id" ng-model="form.team" ng-change="clearPersons()">
 								<option value="" selected="selected">Выберите команду:</option>
-								<option value="1">ДФК</option>
-								<option value="2">MEVIS</option>
-								<option value="3">МТС</option>
 							</select>
 						</div>
 					</div> <!-- End of Team -->

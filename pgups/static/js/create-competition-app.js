@@ -13,9 +13,6 @@ createCompetitionApp.config(function($interpolateProvider) {
 // form controller
 createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $timeout, $cookies ) {
 
-
     $scope.data = {};
-
-
 
 });
