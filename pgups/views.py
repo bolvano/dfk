@@ -390,4 +390,6 @@ def get_competitions(request):
     return HttpResponse(json.dumps(competition_list), content_type="application/json")
 
 
-
+# форма создания соревнований
+def create_competition(request):
+    return render(request, 'pgups/competition_create.html', {}, )
