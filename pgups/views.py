@@ -186,8 +186,6 @@ def reg_request(request):
         body_unicode = request.body.decode('utf-8')
         data = json.loads(body_unicode)
 
-        import ipdb; ipdb.set_trace()
-
         competition = Competition.objects.get(pk=data['competition']['id'])
         representative = data['representative']
         phone = data['phone']

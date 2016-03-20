@@ -1,6 +1,6 @@
 'use strict';
 
-var validationApp = angular.module('validationApp', ['ngCookies']);
+var validationApp = angular.module('validationApp', []);
 
 
 // handling conflicting django/angular template tags
@@ -12,20 +12,20 @@ validationApp.config(function($interpolateProvider) {
 
 
 // form controller
-validationApp.controller( 'formCtrl', function( $scope, $http, $timeout, $cookies ) {
+validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
 
 
         // initial data request
         var initRequest = $http.get( 'http://127.0.0.1:8000/get_competitions/' )
             .then(function(response) {
 
+                console.log($scope.csrf_token);
+
                 console.log('data fetched');
                 $scope.fetchedData = angular.fromJson(response);
                 return response;
 
             });
-
-        console.log($cookies.get('csrftoken'));
 
         // person counter resets on document load, setting initial value = 1
         var personCounter = 1;
@@ -202,13 +202,14 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout, $cookie
         // submit form data
         $scope.submitRequest = function() {
 
-            console.log($scope.form);
+            //console.log($scope.form);
+
 
             var req = {
              method: 'POST',
              url: 'http://127.0.0.1:8000/regrequest/',
              headers: {
-                'X-CSRFToken' : $cookies.get('csrftoken'),
+                'X-CSRFToken' : $scope.csrf_token, //$cookies.get('csrftoken'),
                 'Content-Type': 'application/x-www-form-urlencoded'
              },
              data: angular.toJson($scope.form)

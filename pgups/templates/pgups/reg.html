@@ -22,6 +22,8 @@
 
 	<div ng-app="validationApp" ng-controller="formCtrl">
 
+		<input type="hidden" name="csrf_token" ng-init="csrf_token='{{csrf_token}}'" ng-model="csrf_token">
+
 		<!-- Request form -->
 		<form name="requestForm" class="request-form form-horizontal" role="form" novalidate>
 
