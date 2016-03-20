@@ -27,6 +27,17 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
 
             });
 
+        var teamRequest = $http.get( 'http://127.0.0.1:8000/get_teams/' )
+            .then(function(response) {
+
+                console.log('teams fetched');
+                $scope.teamsData = angular.fromJson(response);
+                return response;
+
+            });
+
+        console.log($cookies.get('csrftoken'));
+
         // person counter resets on document load, setting initial value = 1
         var personCounter = 1;
 
