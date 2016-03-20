@@ -20,14 +20,12 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout, $cookie
             .then(function(response) {
 
                 console.log('data fetched');
-                console.log($cookies.get('csrftoken'));
-                console.log($cookies);
                 $scope.fetchedData = angular.fromJson(response);
                 return response;
 
             });
 
-            console.log($cookies.get('csrftoken'));
+        console.log($cookies.get('csrftoken'));
 
         // person counter resets on document load, setting initial value = 1
         var personCounter = 1;
@@ -96,14 +94,14 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout, $cookie
         var tourDisable = function(personIdx) {
 
             // setting everything to enabled
-            $('.person-' + personIdx + '-tour-select option').attr('disabled', false);
+            $('.' + $scope.persons[personIdx].personId + '-tour-select option').attr('disabled', false);
 
             // loop each select and set the selected value to disabled in all other selects
-            $('.person-' + personIdx + '-tour-select').each(function() {
+            $('.' + $scope.persons[personIdx].personId + '-tour-select').each(function() {
 
                 var $this = $(this);
 
-                $('.person-' + personIdx + '-tour-select').not($this).find('option').each( function(){
+                $('.' + $scope.persons[personIdx].personId + '-tour-select').not($this).find('option').each( function(){
 
                     if($(this).attr('value') == $this.val())
                         $(this).attr('disabled', true);
