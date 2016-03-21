@@ -16,7 +16,7 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
 
 
         // initial data request
-        var initRequest = $http.get( 'http://'+window.location.host+'/get_competitions/' )
+        var initRequest = $http.get( 'http://' + window.location.host + '/get_competitions/' )
             .then(function(response) {
 
                 console.log($scope.csrf_token);
@@ -27,7 +27,7 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
 
             });
 
-        var teamRequest = $http.get( 'http://'+window.location.host+'/get_teams/' )
+        var teamRequest = $http.get( 'http://' + window.location.host + '/get_teams/' )
             .then(function(response) {
 
                 console.log('teams fetched');
@@ -216,7 +216,7 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
 
             var req = {
              method: 'POST',
-             url: 'http://'+window.location.host+'/regrequest/',
+             url: 'http://' + window.location.host + '/regrequest/',
              headers: {
                 'X-CSRFToken' : $scope.csrf_token, //$cookies.get('csrftoken'),
                 'Content-Type': 'application/x-www-form-urlencoded'

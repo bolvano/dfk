@@ -211,6 +211,11 @@ select.ng-invalid.ng-dirty {
   float: left;
   margin-top: 16px;
 }
+/* Creation form */
+/*===============*/
+.creation-form {
+  padding: 30px 0;
+}
 @-moz-keyframes greenish {
   0% {
     background-color: rgba(128,255,128,0.6);
