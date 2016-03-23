@@ -202,17 +202,41 @@
 										<!-- Prior time -->
 										<div class="form-group row">
 
-												<label class="col-md-2 control-label text-left" for="prior_time">Время:</label>
+											<label class="col-md-2 control-label text-left" for="prior_time">Время:</label>
 
-												<div class="col-md-10">
+											<div class="col-md-10">
 
-													<input class="form-control" min="0" name="prior_time" ng-model="competitor.prior_time" type="number" step="0.01" placeholder="0,00" required/>
+												<div class="col-lg-6 col-md-6 no-padding">
 
-													<p class="error-block" ng-show="competitorForm.prior_time.$dirty && competitorForm.prior_time.$error.required">Введите предварительное время</p>
-													<p class="error-block" ng-show="competitorForm.prior_time.$dirty && competitorForm.prior_time.$error.number">Введите время в секундах в формате <i>10,00</i></p>
-													<!--<p class="error-block" ng-show="competitorForm.prior_time.$dirty && competitorForm.prior_time.$error.maxlength">Округлите время до сотых</p>-->
-													<p class="error-block" ng-show="competitorForm.prior_time.$dirty && competitorForm.prior_time.$error.min">Время не может быть отрицательным!</p>
+													<div class="input-group">
+
+														<input class="form-control" min="0" ng-maxlength="2" name="prior_time_minutes" ng-model="competitor.prior_time_minutes" type="number" step="1" />
+
+														<span class="input-group-addon">мин.</span>
+
+													</div>
+
 												</div>
+
+												<div class="col-lg-6 col-md-6 no-padding">
+
+													<div class="input-group">
+
+														<input class="form-control" min="0" max="59.99" ng-maxlength="5" name="prior_time" ng-model="competitor.prior_time" type="number" step="0.1" placeholder="0,00" required />
+
+														<span class="input-group-addon">cек.</span>
+
+													</div>
+
+												</div>
+
+												<p class="error-block" ng-show="competitorForm.prior_time.$dirty && competitorForm.prior_time.$error.required">Введите предварительное время</p>
+												<p class="error-block" ng-show="competitorForm.prior_time.$dirty && competitorForm.prior_time.$error.number">Введите время в секундах в формате <i>10,00</i></p>
+												<p class="error-block" ng-show="competitorForm.prior_time.$dirty && competitorForm.prior_time.$error.maxlength">Округлите время до сотых</p>
+												<p class="error-block" ng-show="competitorForm.prior_time.$dirty && competitorForm.prior_time.$error.min">Время не может быть отрицательным!</p>
+												<p class="error-block" ng-show="competitorForm.prior_time.$dirty && competitorForm.prior_time.$error.max">Максимальное значение поля 59,99</p>
+
+											</div>
 
 										</div> <!-- End of Prior time -->
 

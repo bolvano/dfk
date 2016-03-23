@@ -211,24 +211,21 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
         // submit form data
         $scope.submitRequest = function() {
 
-            //console.log($scope.form);
-
+            // disabling submit button to prevent duplicate requests
+            $('#submit-request-button').attr('disabled', true).html('Идет отправка заявки...');
 
             var req = {
              method: 'POST',
              url: 'http://' + window.location.host + '/regrequest/',
              headers: {
-                'X-CSRFToken' : $scope.csrf_token, //$cookies.get('csrftoken'),
+                'X-CSRFToken' : $scope.csrf_token,
                 'Content-Type': 'application/x-www-form-urlencoded'
              },
              data: angular.toJson($scope.form)
-            }
+            };
 
             var postRequest = $http(req)
                 .then(function(response) {
-
-                    // disabling submit button to prevent duplicate requests
-                    $("#submit-request-button").attr("disabled", true).html("Идет отправка заявки...");
 
                     // displaying success message
                     notie.alert(1, 'Заявка отправлена! Страница сейчас обновится', 1.5);
@@ -240,11 +237,8 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
 
                 }, function(response) {
                     notie.alert(3, 'Произошла ошибка!', 1.5);
+                    $('#submit-request-button').attr('disabled', false).html('Отправить заявку');
                 });
-
-
-
-
 
         };
 
