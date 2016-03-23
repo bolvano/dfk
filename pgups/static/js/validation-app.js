@@ -228,7 +228,7 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
                 .then(function(response) {
 
                     // displaying success message
-                    notie.alert(1, 'Заявка отправлена! Страница сейчас обновится', 1.5);
+                    notie.alert(1, 'Заявка отправлена! Страница сейчас обновится', 5);
 
                     // delayed page refreshing
                     $timeout(function() {
@@ -236,7 +236,7 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
                     }, 2000);
 
                 }, function(response) {
-                    notie.alert(3, 'Произошла ошибка!', 1.5);
+                    notie.alert(3, 'Произошла ошибка!', 3);
                     $('#submit-request-button').attr('disabled', false).html('Отправить заявку');
                 });
 

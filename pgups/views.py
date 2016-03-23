@@ -209,7 +209,10 @@ def reg_request(request):
             for competitor in person['competitors']:
                 tour = Tour.objects.get(pk=competitor['tour']['id'])
                 age = Age.objects.get(pk=competitor['tour']['age_id'])
-                new_competitor = Competitor(person=new_person, userrequest=userrequest, tour=tour, age=age, prior_time=float(competitor['prior_time']), main_distance=main_distance)
+                prior_time=float(competitor['prior_time'])
+                if 'prior_time_minutes' in competitor and competitor['prior_time_minutes']:
+                    prior_time += int(competitor['prior_time_minutes'])*60
+                new_competitor = Competitor(person=new_person, userrequest=userrequest, tour=tour, age=age, prior_time=prior_time, main_distance=main_distance)
                 new_competitor.save()
                 main_distance = False
     else:
