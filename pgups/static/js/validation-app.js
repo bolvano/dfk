@@ -227,6 +227,9 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
             var postRequest = $http(req)
                 .then(function(response) {
 
+                    // disabling submit button to prevent duplicate requests
+                    $("#submit-request-button").attr("disabled", true).html("Идет отправка заявки...");
+
                     // displaying success message
                     notie.alert(1, 'Заявка отправлена! Страница сейчас обновится', 1.5);
 
