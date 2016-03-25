@@ -39,6 +39,9 @@ body {
 .basic-list-larger {
   font-size: 1.2rem;
 }
+.no-padding {
+  padding: 0;
+}
 .btn-xxl {
   padding: 16px 22px;
   font-size: 1.7em;
@@ -86,7 +89,8 @@ body {
 }
 .error-block {
   color: #5f021f;
-  margin: 5px 0;
+  position: relative;
+  top: 8px;
 }
 input.ng-invalid.ng-dirty,
 select.ng-invalid.ng-dirty {
@@ -210,6 +214,11 @@ select.ng-invalid.ng-dirty {
 .result-tour-skipped {
   float: left;
   margin-top: 16px;
+}
+/* Creation form */
+/*===============*/
+.creation-form {
+  padding: 30px 0;
 }
 @-moz-keyframes greenish {
   0% {

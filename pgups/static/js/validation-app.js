@@ -16,7 +16,7 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
 
 
         // initial data request
-        var initRequest = $http.get( 'http://'+window.location.host+'/get_competitions/' )
+        var initRequest = $http.get( 'http://' + window.location.host + '/get_competitions/' )
             .then(function(response) {
 
                 console.log($scope.csrf_token);
@@ -27,7 +27,7 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
 
             });
 
-        var teamRequest = $http.get( 'http://'+window.location.host+'/get_teams/' )
+        var teamRequest = $http.get( 'http://' + window.location.host + '/get_teams/' )
             .then(function(response) {
 
                 console.log('teams fetched');
@@ -211,24 +211,24 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
         // submit form data
         $scope.submitRequest = function() {
 
-            //console.log($scope.form);
-
+            // disabling submit button to prevent duplicate requests
+            $('#submit-request-button').attr('disabled', true).html('Идет отправка заявки...');
 
             var req = {
              method: 'POST',
-             url: 'http://'+window.location.host+'/regrequest/',
+             url: 'http://' + window.location.host + '/regrequest/',
              headers: {
-                'X-CSRFToken' : $scope.csrf_token, //$cookies.get('csrftoken'),
+                'X-CSRFToken' : $scope.csrf_token,
                 'Content-Type': 'application/x-www-form-urlencoded'
              },
              data: angular.toJson($scope.form)
-            }
+            };
 
             var postRequest = $http(req)
                 .then(function(response) {
 
                     // displaying success message
-                    notie.alert(1, 'Заявка отправлена! Страница сейчас обновится', 1.5);
+                    notie.alert(1, 'Заявка отправлена! Страница сейчас обновится', 5);
 
                     // delayed page refreshing
                     $timeout(function() {
@@ -236,12 +236,9 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
                     }, 2000);
 
                 }, function(response) {
-                    notie.alert(3, 'Произошла ошибка!', 1.5);
+                    notie.alert(3, 'Произошла ошибка!', 3);
+                    $('#submit-request-button').attr('disabled', false).html('Отправить заявку');
                 });
-
-
-
-
 
         };
 
