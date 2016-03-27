@@ -1,6 +1,6 @@
 'use strict';
 
-var createCompetitionApp = angular.module('createCompetitionApp', []);
+var createCompetitionApp = angular.module('createCompetitionApp', ['ngAnimate']);
 
 
 // handling conflicting django/angular template tags
@@ -65,7 +65,24 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
         return filterFilter($scope.styles, { selected: true });
     };
 
-
+    // data
     $scope.data = { ageGroups: $scope.ageGroups, distances: $scope.distances, styles: $scope.styles };
+
+    $scope.tours = [];
+
+
+    // switching between form parts
+    $scope.step = 1;
+
+    $scope.nextStep = function() {
+        $scope.step++;
+    };
+
+    $scope.prevStep = function() {
+        $scope.step--;
+    };
+
+    $scope.submitForm = function() {};
+
 
 });
