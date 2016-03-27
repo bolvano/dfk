@@ -24,18 +24,19 @@
 
 				{$ data $}
 
+				<!-- Step 1 -->
 				<div ng-show="step === 1" class="animation-show-hide">
 
 					<!-- Heading -->
 					<div class="heading">
-						<h2>Общая информация о соревнованиях</h2>
+						<h2>Общая информация</h2>
 					</div> <!-- End of Heading -->
 
 					<div class="creation-form">
 
 						<!-- Name -->
 						<div class="form-group">
-							<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="name">Название соревнований:</label>
+							<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="name">Название:</label>
 							<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
 								<input class="form-control" name="name" ng-model="data.name" type="text" required/>
 								<p class="error-block" ng-show="creationForm.name.$dirty && creationForm.name.$error.required">Введите название</p>
@@ -44,7 +45,7 @@
 
 						<!-- Type -->
 						<div class="form-group">
-							<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="representative">Тип соревнований:</label>
+							<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="representative">Тип:</label>
 							<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
 								<select class="form-control" name="type" ng-model="data.type" type="text" required/>
 									<option value="0">детские</option>
@@ -56,7 +57,7 @@
 
 						<!-- Start date -->
 						<div class="form-group">
-							<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="name">Дата начала соревнований:</label>
+							<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="name">Дата начала:</label>
 							<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
 								<input class="form-control" name="date_start" ng-model="data.date_start" type="date" placeholder="2016-01-01" required/>
 								<p class="error-block" ng-show="creationForm.date_start.$dirty && creationForm.date_start.$error.required">Введите дату начала соревнований</p>
@@ -66,10 +67,10 @@
 
 						<!-- Finish date -->
 						<div class="form-group">
-							<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="name">Дата окончания соревнований:</label>
+							<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="name">Дата завершения:</label>
 							<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
 								<input class="form-control" name="date_finish" ng-model="data.date_finish" type="date" placeholder="2016-01-01" required/>
-								<p class="error-block" ng-show="creationForm.date_finish.$dirty && creationForm.date_finish.$error.required">Введите дату окончания</p>
+								<p class="error-block" ng-show="creationForm.date_finish.$dirty && creationForm.date_finish.$error.required">Введите дату завершения соревнований</p>
 								<p class="error-block" ng-show="creationForm.date_finish.$dirty && creationForm.date_finish.$error.date">Введите дату в формате 2016-01-01</p>
 							</div>
 						</div> <!-- End of Finish date -->
@@ -77,11 +78,16 @@
 					</div>
 
 					<div class="button-wrapper row">
-						<button class="btn btn-lg btn-success pull-right col-lg-2" ng-click="nextStep()" ng-disabled="false">Продолжить</button>
+
+						<button class="btn btn-lg btn-success pull-right col-lg-2" ng-click="nextStep()" ng-disabled="false">
+							Продолжить <span class="glyphicon glyphicon-chevron-right"></span>
+						</button>
+
 					</div>
 
-				</div>
+				</div> <!-- End of Step 1 -->
 
+				<!-- Step 2 -->
 				<div ng-show="step === 2" class="animation-show-hide">
 
 					<!-- Heading -->
@@ -133,12 +139,20 @@
 					</div> <!-- End of row -->
 
 					<div class="button-wrapper row">
-						<button class="btn btn-lg btn-danger pull-left col-lg-2" ng-click="prevStep()">Вернуться</button>
-						<button class="btn btn-lg btn-success pull-right col-lg-2" ng-click="nextStep()">Продолжить</button>
+
+						<button class="btn btn-lg btn-danger pull-left col-lg-2" ng-click="prevStep()">
+							<span class="glyphicon glyphicon-chevron-left"></span> Вернуться
+						</button>
+
+						<button class="btn btn-lg btn-success pull-right col-lg-2" ng-click="nextStep(); generateTours();">
+							Продолжить <span class="glyphicon glyphicon-chevron-right"></span>
+						</button>
+
 					</div>
 
-				</div>
+				</div> <!-- End of Step 2 -->
 
+				<!-- Step 3 -->
 				<div ng-show="step === 3" class="animation-show-hide">
 
 					<!-- Heading -->
@@ -153,11 +167,18 @@
 					</div>
 
 					<div class="button-wrapper row">
-						<button class="btn btn-lg btn-danger pull-left col-lg-2" ng-click="prevStep()">Вернуться</button>
-						<button class="btn btn-lg btn-success pull-right col-lg-3" ng-click="submitForm()">Создать соревнования</button>
+
+						<button class="btn btn-lg btn-danger pull-left col-lg-2" ng-click="prevStep()">
+							<span class="glyphicon glyphicon-chevron-left"></span> Вернуться
+						</button>
+
+						<button class="btn btn-lg btn-success pull-right col-lg-3" ng-click="submitForm()">
+							Создать соревнования <span class="glyphicon glyphicon-ok-circle"></span>
+						</button>
+
 					</div>
 
-				</div>
+				</div> <!-- End of Step 3 -->
 
 			</div> <!-- End of container -->
 
