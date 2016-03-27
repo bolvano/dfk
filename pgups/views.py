@@ -411,6 +411,24 @@ def get_teams(request):
         team_list.append(team)
     return HttpResponse(json.dumps(team_list), content_type="application/json")
 
+def get_ages_distances_styles(request):
+    age_list = []
+    ages = Age.objects.all()
+    for a in ages:
+        age = {'id': a.id, 'name': a.name, 'kids': a.kids}
+        age_list.append(age)
+    distance_list = []
+    distances = Distance.objects.all()
+    for d in distances:
+        distance = {'id': d.id, 'name': d.name}
+        distance_list.append(distance)
+    style_list = []
+    styles = Style.objects.all()
+    for s in styles:
+        style = {'id': s.id, 'name': s.name}
+        style_list.append(style)
+    return HttpResponse(json.dumps({'ages':age_list, 'distances':distance_list, 'styles':style_list}), content_type="application/json")
+
 
 # форма создания соревнований
 def create_competition(request):
