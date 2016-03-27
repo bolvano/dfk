@@ -1,6 +1,6 @@
 'use strict';
 
-var createCompetitionApp = angular.module('createCompetitionApp', []);
+var createCompetitionApp = angular.module('createCompetitionApp', ['ngAnimate']);
 
 
 // handling conflicting django/angular template tags
@@ -13,6 +13,8 @@ createCompetitionApp.config(function($interpolateProvider) {
 
 // form controller
 createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $timeout, filterFilter ) {
+
+    $scope.data = {};
 
     $scope.ageGroups = [
 
@@ -29,6 +31,7 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
 
     ];
 
+
     $scope.distances = [
 
         { id: 0, name: '25 метров', meters: 25 },
@@ -36,6 +39,7 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
         { id: 2, name: '100 метров', meters: 100 }
 
     ];
+
 
     $scope.styles = [
 
@@ -48,24 +52,83 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
     ];
 
 
-    // selecting age groups
+    // returns list of selected age groups
     $scope.selectedAgeGroups = function () {
         return filterFilter($scope.ageGroups, { selected: true });
     };
 
 
-    // selecting distances
+    // returns list of selected distances
     $scope.selectedDistances = function () {
         return filterFilter($scope.distances, { selected: true });
     };
 
 
-    // selecting styles
+    // returns list of selected styles
     $scope.selectedStyles = function () {
         return filterFilter($scope.styles, { selected: true });
     };
 
 
-    $scope.data = { ageGroups: $scope.ageGroups, distances: $scope.distances, styles: $scope.styles };
+    // returns list of selected tours
+    $scope.selectedTours = function () {
+        return filterFilter($scope.tours, { selected: true });
+    };
+
+
+    // switching between form parts
+    $scope.step = 1;
+
+    $scope.nextStep = function() {
+        $scope.step++;
+    };
+
+    $scope.prevStep = function() {
+        $scope.step--;
+    };
+
+    // submitting form
+    $scope.submitForm = function() {
+
+        $scope.data.tours = $scope.selectedTours();
+
+    };
+
+
+    // generating tours for selected age groups, distances & styles
+    $scope.generateTours = function () {
+
+        // resetting tour list & idCount
+        $scope.tours = [];
+        var idCount = 0;
+
+        console.log($scope.selectedAgeGroups());
+
+        for ( var i = 0; i < $scope.selectedAgeGroups().length; i++ ) {
+
+            for ( var j = 0; j < $scope.selectedDistances().length; j++ ) {
+
+                for ( var k = 0; k < $scope.selectedStyles().length; k++ ) {
+
+                    $scope.tours.push( {
+                                         'id': idCount,
+                                         'age': $scope.selectedAgeGroups()[i].id,
+
+                                         'name':        $scope.selectedAgeGroups()[i].name +
+                                                 ' лет, ' + $scope.selectedDistances()[j].name +
+                                                 ', ' + $scope.selectedStyles()[k].name,
+
+                                         'distance': $scope.selectedDistances()[j].id,
+                                         'style': $scope.selectedStyles()[k].id
+                                       }
+                                     );
+
+                    // incrementing idCount
+                    idCount++;
+
+                }
+            }
+        }
+    };
 
 });
