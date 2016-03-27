@@ -23,7 +23,7 @@
 			{% for competitor in competitors %}
 
 				<tr>
-					<td class="column-name">{{competitor.person.first_name}} {{competitor.person.last_name}}</td>
+					<td class="column-name">{{competitor.person.first_name|title}} {{competitor.person.last_name|title}}</td>
 					<td class="column-team">{{competitor.userrequest.team.name}}</td>
 					<td class="column-age text-center">{{competitor.age}}</td>
 					<td class="column-time column-time-animation text-center">{{competitor.time}}</td>

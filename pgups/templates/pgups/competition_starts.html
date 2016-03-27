@@ -33,7 +33,7 @@
 					{% for competitor in start.competitor_set.all %}
 						<tr>
 							<td class="column-lane text-center">{{competitor.lane}}</td>
-							<td class="column-name">{{competitor.person.first_name}} {{competitor.person.last_name}}</td>
+							<td class="column-name">{{competitor.person.first_name|title}} {{competitor.person.last_name|title}}</td>
 							<td class="column-team">{{competitor.userrequest.team}}</td>
 							<td class="column-age text-center">{{competitor.age}}</td>
 							<td class="column-time text-center">{{competitor.prior_time}}</td>

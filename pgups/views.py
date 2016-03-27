@@ -203,7 +203,11 @@ def reg_request(request):
         userrequest.save()
 
         for person in data['persons']:
-            new_person = Person(first_name=person['first_name'], last_name=person['last_name'], birth_year=person['birth_year'], gender=person['gender'], userrequest=userrequest)
+            first_name = person['first_name']
+            last_name = person['last_name']
+            birth_year = person['birth_year']
+            gender = person['gender']
+            new_person = Person(first_name=first_name.lower(), last_name=last_name.lower(), birth_year=birth_year, gender=gender, userrequest=userrequest)
             new_person.save()
             main_distance = True
             for competitor in person['competitors']:
@@ -375,7 +379,7 @@ def tour(request, id):
             tag1 = ''
             if competitor.main_distance:
                 tag1 = '*'
-            competitor_data = tag1 + competitor.person.last_name + ' ' + competitor.person.first_name + ' ('+competitor.userrequest.team.name+')'
+            competitor_data = tag1 + competitor.person.last_name.title() + ' ' + competitor.person.first_name.title() + ' ('+competitor.userrequest.team.name+')'
             res.append((competitor_data,competitor.time))
         except:
             pass

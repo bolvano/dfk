@@ -43,7 +43,7 @@ class Person(models.Model):
     userrequest = models.ForeignKey('Userrequest')
     
     def __str__(self):
-        return self.first_name + ' ' + self.last_name + ' (' + str(self.birth_year) + '/' + self.gender +')'
+        return self.first_name.title() + ' ' + self.last_name.title() + ' (' + str(self.birth_year) + '/' + self.gender +')'
 
 
 #Возрастные группы
@@ -145,7 +145,7 @@ class Competitor(models.Model):
             team = self.userrequest.team.name
         else:
             team = 'Инд.'
-        return self.person.last_name + ' ' + self.person.first_name + ' ('+ team +')' +': ' + self.tour.age.name + ' ' + self.tour.style.name + ' (' + str(self.prior_time) + ')'
+        return self.person.last_name.title() + ' ' + self.person.first_name.title() + ' ('+ team +')' +': ' + self.tour.age.name + ' ' + self.tour.style.name + ' (' + str(self.prior_time) + ')'
 
     class Meta:
         ordering = ['lane']
