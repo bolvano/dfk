@@ -440,7 +440,10 @@ def create_competition(request):
         date_start = datetime.datetime.strptime(data['date_start'], "%Y-%m-%dT%H:%M:%S.%fZ")+datetime.timedelta(days=1)
         date_end = datetime.datetime.strptime(data['date_finish'], "%Y-%m-%dT%H:%M:%S.%fZ")+datetime.timedelta(days=1)
 
-        competition = Competition(name=data['name'], typ=data['type'], date_start=date_start, date_end=date_end, finished=False)
+        typ = 'Взрослые' if data['type'] == 1 else 'Детские'
+
+
+        competition = Competition(name=data['name'], typ=typ, date_start=date_start, date_end=date_end, finished=False)
         competition.save()
 
         if 'tours' in data:
