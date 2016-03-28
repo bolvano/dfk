@@ -147,6 +147,34 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
 
         $scope.data.tours = $scope.selectedTours();
 
+        //$('#submit-request-button').attr('disabled', true).html('Идет отправка заявки...');
+
+        var req = {
+         method: 'POST',
+         url: 'http://' + window.location.host + '/competition_create/',
+         headers: {
+            'X-CSRFToken' : $scope.csrf_token,
+            'Content-Type': 'application/x-www-form-urlencoded'
+         },
+         data: angular.toJson($scope.data)
+        };
+
+        var postRequest = $http(req)
+            .then(function(response) {
+
+                // displaying success message
+                notie.alert(1, 'Создание соревнования', 5);
+
+                // delayed page refreshing
+                $timeout(function() {
+                    location.reload();
+                }, 2000);
+
+            }, function(response) {
+                notie.alert(3, 'Произошла ошибка!', 3);
+                //$('#submit-request-button').attr('disabled', false).html('Отправить заявку');
+            });
+
     };
 
 });

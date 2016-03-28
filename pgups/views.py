@@ -432,4 +432,36 @@ def get_ages_distances_styles(request):
 
 # форма создания соревнований
 def create_competition(request):
+    if request.method == "POST":
+
+        body_unicode = request.body.decode('utf-8')
+        data = json.loads(body_unicode)
+
+        date_start = datetime.datetime.strptime(data['date_start'], "%Y-%m-%dT%H:%M:%S.%fZ")+datetime.timedelta(days=1)
+        date_end = datetime.datetime.strptime(data['date_finish'], "%Y-%m-%dT%H:%M:%S.%fZ")+datetime.timedelta(days=1)
+
+        competition = Competition(name=data['name'], typ=data['type'], date_start=date_start, date_end=date_end, finished=False)
+        competition.save()
+
+        if 'tours' in data:
+            for tour in data['tours']:
+
+                style = Style.objects.get(pk=tour['style'])
+                age = Age.objects.get(pk=tour['age'])
+                distance = Distance.objects.get(pk=tour['distance'])
+
+                new_tour_m = Tour(competition=competition, finished=False)
+                new_tour_m.gender = 'М'
+                new_tour_m.style = style
+                new_tour_m.distance = distance
+                new_tour_m.age = age
+                new_tour_m.save()
+
+                new_tour_f = Tour(competition=competition, finished=False)
+                new_tour_f.gender = 'Ж'
+                new_tour_f.style = style
+                new_tour_f.distance = distance
+                new_tour_f.age = age
+                new_tour_f.save()
+
     return render(request, 'pgups/competition_create.html', {}, )
