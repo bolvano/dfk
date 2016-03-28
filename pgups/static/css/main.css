@@ -27,6 +27,9 @@ body {
   padding-bottom: 20px;
   margin-bottom: 40px;
 }
+.small-heading {
+  margin-bottom: 20px;
+}
 .heading-no-margin {
   margin-bottom: 0;
 }

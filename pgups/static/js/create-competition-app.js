@@ -31,15 +31,19 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
         });
 
 
-    // switching between parts of the form
+    // switch between parts of the form
     $scope.step = 1;
 
     $scope.nextStep = function() {
         $scope.step++;
+        // scroll to top
+        window.scrollTo(0, 0);
     };
 
     $scope.prevStep = function() {
         $scope.step--;
+        // scroll to top
+        window.scrollTo(0, 0);
     };
 
 
@@ -67,14 +71,24 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
     };
 
 
+    // group tours
+    $scope.groupTours = function (lst) {
+
+        for ( var z = 0; z < lst.length; z++ ) {
+            $( ".tour-" + lst[z].id ).last().css("margin-bottom", "20px");
+        }
+
+    };
+
+
     // generates tours combining selected age groups, distances & styles
     $scope.generateTours = function () {
 
-        // resetting tour list & idCount
+        // reset tour list & idCount
         $scope.tours = [];
         var idCount = 0;
 
-        // generating every possible combination and appending to tours list
+        // generate every possible combination and append to tours list
         for ( var i = 0; i < $scope.selectedAgeGroups().length; i++ ) {
 
             for ( var j = 0; j < $scope.selectedDistances().length; j++ ) {
@@ -94,12 +108,21 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
                                        }
                                      );
 
-                    // incrementing idCount
+                    // increment idCount
                     idCount++;
 
                 }
             }
-        }
+        };
+
+
+        // group tours by age, delayed call, waiting for DOM to update
+        $timeout(function() {
+
+            $scope.groupTours($scope.selectedAgeGroups());
+
+        }, 500);
+
     };
 
 
@@ -111,7 +134,7 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
     };
 
 
-    // checking whether all checkboxes are checked, changing selectAll value accordingly
+    // checks whether all checkboxes are checked, changes selectAll value accordingly
     $scope.checkIfAllSelected = function() {
       $scope.selectedAll = $scope.tours.every(function(tour) {
         return tour.selected == true
@@ -119,7 +142,7 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
     };
 
 
-    // submitting form
+    // submit form
     $scope.submitForm = function() {
 
         $scope.data.tours = $scope.selectedTours();

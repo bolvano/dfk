@@ -172,7 +172,7 @@
 
 					<br>
 
-					<div class="checkbox" ng-repeat="tour in tours">
+					<div class="checkbox tour-{$ tour.age $}" ng-repeat="tour in tours">
 						<label>
 							<input type="checkbox" value="{$ tour.id $}" ng-model="tour.selected" ng-click="checkIfAllSelected()"> {$ tour.name $}
 						</label>
@@ -184,7 +184,7 @@
 							<span class="glyphicon glyphicon-chevron-left"></span> Вернуться
 						</button>
 
-						<button class="btn btn-lg btn-success pull-right col-lg-3" ng-click="nextStep(); submitForm();">
+						<button class="btn btn-lg btn-success pull-right col-lg-3" ng-click="nextStep(); submitForm(); groupTours(selectedTours())">
 							Продолжить <span class="glyphicon glyphicon-chevron-right"></span>
 						</button>
 
@@ -197,18 +197,24 @@
 
 					<!-- Heading -->
 					<div class="heading">
-						<h1>{$ data.name $} ({$ data.date_start | date:'dd.MM.yyyy' $} &ndash; {$ data.date_finish | date:'dd.MM.yyyy' $})</h1>
+
 						<h2>
+							{$ data.name $}<br>
+							({$ data.date_start | date:'dd.MM.yyyy' $} &ndash; {$ data.date_finish | date:'dd.MM.yyyy' $})
+						</h2>
+
+						<h3>
 							<span ng-if="data.type === '0'">Детские соревнования</span>
 							<span ng-if="data.type === '1'">Взрослые соревнования</span>
-						</h2>
+						</h3>
+
 					</div> <!-- End of Heading -->
 
-					<h3>Список туров</h3>
+					<h3 class="small-heading">Список туров:</h3>
 
 					<div>
 						<ul class="basic-list">
-							<li ng-repeat="tour in selectedTours()">{$ tour.name $}
+							<li class="tour-{$ tour.age $}" ng-repeat="tour in selectedTours()">{$ tour.name $}
 						</ul>
 					</div>
 
@@ -219,7 +225,7 @@
 						</button>
 
 						<button class="btn btn-lg btn-success pull-right col-lg-3" ng-click="submitForm()">
-							Создать соревнования <span class="glyphicon glyphicon-ok-circle"></span>
+							Создать соревнования <span class="glyphicon glyphicon-ok"></span>
 						</button>
 
 					</div>
