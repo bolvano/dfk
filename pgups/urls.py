@@ -27,5 +27,5 @@ urlpatterns = [
     url(r'^generate_starts/$', views.generate_starts),
 
     # competition create
-    url(r'^competition_create/$', views.create_competition),
+    url(r'^competition_create/$', views.create_competition, name="competitioncreate"),
 ]
