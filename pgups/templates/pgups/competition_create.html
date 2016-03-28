@@ -199,8 +199,8 @@
 					<div class="heading">
 						<h1>{$ data.name $} ({$ data.date_start | date:'dd.MM.yyyy' $} &ndash; {$ data.date_finish | date:'dd.MM.yyyy' $})</h1>
 						<h2>
-							<span ng-if="data.type === '0'">Детские</span>
-							<span ng-if="data.type === '1'">Взрослые</span> соревнования
+							<span ng-if="data.type === '0'">Детские соревнования</span>
+							<span ng-if="data.type === '1'">Взрослые соревнования</span>
 						</h2>
 					</div> <!-- End of Heading -->
 
@@ -235,9 +235,9 @@
 	{% else %}
 
 	<div class="container">
-		<p class="lead">
-			Для просмотра этой страницы необходимо залогиниться.
-		</p>
+		<h3 style="margin-top: 20%">
+			<span style="font-size: larger" class="alt-color glyphicon glyphicon-alert"></span> Для просмотра этой страницы необходимо залогиниться.
+		</h3>
 	</div>
 
 	{% endif %}
