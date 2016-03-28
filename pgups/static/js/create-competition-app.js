@@ -14,7 +14,7 @@ createCompetitionApp.config(function($interpolateProvider) {
 // form controller
 createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $timeout, filterFilter ) {
 
-
+    // initializing empty data object
     $scope.data = {};
 
 
@@ -24,11 +24,23 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
 
             console.log($scope.csrf_token);
 
-            console.log('init data fetched');
+            console.log('ages/styles/distances fetched');
             $scope.fetchedData = angular.fromJson(response);
             return response;
 
         });
+
+
+    // switching between parts of the form
+    $scope.step = 1;
+
+    $scope.nextStep = function() {
+        $scope.step++;
+    };
+
+    $scope.prevStep = function() {
+        $scope.step--;
+    };
 
 
     // returns list of selected age groups
@@ -55,27 +67,7 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
     };
 
 
-    // switching between form parts
-    $scope.step = 1;
-
-    $scope.nextStep = function() {
-        $scope.step++;
-    };
-
-    $scope.prevStep = function() {
-        $scope.step--;
-    };
-
-
-    // submitting form
-    $scope.submitForm = function() {
-
-        $scope.data.tours = $scope.selectedTours();
-
-    };
-
-
-    // generating tours combining selected age groups, distances & styles
+    // generates tours combining selected age groups, distances & styles
     $scope.generateTours = function () {
 
         // resetting tour list & idCount
@@ -108,6 +100,30 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
                 }
             }
         }
+    };
+
+
+    // selectAll checkbox for tours
+    $scope.selectAll = function() {
+      angular.forEach($scope.tours, function(tour) {
+        tour.selected = $scope.selectedAll;
+      });
+    };
+
+
+    // checking whether all checkboxes are checked, changing selectAll value accordingly
+    $scope.checkIfAllSelected = function() {
+      $scope.selectedAll = $scope.tours.every(function(tour) {
+        return tour.selected == true
+      })
+    };
+
+
+    // submitting form
+    $scope.submitForm = function() {
+
+        $scope.data.tours = $scope.selectedTours();
+
     };
 
 });

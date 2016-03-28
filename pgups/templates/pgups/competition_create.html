@@ -26,9 +26,7 @@
 
 			<div class="container">
 
-				{$ data $}
-
-				<br>{$ fetchedData.data $}
+				<!-- {$ data $} -->
 
 				<!-- Step 1 -->
 				<div ng-show="step === 1" class="animation-show-hide">
@@ -166,10 +164,52 @@
 						<h2>Выберите туры</h2>
 					</div> <!-- End of Heading -->
 
+					<div class="checkbox">
+						<label>
+							<input type="checkbox" ng-model="selectedAll" ng-click="selectAll()"> <b>Выбрать все</b>
+						</label>
+					</div>
+
+					<br>
+
 					<div class="checkbox" ng-repeat="tour in tours">
 						<label>
-							<input type="checkbox" value="{$ tour.id $}" ng-model="tour.selected"> {$ tour.name $}
+							<input type="checkbox" value="{$ tour.id $}" ng-model="tour.selected" ng-click="checkIfAllSelected()"> {$ tour.name $}
 						</label>
+					</div>
+
+					<div class="button-wrapper row">
+
+						<button class="btn btn-lg btn-danger pull-left col-lg-2" ng-click="prevStep()">
+							<span class="glyphicon glyphicon-chevron-left"></span> Вернуться
+						</button>
+
+						<button class="btn btn-lg btn-success pull-right col-lg-3" ng-click="nextStep(); submitForm();">
+							Продолжить <span class="glyphicon glyphicon-chevron-right"></span>
+						</button>
+
+					</div>
+
+				</div> <!-- End of Step 3 -->
+
+				<!-- Step 4 -->
+				<div ng-show="step === 4" class="animation-show-hide">
+
+					<!-- Heading -->
+					<div class="heading">
+						<h1>{$ data.name $} ({$ data.date_start | date:'dd.MM.yyyy' $} &ndash; {$ data.date_finish | date:'dd.MM.yyyy' $})</h1>
+						<h2>
+							<span ng-if="data.type === '0'">Детские</span>
+							<span ng-if="data.type === '1'">Взрослые</span> соревнования
+						</h2>
+					</div> <!-- End of Heading -->
+
+					<h3>Список туров</h3>
+
+					<div>
+						<ul class="basic-list">
+							<li ng-repeat="tour in selectedTours()">{$ tour.name $}
+						</ul>
 					</div>
 
 					<div class="button-wrapper row">
