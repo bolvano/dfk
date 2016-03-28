@@ -14,59 +14,38 @@ createCompetitionApp.config(function($interpolateProvider) {
 // form controller
 createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $timeout, filterFilter ) {
 
+
     $scope.data = {};
 
-    $scope.ageGroups = [
 
-        { id: 0, name: '6', kids: true },
-        { id: 1, name: '7-8', kids: true },
-        { id: 2, name: '9-10', kids: true },
-        { id: 3, name: '11-12', kids: true },
-        { id: 4, name: '13-14', kids: true },
-        { id: 5, name: '15-17', kids: true },
-        { id: 6, name: '18-29', kids: false },
-        { id: 7, name: '30-39', kids: false },
-        { id: 8, name: '40-49', kids: false },
-        { id: 9, name: '50+', kids: false }
+    // initial data request
+    var initRequest = $http.get( 'http://' + window.location.host + '/get_ages_distances_styles/' )
+        .then(function(response) {
 
-    ];
+            console.log($scope.csrf_token);
 
+            console.log('init data fetched');
+            $scope.fetchedData = angular.fromJson(response);
+            return response;
 
-    $scope.distances = [
-
-        { id: 0, name: '25 метров', meters: 25 },
-        { id: 1, name: '50 метров', meters: 50 },
-        { id: 2, name: '100 метров', meters: 100 }
-
-    ];
-
-
-    $scope.styles = [
-
-        { id: 0, name: 'волный стиль' },
-        { id: 1, name: 'брасс' },
-        { id: 2, name: 'на спине' },
-        { id: 3, name: 'баттерфляй' },
-        { id: 4, name: 'комплекс' }
-
-    ];
+        });
 
 
     // returns list of selected age groups
     $scope.selectedAgeGroups = function () {
-        return filterFilter($scope.ageGroups, { selected: true });
+        return filterFilter($scope.fetchedData.data.ages, { selected: true });
     };
 
 
     // returns list of selected distances
     $scope.selectedDistances = function () {
-        return filterFilter($scope.distances, { selected: true });
+        return filterFilter($scope.fetchedData.data.distances, { selected: true });
     };
 
 
     // returns list of selected styles
     $scope.selectedStyles = function () {
-        return filterFilter($scope.styles, { selected: true });
+        return filterFilter($scope.fetchedData.data.styles, { selected: true });
     };
 
 
@@ -87,6 +66,7 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
         $scope.step--;
     };
 
+
     // submitting form
     $scope.submitForm = function() {
 
@@ -95,15 +75,14 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
     };
 
 
-    // generating tours for selected age groups, distances & styles
+    // generating tours combining selected age groups, distances & styles
     $scope.generateTours = function () {
 
         // resetting tour list & idCount
         $scope.tours = [];
         var idCount = 0;
 
-        console.log($scope.selectedAgeGroups());
-
+        // generating every possible combination and appending to tours list
         for ( var i = 0; i < $scope.selectedAgeGroups().length; i++ ) {
 
             for ( var j = 0; j < $scope.selectedDistances().length; j++ ) {

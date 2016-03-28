@@ -2,6 +2,8 @@
 {% load staticfiles %}
 {% block content %}
 
+	{% if user.is_authenticated %}
+
 	<!-- Jumbotron -->
 	<div class="jumbotron">
 		<div class="container">
@@ -18,11 +20,15 @@
 
 	<div ng-app="createCompetitionApp" ng-controller="creationFormCtrl"> <!-- createCompetitionApp -->
 
+	<input type="hidden" name="csrf_token" ng-init="csrf_token='{{csrf_token}}'" ng-model="csrf_token">
+
 		<form name="creationForm" class="form-horizontal" role="form" novalidate> <!-- creationForm -->
 
 			<div class="container">
 
 				{$ data $}
+
+				<br>{$ fetchedData.data $}
 
 				<!-- Step 1 -->
 				<div ng-show="step === 1" class="animation-show-hide">
@@ -102,7 +108,7 @@
 
 							<h3>Возрастные группы</h3>
 
-							<div class="checkbox" ng-repeat="group in ageGroups">
+							<div class="checkbox" ng-repeat="group in fetchedData.data.ages">
 								<label>
 									<input type="checkbox" value="{$ group.id $}" ng-model="group.selected" ng-disabled="data.type == group.kids"> {$ group.name $}
 								</label>
@@ -115,7 +121,7 @@
 
 							<h3>Стили</h3>
 
-							<div class="checkbox" ng-repeat="style in styles">
+							<div class="checkbox" ng-repeat="style in fetchedData.data.styles | orderBy: 'name'">
 								<label>
 									<input type="checkbox" value="{$ style.id $}" ng-model="style.selected"> {$ style.name $}
 								</label>
@@ -128,7 +134,7 @@
 
 							<h3>Дистанции</h3>
 
-							<div class="checkbox" ng-repeat="distance in distances">
+							<div class="checkbox" ng-repeat="distance in fetchedData.data.distances">
 								<label>
 									<input type="checkbox" value="{$ distance.id $}" ng-model="distance.selected"> {$ distance.name $}
 								</label>
@@ -185,6 +191,16 @@
 		</form> <!-- End of creationForm -->
 
 	</div> <!-- End of createCompetitionApp -->
+
+	{% else %}
+
+	<div class="container">
+		<p class="lead">
+			Для просмотра этой страницы необходимо залогиниться.
+		</p>
+	</div>
+
+	{% endif %}
 
 {% endblock %}
 
