@@ -29,7 +29,7 @@
 								<tr>
 									<td class="column-name-wide">
 									{% if c.main_distance%}<span><b>{% endif %}
-										{{c.person.last_name}} {{c.person.first_name}}
+										{{c.person.last_name|title}} {{c.person.first_name|title}}
 									{% if c.main_distance%}</b></span>{% endif %}
 									</td>
 									<td class="column-result-wide">
@@ -52,7 +52,7 @@
 						<ul class="basic-list">
 							{% for c in result.2 %}
 								<li class="alt-color">
-									{{c.person.last_name}} {{c.person.first_name}}
+									{{c.person.last_name|title}} {{c.person.first_name|title}}
 								</li>
 							{% endfor %}
 						</ul>

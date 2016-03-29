@@ -24,7 +24,7 @@
 
 					<tr>
 						<td class="column-lane text-center">{{result_form.instance.lane}}</td>
-						<td class="column-name">{{result_form.instance.person.first_name}} {{result_form.instance.person.last_name}}</td>
+						<td class="column-name">{{result_form.instance.person.first_name|title}} {{result_form.instance.person.last_name|title}}</td>
 						<td class="column-team">{{result_form.instance.userrequest.team}}</td>
 						<td class="column-age text-center">{{result_form.instance.age}}</td>
 						<td class="column-result">{{result_form.time}}</td>

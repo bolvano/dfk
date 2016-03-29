@@ -2,6 +2,8 @@
 {% load staticfiles %}
 {% block content %}
 
+	{% if user.is_authenticated %}
+
 	<!-- Jumbotron -->
 	<div class="jumbotron">
 		<div class="container">
@@ -18,114 +20,217 @@
 
 	<div ng-app="createCompetitionApp" ng-controller="creationFormCtrl"> <!-- createCompetitionApp -->
 
+	<input type="hidden" name="csrf_token" ng-init="csrf_token='{{csrf_token}}'" ng-model="csrf_token">
+
 		<form name="creationForm" class="form-horizontal" role="form" novalidate> <!-- creationForm -->
 
 			<div class="container">
 
-				{$ data $}
+				 {$ data $}
 
-				<!-- Heading -->
-				<div class="heading">
-					<h2>Общая информация</h2>
-				</div> <!-- End of Heading -->
+				<!-- Step 1 -->
+				<div ng-show="step === 1" class="animation-show-hide">
 
-				<div class="creation-form">
+					<!-- Heading -->
+					<div class="heading">
+						<h2>Общая информация</h2>
+					</div> <!-- End of Heading -->
 
-					<!-- Name -->
-					<div class="form-group">
-						<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="name">Название соревнований:</label>
-						<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-							<input class="form-control" name="name" ng-model="data.name" type="text" required/>
-							<p class="error-block" ng-show="creationForm.name.$dirty && creationForm.name.$error.required">Введите название</p>
-						</div>
-					</div> <!-- End of Name -->
+					<div class="creation-form">
 
-					<!-- Type -->
-					<div class="form-group">
-						<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="representative">Тип соревнований:</label>
-						<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-							<select class="form-control" name="type" ng-model="data.type" type="text" required/>
-								<option value="детские">детские</option>
-								<option value="взрослые">взрослые</option>
-							</select>
-							<p class="error-block" ng-show="creationForm.type.$dirty && requestForm.representative.$error.required">Выберите тип</p>
-						</div>
-					</div> <!-- End of Type -->
+						<!-- Name -->
+						<div class="form-group">
+							<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="name">Название:</label>
+							<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
+								<input class="form-control" name="name" ng-model="data.name" type="text" required/>
+								<p class="error-block" ng-show="creationForm.name.$dirty && creationForm.name.$error.required">Введите название</p>
+							</div>
+						</div> <!-- End of Name -->
 
-					<!-- Start date -->
-					<div class="form-group">
-						<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="name">Дата начала соревнований:</label>
-						<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-							<input class="form-control" name="date_start" ng-model="data.date_start" type="date" placeholder="2016-01-01" required/>
-							<p class="error-block" ng-show="creationForm.date_start.$dirty && creationForm.date_start.$error.required">Введите дату начала соревнований</p>
-							<p class="error-block" ng-show="creationForm.date_start.$dirty && creationForm.date_start.$error.date">Введите дату в формате 2016-01-01</p>
-						</div>
-					</div> <!-- End of Start date -->
+						<!-- Type -->
+						<div class="form-group">
+							<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="representative">Тип:</label>
+							<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
+								<select class="form-control" name="type" ng-model="data.type" type="text" required/>
+									<option value="0">детские</option>
+									<option value="1">взрослые</option>
+								</select>
+								<p class="error-block" ng-show="creationForm.type.$dirty && requestForm.representative.$error.required">Выберите тип</p>
+							</div>
+						</div> <!-- End of Type -->
 
-					<!-- Finish date -->
-					<div class="form-group">
-						<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="name">Дата окончания соревнований:</label>
-						<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-							<input class="form-control" name="date_finish" ng-model="data.date_finish" type="date" placeholder="2016-01-01" required/>
-							<p class="error-block" ng-show="creationForm.date_finish.$dirty && creationForm.date_finish.$error.required">Введите дату окончания</p>
-							<p class="error-block" ng-show="creationForm.date_finish.$dirty && creationForm.date_finish.$error.date">Введите дату в формате 2016-01-01</p>
-						</div>
-					</div> <!-- End of Finish date -->
+						<!-- Start date -->
+						<div class="form-group">
+							<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="name">Дата начала:</label>
+							<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
+								<input class="form-control" name="date_start" ng-model="data.date_start" type="date" placeholder="2016-01-01" required/>
+								<p class="error-block" ng-show="creationForm.date_start.$dirty && creationForm.date_start.$error.required">Введите дату начала соревнований</p>
+								<p class="error-block" ng-show="creationForm.date_start.$dirty && creationForm.date_start.$error.date">Введите дату в формате 2016-01-01</p>
+							</div>
+						</div> <!-- End of Start date -->
 
-				</div>
+						<!-- Finish date -->
+						<div class="form-group">
+							<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="name">Дата завершения:</label>
+							<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
+								<input class="form-control" name="date_finish" ng-model="data.date_finish" type="date" placeholder="2016-01-01" required/>
+								<p class="error-block" ng-show="creationForm.date_finish.$dirty && creationForm.date_finish.$error.required">Введите дату завершения соревнований</p>
+								<p class="error-block" ng-show="creationForm.date_finish.$dirty && creationForm.date_finish.$error.date">Введите дату в формате 2016-01-01</p>
+							</div>
+						</div> <!-- End of Finish date -->
 
-				<!-- Heading -->
-				<div class="heading">
-					<h2>Отметьте нужные возрастные группы, стили и дистанции</h2>
-				</div> <!-- End of Heading -->
+					</div>
 
-				<div class="row"> <!-- Row -->
+					<div class="button-wrapper row">
 
-					<!-- Age groups -->
-					<div class="col-lg-4 col-md-4">
+						<button class="btn btn-lg btn-success pull-right col-lg-2" ng-click="nextStep()" ng-disabled="false">
+							Продолжить <span class="glyphicon glyphicon-chevron-right"></span>
+						</button>
 
-						<h3>Возрастные группы</h3>
+					</div>
 
-						<div class="checkbox" ng-repeat="group in ageGroups">
-							<label>
-								<input type="checkbox" value="{$ group.id $}" ng-model="group.selected"> {$ group.name $}
-							</label>
-						</div>
+				</div> <!-- End of Step 1 -->
 
-					</div> <!-- End of Age groups -->
+				<!-- Step 2 -->
+				<div ng-show="step === 2" class="animation-show-hide">
 
-					<!-- Styles -->
-					<div class="col-lg-4 col-md-4">
+					<!-- Heading -->
+					<div class="heading">
+						<h2>Выберите возрастные группы, стили и дистанции</h2>
+					</div> <!-- End of Heading -->
 
-						<h3>Стили</h3>
+					<div class="row"> <!-- Row -->
 
-						<div class="checkbox" ng-repeat="style in styles">
-							<label>
-								<input type="checkbox" value="{$ style.id $}" ng-model="style.selected"> {$ style.name $}
-							</label>
-						</div>
+						<!-- Age groups -->
+						<div class="col-lg-4 col-md-4">
 
-					</div> <!-- End of Styles -->
+							<h3>Возрастные группы</h3>
 
-					<!-- Distances -->
-					<div class="col-lg-4 col-md-4">
+							<div class="checkbox" ng-repeat="group in fetchedData.data.ages">
+								<label>
+									<input type="checkbox" value="{$ group.id $}" ng-model="group.selected" ng-disabled="data.type == group.kids"> {$ group.name $}
+								</label>
+							</div>
 
-						<h3>Дистанции</h3>
+						</div> <!-- End of Age groups -->
 
-						<div class="checkbox" ng-repeat="distance in distances">
-							<label>
-								<input type="checkbox" value="{$ distance.id $}" ng-model="distance.selected"> {$ distance.name $}
-							</label>
-						</div>
+						<!-- Styles -->
+						<div class="col-lg-4 col-md-4">
 
-					</div> <!-- End of Distances -->
+							<h3>Стили</h3>
 
-				</div> <!-- End of row -->
+							<div class="checkbox" ng-repeat="style in fetchedData.data.styles | orderBy: 'name'">
+								<label>
+									<input type="checkbox" value="{$ style.id $}" ng-model="style.selected"> {$ style.name $}
+								</label>
+							</div>
 
-				<!-- Heading -->
-				<div class="heading">
-					<h2>Выберите туры</h2>
-				</div> <!-- End of Heading -->
+						</div> <!-- End of Styles -->
+
+						<!-- Distances -->
+						<div class="col-lg-4 col-md-4">
+
+							<h3>Дистанции</h3>
+
+							<div class="checkbox" ng-repeat="distance in fetchedData.data.distances">
+								<label>
+									<input type="checkbox" value="{$ distance.id $}" ng-model="distance.selected"> {$ distance.name $}
+								</label>
+							</div>
+
+						</div> <!-- End of Distances -->
+
+					</div> <!-- End of row -->
+
+					<div class="button-wrapper row">
+
+						<button class="btn btn-lg btn-danger pull-left col-lg-2" ng-click="prevStep()">
+							<span class="glyphicon glyphicon-chevron-left"></span> Вернуться
+						</button>
+
+						<button class="btn btn-lg btn-success pull-right col-lg-2" ng-click="nextStep(); generateTours();">
+							Продолжить <span class="glyphicon glyphicon-chevron-right"></span>
+						</button>
+
+					</div>
+
+				</div> <!-- End of Step 2 -->
+
+				<!-- Step 3 -->
+				<div ng-show="step === 3" class="animation-show-hide">
+
+					<!-- Heading -->
+					<div class="heading">
+						<h2>Выберите туры</h2>
+					</div> <!-- End of Heading -->
+
+					<div class="checkbox">
+						<label>
+							<input type="checkbox" ng-model="selectedAll" ng-click="selectAll()"> <b>Выбрать все</b>
+						</label>
+					</div>
+
+					<br>
+
+					<div class="checkbox tour-{$ tour.age $}" ng-repeat="tour in tours">
+						<label>
+							<input type="checkbox" value="{$ tour.id $}" ng-model="tour.selected" ng-click="checkIfAllSelected()"> {$ tour.name $}
+						</label>
+					</div>
+
+					<div class="button-wrapper row">
+
+						<button class="btn btn-lg btn-danger pull-left col-lg-2" ng-click="prevStep()">
+							<span class="glyphicon glyphicon-chevron-left"></span> Вернуться
+						</button>
+
+						<button class="btn btn-lg btn-success pull-right col-lg-3" ng-click="nextStep(); groupTours(selectedTours())">
+							Продолжить <span class="glyphicon glyphicon-chevron-right"></span>
+						</button>
+
+					</div>
+
+				</div> <!-- End of Step 3 -->
+
+				<!-- Step 4 -->
+				<div ng-show="step === 4" class="animation-show-hide">
+
+					<!-- Heading -->
+					<div class="heading">
+
+						<h2>
+							{$ data.name $}<br>
+							({$ data.date_start | date:'dd.MM.yyyy' $} &ndash; {$ data.date_finish | date:'dd.MM.yyyy' $})
+						</h2>
+
+						<h3>
+							<span ng-if="data.type === '0'">Детские соревнования</span>
+							<span ng-if="data.type === '1'">Взрослые соревнования</span>
+						</h3>
+
+					</div> <!-- End of Heading -->
+
+					<h3 class="small-heading">Список туров:</h3>
+
+					<div>
+						<ul class="basic-list">
+							<li class="tour-{$ tour.age $}" ng-repeat="tour in selectedTours()">{$ tour.name $}
+						</ul>
+					</div>
+
+					<div class="button-wrapper row">
+
+						<button class="btn btn-lg btn-danger pull-left col-lg-2" ng-click="prevStep()">
+							<span class="glyphicon glyphicon-chevron-left"></span> Вернуться
+						</button>
+
+						<button class="btn btn-lg btn-success pull-right col-lg-3" ng-click="submitForm()">
+							Создать соревнования <span class="glyphicon glyphicon-ok"></span>
+						</button>
+
+					</div>
+
+				</div> <!-- End of Step 3 -->
 
 			</div> <!-- End of container -->
 
@@ -133,10 +238,21 @@
 
 	</div> <!-- End of createCompetitionApp -->
 
+	{% else %}
+
+	<div class="container">
+		<h3 style="margin-top: 20%">
+			<span style="font-size: larger" class="alt-color glyphicon glyphicon-alert"></span> Для просмотра этой страницы необходимо залогиниться.
+		</h3>
+	</div>
+
+	{% endif %}
+
 {% endblock %}
 
 {% block additionaljs %}
 
+	<script src="https://code.angularjs.org/1.4.9/angular-animate.min.js"></script> <!-- Angular animations -->
 	<script src="{% static 'js/create-competition-app.js' %}"></script> <!-- Competition reg App -->
 
 {% endblock %}

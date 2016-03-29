@@ -25,6 +25,9 @@ body {
 .heading {
   border-bottom: 1px solid #979a9d;
   padding-bottom: 20px;
+  margin-bottom: 40px;
+}
+.small-heading {
   margin-bottom: 20px;
 }
 .heading-no-margin {
@@ -219,6 +222,22 @@ select.ng-invalid.ng-dirty {
 /*===============*/
 .creation-form {
   padding: 30px 0;
+}
+.animation-show-hide {
+  opacity: 1;
+}
+.animation-show-hide.ng-hide-remove.ng-hide-remove-active {
+  transition: all linear 0.5s;
+}
+.animation-show-hide.ng-hide {
+  opacity: 0;
+}
+.button-wrapper {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  padding-top: 50px;
+  overflow: hidden;
+  border-top: 1px solid #979a9d;
 }
 @-moz-keyframes greenish {
   0% {

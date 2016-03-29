@@ -203,7 +203,11 @@ def reg_request(request):
         userrequest.save()
 
         for person in data['persons']:
-            new_person = Person(first_name=person['first_name'], last_name=person['last_name'], birth_year=person['birth_year'], gender=person['gender'], userrequest=userrequest)
+            first_name = person['first_name']
+            last_name = person['last_name']
+            birth_year = person['birth_year']
+            gender = person['gender']
+            new_person = Person(first_name=first_name.lower(), last_name=last_name.lower(), birth_year=birth_year, gender=gender, userrequest=userrequest)
             new_person.save()
             main_distance = True
             for competitor in person['competitors']:
@@ -375,7 +379,7 @@ def tour(request, id):
             tag1 = ''
             if competitor.main_distance:
                 tag1 = '*'
-            competitor_data = tag1 + competitor.person.last_name + ' ' + competitor.person.first_name + ' ('+competitor.userrequest.team.name+')'
+            competitor_data = tag1 + competitor.person.last_name.title() + ' ' + competitor.person.first_name.title() + ' ('+competitor.userrequest.team.name+')'
             res.append((competitor_data,competitor.time))
         except:
             pass
@@ -407,7 +411,60 @@ def get_teams(request):
         team_list.append(team)
     return HttpResponse(json.dumps(team_list), content_type="application/json")
 
+def get_ages_distances_styles(request):
+    age_list = []
+    ages = Age.objects.all()
+    for a in ages:
+        age = {'id': a.id, 'name': a.name, 'kids': a.kids}
+        age_list.append(age)
+    distance_list = []
+    distances = Distance.objects.all()
+    for d in distances:
+        distance = {'id': d.id, 'name': d.name}
+        distance_list.append(distance)
+    style_list = []
+    styles = Style.objects.all()
+    for s in styles:
+        style = {'id': s.id, 'name': s.name}
+        style_list.append(style)
+    return HttpResponse(json.dumps({'ages':age_list, 'distances':distance_list, 'styles':style_list}), content_type="application/json")
+
 
 # форма создания соревнований
 def create_competition(request):
+    if request.method == "POST":
+
+        body_unicode = request.body.decode('utf-8')
+        data = json.loads(body_unicode)
+
+        date_start = datetime.datetime.strptime(data['date_start'], "%Y-%m-%dT%H:%M:%S.%fZ")+datetime.timedelta(days=1)
+        date_end = datetime.datetime.strptime(data['date_finish'], "%Y-%m-%dT%H:%M:%S.%fZ")+datetime.timedelta(days=1)
+
+        typ = 'Взрослые' if data['type'] == 1 else 'Детские'
+
+
+        competition = Competition(name=data['name'], typ=typ, date_start=date_start, date_end=date_end, finished=False)
+        competition.save()
+
+        if 'tours' in data:
+            for tour in data['tours']:
+
+                style = Style.objects.get(pk=tour['style'])
+                age = Age.objects.get(pk=tour['age'])
+                distance = Distance.objects.get(pk=tour['distance'])
+
+                new_tour_m = Tour(competition=competition, finished=False)
+                new_tour_m.gender = 'М'
+                new_tour_m.style = style
+                new_tour_m.distance = distance
+                new_tour_m.age = age
+                new_tour_m.save()
+
+                new_tour_f = Tour(competition=competition, finished=False)
+                new_tour_f.gender = 'Ж'
+                new_tour_f.style = style
+                new_tour_f.distance = distance
+                new_tour_f.age = age
+                new_tour_f.save()
+
     return render(request, 'pgups/competition_create.html', {}, )

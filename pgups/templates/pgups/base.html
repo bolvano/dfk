@@ -24,8 +24,11 @@
 		<div class="container">
 			<div id="navbar">
 				<ul class="nav navbar-nav">
-					<li><a href="{% url 'index' %}">Главная</a></li>
+					<li><a href="{% url 'index' %}"><span class="glyphicon glyphicon-home"></span> Главная</a></li>
 					<li><a href="{% url 'regrequest' %}">Подать заявку</a></li>
+					{% if user.is_authenticated %}
+					<li><a href="{% url 'competitioncreate' %}">Зарегистрировать соревнования</a></li>
+					{% endif %}
 				</ul>
 				<div class="login pull-right">
 					<span>
