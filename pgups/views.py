@@ -380,7 +380,9 @@ def tour(request, id):
             if competitor.main_distance:
                 tag1 = '*'
             competitor_data = tag1 + competitor.person.last_name.title() + ' ' + competitor.person.first_name.title() + ' ('+competitor.userrequest.team.name+')'
-            res.append((competitor_data,competitor.prior_time))
+            m, s = divmod(competitor.prior_time, 60)
+            formatted_prior =  "%d:%0.2f" % (m, s)
+            res.append((competitor_data, formatted_prior))
         except:
             pass
 

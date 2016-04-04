@@ -13,7 +13,7 @@
 		<tbody>
 				{% for item in result  %}
 					<tr>
-						<td class="column-name-wide">{{item.0.last_name}} {{item.0.first_name|title}}</td>
+						<td class="column-name-wide">{{item.0.last_name|title}} {{item.0.first_name|title}}</td>
 						<td class="column-result-wide">
 							{% for competitor in item.1  %} 
 								{{competitor.tour}} <br> 
