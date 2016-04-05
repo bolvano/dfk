@@ -147,7 +147,8 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
 
         $scope.data.tours = $scope.selectedTours();
 
-        //$('#submit-request-button').attr('disabled', true).html('Идет отправка заявки...');
+        // disabling button to prevent multiple requests
+        $('#create-competition-button').attr('disabled', true).html('Создаются соревнования...');
 
         var req = {
          method: 'POST',
@@ -172,7 +173,7 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
 
             }, function(response) {
                 notie.alert(3, 'Произошла ошибка!', 3);
-                //$('#submit-request-button').attr('disabled', false).html('Отправить заявку');
+                $('#create-competition-button').attr('disabled', false).html('Создать соревнования');
             });
 
     };
