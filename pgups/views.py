@@ -274,6 +274,17 @@ def generate_starts(request):
         # delete old starts
         cdsgs = Cdsg.objects.filter(competition=competition)
         for cdsg in cdsgs:
+            starts = Start.objects.filter(cdsg=cdsg)
+            for start in starts:
+                competitors = Competitor.objects.filter(start=start)
+                for competitor in competitors:
+                    competitor.start = None
+                    competitor.lane = None
+                    competitor.result = None
+                    competitor.points = None
+                    competitor.disqualification = None
+                    competitor.time = None
+                    competitor.save()
             cdsg.delete()
 
         distances = Distance.objects.all().order_by('meters') #[50, 100]
