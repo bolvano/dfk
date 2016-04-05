@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^get_competitions/$', views.get_competitions),
     url(r'^get_teams/$', views.get_teams),
     url(r'^get_ages_distances_styles/$', views.get_ages_distances_styles),
+    url(r'^get_competition_starts/(?P<id>\d+)/$', views.get_competition_starts),
 
     # starts and tours
     url(r'^generate_tours/(?P<competition_id>\d+)/(?P<kids>(0|1))/$', views.generate_tours),

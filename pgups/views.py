@@ -442,6 +442,21 @@ def get_ages_distances_styles(request):
         style_list.append(style)
     return HttpResponse(json.dumps({'ages':age_list, 'distances':distance_list, 'styles':style_list}), content_type="application/json")
 
+def get_competition_starts(request, id):
+    cdsg_starts_list = []
+    competition = Competition.objects.get(pk=id)
+    cdsg_list = Cdsg.objects.filter(competition=competition)
+    for cdsg in cdsg_list:
+        cdsg_obj = {'id':cdsg.id, 'name':cdsg.name, 'starts':[]}
+        starts = Start.objects.filter(cdsg=cdsg)
+        for start in starts:
+            start_obj = {'id':start.id, 'num': start.num, 'competitors':[]}
+            competitors = Competitor.objects.filter(start=start)
+            for competitor in competitors:
+                start_obj['competitors'].append({'id':competitor.id, 'lane': competitor.lane,'last_name':competitor.person.last_name, 'first_name':competitor.person.first_name, 'team':competitor.userrequest.team.name, 'age':competitor.age.name, 'prior_time':competitor.prior_time})
+            cdsg_obj['starts'].append(start_obj)
+        cdsg_starts_list.append(cdsg_obj)
+    return HttpResponse(json.dumps({'competition_id':competition.id, 'competition_name':competition.name,'cdsg_starts_list':cdsg_starts_list}), content_type="application/json")
 
 # форма создания соревнований
 def create_competition(request):
