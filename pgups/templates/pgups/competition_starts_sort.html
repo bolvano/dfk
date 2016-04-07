@@ -1,0 +1,63 @@
+{% extends 'pgups/base.html' %}
+{% load staticfiles %}
+{% block content %}
+
+	<div ng-app="sortableStartsApp" ng-controller="sortController as sortableVM">
+
+		<input type="hidden" name="csrf_token" ng-init="csrf_token='{{csrf_token}}'" ng-model="csrf_token">
+		<input type="hidden" name="competition_id" ng-init="competition_id='{{competition_id}}'" ng-model="competition_id">
+
+		<div class="container">
+
+			<!-- Heading -->
+			<div class="heading heading-no-margin">
+				<a href="{% url 'competition' competition_id=competition_id %}">
+					<h1><b>{$ sortableVM.data.competition_name $}</b></h1>
+				</a>
+			</div> <!-- End of Heading -->
+
+			<!-- Single start -->
+			<div class="single-start-container" ng-repeat="cdsg in sortableVM.data.cdsg_starts_list">
+
+				<h2><b>{$ cdsg.name $}</b></h2>
+
+				<div ng-repeat="start in cdsg.starts">
+
+					<!-- Start number -->
+					<div class="start-number">
+						<h3 class="pull-left">Заплыв {$ start.num $}</h3>
+					</div> <!-- End of Start number -->
+
+					<table class="table table-striped table-hover table-bordered">
+						<tbody>
+
+							<tr ng-repeat="competitor in start.competitors">
+
+								<td class="column-lane text-center">{$ competitor.lane $}</td>
+								<td class="column-name">{$ competitor.first_name | ucf $} {$ competitor.last_name | ucf $}</td>
+								<td class="column-team">{$ competitor.team $}</td>
+								<td class="column-age text-center">{$ competitor.age $}</td>
+								<td class="column-time text-center">{$ competitor.prior_time | number : 1 $}</td>
+
+							</tr>
+
+						</tbody>
+					</table>
+
+				</div>
+
+			</div> <!-- End of Single start -->
+
+			{$ sortableVM.data $}
+
+		</div>
+
+	</div>
+
+{% endblock %}
+
+{% block additionaljs %}
+
+	<script src="{% static 'js/sortable-starts.js' %}"></script> <!-- SortableStartsApp -->
+
+{% endblock %}

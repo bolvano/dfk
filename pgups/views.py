@@ -496,3 +496,7 @@ def create_competition(request):
                 new_tour_f.save()
 
     return render(request, 'pgups/competition_create.html', {}, )
+
+
+def competition_starts_sort(request, competition_id):
+    return render(request, 'pgups/competition_starts_sort.html', { 'competition_id': competition_id, }, )
