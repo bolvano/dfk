@@ -50,7 +50,6 @@
 		</ul>
 		<hr> <!-- End of Tours -->
 
-
 		<div class="row">
 
 			<a class="btn btn-lg btn-success starts" href="../../competition/starts/{{competition.id}}/">
@@ -60,9 +59,9 @@
 			{% if user.is_authenticated %}
 				<form action="../../generate_starts/" method="POST" >{% csrf_token %}
 					<input type="hidden" name="competition_id" value="{{competition.id}}">
-					
-						<input type="submit" class="generate-starts btn btn-lg btn-default" value="Перегенерировать старты">
+					<input type="submit" class="generate-starts btn btn-lg btn-default" value="Перегенерировать старты">
 				</form>
+				<a class="pull-right btn btn-md btn-default" href="../../competition_starts_sort/{{competition.id}}/">Ручная настройка стартов</a>
 			{% endif %}
 
 		</div>

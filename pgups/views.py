@@ -213,7 +213,10 @@ def reg_request(request):
             for competitor in person['competitors']:
                 tour = Tour.objects.get(pk=competitor['tour']['id'])
                 age = Age.objects.get(pk=competitor['tour']['age_id'])
-                prior_time=float(competitor['prior_time'])
+                if 'prior_time' in competitor:
+                    prior_time=float(competitor['prior_time'])
+                else:
+                    prior_time = 0
                 if 'prior_time_minutes' in competitor and competitor['prior_time_minutes']:
                     prior_time += int(competitor['prior_time_minutes'])*60
                 new_competitor = Competitor(person=new_person, userrequest=userrequest, tour=tour, age=age, prior_time=prior_time, main_distance=main_distance)
@@ -303,7 +306,10 @@ def generate_starts(request):
                     tours = Tour.objects.filter(competition=competition, distance=distance, style=style, gender=gender)
                     if tours:
                         #import ipdb; ipdb.set_trace()
-                        competitors = Competitor.objects.filter(tour__in=tours).order_by('-prior_time')
+                        competitors_no_prior = Competitor.objects.filter(tour__in=tours).filter(prior_time=0)
+                        competitors_prior = Competitor.objects.filter(tour__in=tours).filter(prior_time__gt=0).order_by('-prior_time')
+                        competitors = list(competitors_no_prior) + list(competitors_prior)
+
                         if competitors:
 
                             #import ipdb; ipdb.set_trace()
@@ -468,7 +474,7 @@ def create_competition(request):
         date_start = datetime.datetime.strptime(data['date_start'], "%Y-%m-%dT%H:%M:%S.%fZ")+datetime.timedelta(days=1)
         date_end = datetime.datetime.strptime(data['date_finish'], "%Y-%m-%dT%H:%M:%S.%fZ")+datetime.timedelta(days=1)
 
-        typ = 'Взрослые' if data['type'] == 1 else 'Детские'
+        typ = 'Взрослые' if data['type'] == '1' else 'Детские'
 
 
         competition = Competition(name=data['name'], typ=typ, date_start=date_start, date_end=date_end, finished=False)
@@ -496,3 +502,7 @@ def create_competition(request):
                 new_tour_f.save()
 
     return render(request, 'pgups/competition_create.html', {}, )
+
+
+def competition_starts_sort(request, competition_id):
+    return render(request, 'pgups/competition_starts_sort.html', { 'competition_id': competition_id, }, )

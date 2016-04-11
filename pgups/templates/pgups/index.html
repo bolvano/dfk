@@ -2,10 +2,21 @@
 {% load staticfiles %}
 {% block content %}
 
-<div class="container">
-	<div class="heading">
-		<h1><b>Соревнования</b></h1>
+
+<!-- Jumbotron -->
+<div class="jumbotron">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-11">
+
+				<h1>Соревнования</h1>
+
+			</div>
+		</div>
 	</div>
+</div> <!-- End of Jumbotron -->
+
+<div class="container">
 	<ul class="basic-list basic-list-larger">
 		{% for competition in competitions %}
 		<li>

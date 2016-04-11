@@ -6,8 +6,8 @@ var createCompetitionApp = angular.module('createCompetitionApp', ['ngAnimate'])
 // handling conflicting django/angular template tags
 // (setting {$ $} tags for angular stuff)
 createCompetitionApp.config(function($interpolateProvider) {
-        $interpolateProvider.startSymbol('{$');
-        $interpolateProvider.endSymbol('$}');
+    $interpolateProvider.startSymbol('{$');
+    $interpolateProvider.endSymbol('$}');
 });
 
 
@@ -75,7 +75,7 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
     $scope.groupTours = function (lst) {
 
         for ( var z = 0; z < lst.length; z++ ) {
-            $( ".tour-" + lst[z].id ).last().css("margin-bottom", "20px");
+            $( '.tour-' + lst[z].id ).last().css('margin-bottom', '20px');
         }
 
     };
@@ -96,16 +96,16 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
                 for ( var k = 0; k < $scope.selectedStyles().length; k++ ) {
 
                     $scope.tours.push( {
-                                         'id': idCount,
-                                         'age': $scope.selectedAgeGroups()[i].id,
+                        'id': idCount,
+                        'age': $scope.selectedAgeGroups()[i].id,
 
-                                         'name':        $scope.selectedAgeGroups()[i].name +
-                                                 ' лет, ' + $scope.selectedDistances()[j].name +
-                                                 ', ' + $scope.selectedStyles()[k].name,
+                        'name':        $scope.selectedAgeGroups()[i].name +
+                                 ' лет, ' + $scope.selectedDistances()[j].name +
+                                 ', ' + $scope.selectedStyles()[k].name,
 
-                                         'distance': $scope.selectedDistances()[j].id,
-                                         'style': $scope.selectedStyles()[k].id
-                                       }
+                        'distance': $scope.selectedDistances()[j].id,
+                        'style': $scope.selectedStyles()[k].id
+                    }
                                      );
 
                     // increment idCount
@@ -113,7 +113,7 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
 
                 }
             }
-        };
+        }
 
 
         // group tours by age, delayed call, waiting for DOM to update
@@ -128,17 +128,17 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
 
     // selectAll checkbox for tours
     $scope.selectAll = function() {
-      angular.forEach($scope.tours, function(tour) {
-        tour.selected = $scope.selectedAll;
-      });
+        angular.forEach($scope.tours, function(tour) {
+            tour.selected = $scope.selectedAll;
+        });
     };
 
 
     // checks whether all checkboxes are checked, changes selectAll value accordingly
     $scope.checkIfAllSelected = function() {
-      $scope.selectedAll = $scope.tours.every(function(tour) {
-        return tour.selected == true
-      })
+        $scope.selectedAll = $scope.tours.every(function(tour) {
+            return tour.selected == true;
+        });
     };
 
 
@@ -147,16 +147,17 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
 
         $scope.data.tours = $scope.selectedTours();
 
-        //$('#submit-request-button').attr('disabled', true).html('Идет отправка заявки...');
+        // disabling button to prevent multiple requests
+        $('#create-competition-button').attr('disabled', true).html('Создаются соревнования...');
 
         var req = {
-         method: 'POST',
-         url: 'http://' + window.location.host + '/competition_create/',
-         headers: {
-            'X-CSRFToken' : $scope.csrf_token,
-            'Content-Type': 'application/x-www-form-urlencoded'
-         },
-         data: angular.toJson($scope.data)
+            method: 'POST',
+            url: 'http://' + window.location.host + '/competition_create/',
+            headers: {
+                'X-CSRFToken' : $scope.csrf_token,
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: angular.toJson($scope.data)
         };
 
         var postRequest = $http(req)
@@ -172,7 +173,7 @@ createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $t
 
             }, function(response) {
                 notie.alert(3, 'Произошла ошибка!', 3);
-                //$('#submit-request-button').attr('disabled', false).html('Отправить заявку');
+                $('#create-competition-button').attr('disabled', false).html('Создать соревнования');
             });
 
     };
