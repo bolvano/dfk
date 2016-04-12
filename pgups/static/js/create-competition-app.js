@@ -64,17 +64,13 @@ function CreationFormController($scope, $http, $timeout, $window, $log, filterFi
     };
 
     function selected(arr) {
-
         return filterFilter(arr, { selected: true });
-
     }
 
     function groupTours(arr) {
-
         for ( var i = 0; i < arr.length; i++ ) {
             angular.element( '.tour-' + arr[i].id ).last().css('margin-bottom', '20px');
         }
-
     }
 
     function generateTours() {
@@ -112,19 +108,15 @@ function CreationFormController($scope, $http, $timeout, $window, $log, filterFi
     }
 
     function selectAll() {
-
         angular.forEach(vm.tours, function(tour) {
             tour.selected = vm.selectedAll;
         });
-
     }
 
     function checkIfAllSelected() {
-
         vm.selectedAll = vm.tours.every(function(tour) {
             return tour.selected == true;
         });
-
     }
 
     function submitForm() {
