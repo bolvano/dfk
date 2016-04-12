@@ -13,7 +13,6 @@ angular
 
 .factory('initRequest', initRequest);
 
-
 function initRequest($http, $window, $log) {
     var initRequest = {
         async: function() {
@@ -36,22 +35,23 @@ function initRequest($http, $window, $log) {
 
 }
 
-
 function CreationFormController($scope, $http, $timeout, $window, $log, filterFilter, initRequest) {
 
     var vm = this;
 
-    $log.log(vm.csrf_token);
-
     vm.data = {};
+    vm.step = 1;
+    vm.groupTours = groupTours;
+    vm.selected = selected;
+    vm.generateTours = generateTours;
+    vm.selectAll = selectAll;
+    vm.checkIfAllSelected = checkIfAllSelected;
+    vm.submitForm = submitForm;
 
     initRequest.async().then(function(response) {
         vm.fetchedData = angular.fromJson(response);
         $log.log($scope.csrf_token);
     });
-
-    // switch between parts of the form
-    vm.step = 1;
 
     vm.nextStep = function() {
         vm.step++;
@@ -63,53 +63,41 @@ function CreationFormController($scope, $http, $timeout, $window, $log, filterFi
         $window.scrollTo(0, 0);
     };
 
-    vm.selectedAgeGroups = function () {
-        return filterFilter(vm.fetchedData.ages, { selected: true });
-    };
+    function selected(arr) {
 
-    vm.selectedDistances = function () {
-        return filterFilter(vm.fetchedData.distances, { selected: true });
-    };
+        return filterFilter(arr, { selected: true });
 
-    vm.selectedStyles = function () {
-        return filterFilter(vm.fetchedData.styles, { selected: true });
-    };
+    }
 
-    vm.selectedTours = function () {
-        return filterFilter(vm.tours, { selected: true });
-    };
+    function groupTours(arr) {
 
-    vm.groupTours = function (lst) {
-
-        for ( var z = 0; z < lst.length; z++ ) {
-            $( '.tour-' + lst[z].id ).last().css('margin-bottom', '20px');
+        for ( var i = 0; i < arr.length; i++ ) {
+            angular.element( '.tour-' + arr[i].id ).last().css('margin-bottom', '20px');
         }
 
-    };
+    }
 
-    vm.generateTours = function () {
+    function generateTours() {
 
         vm.tours = [];
         var idCount = 0;
+        var ages = selected(vm.fetchedData.ages);
+        var distances = selected(vm.fetchedData.distances);
+        var styles = selected(vm.fetchedData.styles);
 
-        for ( var i = 0; i < vm.selectedAgeGroups().length; i++ ) {
+        for (var i = 0; i < ages.length; i++) {
+            for (var j = 0; j < distances.length; j++) {
+                for (var k = 0; k < styles.length; k++) {
 
-            for ( var j = 0; j < vm.selectedDistances().length; j++ ) {
-
-                for ( var k = 0; k < vm.selectedStyles().length; k++ ) {
-
-                    vm.tours.push( {
+                    vm.tours.push({
                         'id': idCount,
-                        'age': vm.selectedAgeGroups()[i].id,
-
-                        'name':        vm.selectedAgeGroups()[i].name +
-                                 ' лет, ' + vm.selectedDistances()[j].name +
-                                 ', ' + vm.selectedStyles()[k].name,
-
-                        'distance': vm.selectedDistances()[j].id,
-                        'style': vm.selectedStyles()[k].id
-                    }
-                                     );
+                        'age': ages[i].id,
+                        'name': ages[i].name +
+                                ' лет, ' + distances[j].name +
+                                ', ' + styles[k].name,
+                        'distance': distances[j].id,
+                        'style': styles[k].id
+                    });
 
                     idCount++;
 
@@ -117,40 +105,36 @@ function CreationFormController($scope, $http, $timeout, $window, $log, filterFi
             }
         }
 
-        // group tours by age, delayed call, waiting for DOM to update
         $timeout(function() {
-
-            vm.groupTours(vm.selectedAgeGroups());
-
+            groupTours(ages);
         }, 500);
 
-    };
+    }
 
-    // selectAll checkbox for tours
-    vm.selectAll = function() {
+    function selectAll() {
+
         angular.forEach(vm.tours, function(tour) {
             tour.selected = vm.selectedAll;
         });
-    };
 
-    // checks whether all checkboxes are checked, changes selectAll value accordingly
-    vm.checkIfAllSelected = function() {
+    }
+
+    function checkIfAllSelected() {
+
         vm.selectedAll = vm.tours.every(function(tour) {
             return tour.selected == true;
         });
-    };
 
+    }
 
+    function submitForm() {
 
-    // submit form
-    vm.submitForm = function() {
+        vm.data.tours = selected(vm.tours);
 
-        vm.data.tours = vm.selectedTours();
+        //$log.log($scope.csrf_token);
 
-        $log.log($scope.csrf_token);
-
-        // disabling button to prevent multiple requests
-        $('#create-competition-button').attr('disabled', true).html('Создаются соревнования...');
+        // disable button to prevent multiple requests
+        angular.element('#create-competition-button').attr('disabled', true).html('Создаются соревнования...');
 
         var req = {
             method: 'POST',
@@ -165,19 +149,17 @@ function CreationFormController($scope, $http, $timeout, $window, $log, filterFi
         $http(req)
             .then(function() {
 
-                // displaying success message
-                notie.alert(1, 'Создаются соревнования...', 5);
+                notie.alert(1, 'Создаются соревнования...');
 
-                // delayed page refreshing
                 $timeout(function() {
                     location.reload();
                 }, 2000);
 
             }, function() {
                 notie.alert(3, 'Произошла ошибка!', 3);
-                $('#create-competition-button').attr('disabled', false).html('Создать соревнования');
+                angular.element('#create-competition-button').attr('disabled', false).html('Создать соревнования');
             });
 
-    };
+    }
 
 }
