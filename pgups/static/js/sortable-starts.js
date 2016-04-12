@@ -1,40 +1,40 @@
 'use strict';
 
-var sortableStartsApp = angular.module('sortableStartsApp', []);
-
+angular.
+module('sortableStartsApp', []).
 
 // handling conflicting django/angular template tags
 // (setting {$ $} tags for angular stuff)
-sortableStartsApp.config(function($interpolateProvider) {
+config(function($interpolateProvider) {
     $interpolateProvider.startSymbol('{$');
     $interpolateProvider.endSymbol('$}');
-});
+}).
 
-sortableStartsApp.filter('ucf', function() {
+filter('ucf', function() {
     return function(word) {
         return word.substring(0,1).toUpperCase() + word.slice(1);
     };
-});
+}).
 
-sortableStartsApp.controller( 'sortController', function( $scope, $http ) {
+controller( 'SortController', function( $scope, $http, $window, $log ) {
 
-    var sortableVM = this;
+    var vm = this;
 
-    // initial data request, waiting for competition_id to load
+    // $watch waiting for competition_id in template to load
     $scope.$watch(
         function(scope) { return scope.competition_id; },
         function() {
 
-            var initRequest = $http.get( 'http://' + window.location.host +
-                                         '/get_competition_starts/' +
-                                         $scope.competition_id)
+            $http.get( 'http://' + $window.location.host +
+                       '/get_competition_starts/' +
+                       $scope.competition_id)
 
             .then(function(response) {
 
-                console.log($scope.csrf_token);
-                console.log('starts fetched');
-                sortableVM.fetchedData = angular.fromJson(response);
-                sortableVM.data = sortableVM.fetchedData.data;
+                $log.log($scope.csrf_token);
+                $log.log('starts fetched');
+                vm.fetchedData = angular.fromJson(response);
+                vm.data = vm.fetchedData.data;
                 return response;
 
             });

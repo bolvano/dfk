@@ -1,36 +1,33 @@
 'use strict';
 
-var validationApp = angular.module('validationApp', []);
-
+angular.
+module('validationApp', []).
 
 // handling conflicting django/angular template tags
 // (setting {$ $} tags for angular stuff)
-validationApp.config(function($interpolateProvider) {
+config(function($interpolateProvider) {
     $interpolateProvider.startSymbol('{$');
     $interpolateProvider.endSymbol('$}');
-});
-
+}).
 
 // form controller
-validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
-
+controller( 'formCtrl', function( $scope, $http, $timeout, $window, $log ) {
 
     // initial data request
-    var initRequest = $http.get( 'http://' + window.location.host + '/get_competitions/' )
+    $http.get( 'http://' + $window.location.host + '/get_competitions/' )
         .then(function(response) {
 
-            console.log($scope.csrf_token);
-
-            console.log('data fetched');
+            $log.log($scope.csrf_token);
+            $log.log('data fetched');
             $scope.fetchedData = angular.fromJson(response);
             return response;
 
         });
 
-    var teamRequest = $http.get( 'http://' + window.location.host + '/get_teams/' )
+    $http.get( 'http://' + $window.location.host + '/get_teams/' )
         .then(function(response) {
 
-            console.log('teams fetched');
+            $log.log('teams fetched');
             $scope.teamsData = angular.fromJson(response);
             return response;
 
@@ -100,7 +97,7 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
 
 
     // disabling tour option if already selected elsewhere
-    var tourDisable = function(personIdx) {
+    function tourDisable(personIdx) {
 
         // setting everything to enabled
         $('.' + $scope.persons[personIdx].personId + '-tour-select option').attr('disabled', false);
@@ -216,7 +213,7 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
 
         var req = {
             method: 'POST',
-            url: 'http://' + window.location.host + '/regrequest/',
+            url: 'http://' + $window.location.host + '/regrequest/',
             headers: {
                 'X-CSRFToken' : $scope.csrf_token,
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -224,8 +221,8 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
             data: angular.toJson($scope.form)
         };
 
-        var postRequest = $http(req)
-            .then(function(response) {
+        $http(req)
+            .then(function() {
 
                 // displaying success message
                 notie.alert(1, 'Заявка отправлена! Страница сейчас обновится', 5);
@@ -235,7 +232,7 @@ validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
                     location.reload();
                 }, 2000);
 
-            }, function(response) {
+            }, function() {
                 notie.alert(3, 'Произошла ошибка!', 3);
                 $('#submit-request-button').attr('disabled', false).html('Отправить заявку');
             });

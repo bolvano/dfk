@@ -2,7 +2,9 @@
 {% load staticfiles %}
 {% block content %}
 
-	<div ng-app="sortableStartsApp" ng-controller="sortController as sortableVM">
+	{% if user.is_authenticated %}
+
+	<div ng-app="sortableStartsApp" ng-controller="SortController as sortCtrl">
 
 		<input type="hidden" name="csrf_token" ng-init="csrf_token='{{csrf_token}}'" ng-model="csrf_token">
 		<input type="hidden" name="competition_id" ng-init="competition_id='{{competition_id}}'" ng-model="competition_id">
@@ -12,12 +14,12 @@
 			<!-- Heading -->
 			<div class="heading heading-no-margin">
 				<a href="{% url 'competition' competition_id=competition_id %}">
-					<h1><b>{$ sortableVM.data.competition_name $}</b></h1>
+					<h1><b>{$ sortCtrl.data.competition_name $}</b></h1>
 				</a>
 			</div> <!-- End of Heading -->
 
 			<!-- Single start -->
-			<div class="single-start-container" ng-repeat="cdsg in sortableVM.data.cdsg_starts_list">
+			<div class="single-start-container" ng-repeat="cdsg in sortCtrl.data.cdsg_starts_list">
 
 				<h2><b>{$ cdsg.name $}</b></h2>
 
@@ -48,11 +50,21 @@
 
 			</div> <!-- End of Single start -->
 
-			{$ sortableVM.data $}
+			{$ sortCtrl.data $}
 
 		</div>
 
 	</div>
+
+	{% else %}
+
+	<div class="container">
+		<h3 style="margin-top: 20%">
+			<span style="font-size: larger" class="alt-color glyphicon glyphicon-alert"></span> Для просмотра этой страницы необходимо залогиниться.
+		</h3>
+	</div>
+
+	{% endif %}
 
 {% endblock %}
 
