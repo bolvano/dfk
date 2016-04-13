@@ -31,7 +31,7 @@
                  });
     }
 
-    function RegFormController( $scope, $http, $timeout, $window, $log, getData ) {
+    function RegFormController($scope, $http, $timeout, $window, $log, getData) {
 
         var vm = this;
 
