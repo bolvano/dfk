@@ -3,57 +3,35 @@
 
     angular
     .module('validationApp', [])
+    .config(altTemplateTags)
+    .controller('RegFormController', RegFormController)
+    .factory('getData', getData);
+
+    altTemplateTags.$inject = ['$interpolateProvider'];
+    getData.$inject = ['$q', '$window', '$http'];
+    RegFormController.$inject = ['$scope', '$http', '$timeout', '$window', '$log', 'getData'];
 
     // avoiding conflict with django template tags
-    .config(function($interpolateProvider) {
+    function altTemplateTags($interpolateProvider) {
         $interpolateProvider.startSymbol('{$');
         $interpolateProvider.endSymbol('$}');
-    })
-    .controller('RegFormController', RegFormController)
-    .factory('getCompetitions', getCompetitions)
-    .factory('getTeams', getTeams);
-
-    function getCompetitions($http, $window, $log) {
-        var getCompetitions = {
-            async: function() {
-
-                var promise = $http.get('http://' +
-                                        $window.location.host +
-                                        '/get_competitions/')
-
-                .then(function (response) {
-                    $log.log('competitions fetched');
-                    return response.data;
-                });
-
-                return promise;
-            }
-        };
-
-        return getCompetitions;
     }
 
-    function getTeams($http, $window, $log) {
-        var getTeams = {
-            async: function() {
+    function getData($q, $window, $http) {
 
-                var promise = $http.get('http://' +
-                                        $window.location.host +
-                                        '/get_teams/')
+        var url1 = 'http://' + $window.location.host + '/get_competitions/';
+        var url2 = 'http://' + $window.location.host + '/get_teams/';
 
-                .then(function (response) {
-                    $log.log('teams fetched');
-                    return response.data;
-                });
+        var competitions = $http({method: 'GET', url: url1, cache: 'true'});
+        var teams = $http({method: 'GET', url: url2, cache: 'true'});
 
-                return promise;
-            }
-        };
-
-        return getTeams;
+        return $q.all([competitions, teams])
+                    .then(function(data){
+                        return data;
+                    });
     }
 
-    function RegFormController( $scope, $http, $timeout, $window, $log, getTeams, getCompetitions ) {
+    function RegFormController( $scope, $http, $timeout, $window, $log, getData ) {
 
         var vm = this;
 
@@ -78,15 +56,16 @@
         vm.removeCompetitor = removeCompetitor;
         vm.submitRequest = submitRequest;
 
-        // fetching init data
-        getCompetitions.async().then(function(response) {
-            vm.competitions = angular.fromJson(response);
-        });
+        activate();
 
-        getTeams.async().then(function(response) {
-            vm.teams = angular.fromJson(response);
-        });
-        /////////////////////
+        function activate() {
+            getData.then(function(response) {
+                vm.baka = response;
+                vm.competitions = vm.baka[0].data;
+                vm.teams = vm.baka[1].data;
+                return vm.baka;
+            });
+        }
 
         function filterCompetition() {
 
@@ -118,7 +97,7 @@
 
             return function(item) {
                 var age = year - birth_year;
-                return item['max_age'] >= age && item['min_age'] <= age;
+                return item.max_age >= age && item.min_age <= age;
             };
         }
 
@@ -151,7 +130,7 @@
         // remove all but one persons if team changes to none
         function clearPersons() {
 
-            if ( vm.indRequestOnePerson && vm.form.team == null && vm.persons.length > 1 ) {
+            if ( vm.indRequestOnePerson && vm.form.team === null && vm.persons.length > 1 ) {
                 for ( var i = vm.persons.length - 1; i >= 1; i-- ) {
                     vm.persons.splice(i, 1);
                 }

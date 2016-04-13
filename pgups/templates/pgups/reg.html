@@ -23,7 +23,7 @@
 
 	<br>
 
-	<div ng-app="validationApp" ng-controller="RegFormController as reg">
+	<div ng-app="validationApp" ng-controller="RegFormController as reg" ng-strict-di>
 
 		<input type="hidden" name="csrf_token" ng-init="csrf_token='{{csrf_token}}'" ng-model="csrf_token">
 
