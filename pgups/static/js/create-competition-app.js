@@ -142,17 +142,16 @@
             $http(req)
                 .then(function() {
 
-                    notie.alert(1, 'Создаются соревнования...');
+                    notie.alert(1, 'Создаются соревнования... Вы будете перенаправлены на главную страницу.');
 
                     $timeout(function() {
-                        location.reload();
-                    }, 2000);
+                        $window.location.href = '/';
+                    }, 4000);
 
                 }, function() {
                     notie.alert(3, 'Произошла ошибка!', 3);
                     angular.element('#create-competition-button').attr('disabled', false).html('Создать соревнования');
                 });
-
         }
 
     }

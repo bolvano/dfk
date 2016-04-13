@@ -208,11 +208,11 @@
             $http(req)
                 .then(function() {
 
-                    notie.alert(1, 'Заявка отправлена! Страница сейчас обновится', 2);
+                    notie.alert(1, 'Заявка отправлена! Вы будете перенаправлены на страницу соревнования.', 2);
 
                     $timeout(function() {
-                        location.reload();
-                    }, 2000);
+                        $window.location.href = '/competition/'+vm.form.competition.id;
+                    }, 4000);
 
                 }, function() {
                     notie.alert(3, 'Произошла ошибка!', 3);
