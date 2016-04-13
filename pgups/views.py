@@ -23,10 +23,6 @@ def competition(request, competition_id):
     teams = set([userrequest.team for userrequest in userrequests if userrequest.team is not None])
     return render(request, 'pgups/competition.html', {'competition': competition, 'teams':teams},)
 
-def userrequest(request, userrequest_id):
-    userrequest = get_object_or_404(Userrequest, pk=userrequest_id)
-    return render(request, 'pgups/userrequest.html', {'userrequest': userrequest},)
-
 def person(request, person_id):
     person = get_object_or_404(Person, pk=person_id)
     return render(request, 'pgups/person.html', {'person': person},)
@@ -121,6 +117,22 @@ def competition_team(request, competition_id, team_id):
             result[competitor.person.id] = [competitor,]
     result = [(Person.objects.get(pk=k),v) for k,v in result.items()]
     return render(request, 'pgups/competition_team.html', {'result': result, 'team':team, 'competition':competition},)
+
+def userrequest(request, userrequest_id):
+    userrequest = get_object_or_404(Userrequest, pk=userrequest_id)
+    competitors = userrequest.competitor_set.all()
+    CompetitorFormSet = modelformset_factory(Competitor, fields=('approved',), extra=0, widgets={'approved': forms.CheckboxInput()})
+
+    if request.method == "POST":
+        competitor_formset = CompetitorFormSet(request.POST)
+        if(competitor_formset.is_valid()):
+            competitor_formset.save()
+            messages.success(request, 'Изменения сохранены')
+            return HttpResponseRedirect('/userrequest/'+userrequest_id+'/')
+    else:
+        competitor_formset = CompetitorFormSet(queryset=competitors.order_by('person__last_name'))
+
+    return render(request, 'pgups/userrequest.html', {'userrequest': userrequest, 'competitor_formset': competitor_formset},)
 
 def start_result(request, start_id):
 
@@ -306,8 +318,8 @@ def generate_starts(request):
                     tours = Tour.objects.filter(competition=competition, distance=distance, style=style, gender=gender)
                     if tours:
                         #import ipdb; ipdb.set_trace()
-                        competitors_no_prior = Competitor.objects.filter(tour__in=tours).filter(prior_time=0)
-                        competitors_prior = Competitor.objects.filter(tour__in=tours).filter(prior_time__gt=0).order_by('-prior_time')
+                        competitors_no_prior = Competitor.objects.filter(tour__in=tours).filter(approved=True).filter(prior_time=0)
+                        competitors_prior = Competitor.objects.filter(tour__in=tours).filter(approved=True).filter(prior_time__gt=0).order_by('-prior_time')
                         competitors = list(competitors_no_prior) + list(competitors_prior)
 
                         if competitors:

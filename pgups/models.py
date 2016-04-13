@@ -102,6 +102,9 @@ class Userrequest(models.Model):
             ip = request.META.get('REMOTE_ADDR')
         return ip
 
+    def approved_competitors(self):
+        return self.competitor_set.filter(approved=True)
+
 
 #Туры
 class Tour(models.Model):
