@@ -8,16 +8,15 @@
     .factory('getData', getData);
 
     altTemplateTags.$inject = ['$interpolateProvider'];
-    getData.$inject = ['$q', '$window', '$http'];
+    getData.$inject = ['$q', '$window', '$http', '$log'];
     RegFormController.$inject = ['$scope', '$http', '$timeout', '$window', '$log', 'getData'];
 
-    // avoiding conflict with django template tags
     function altTemplateTags($interpolateProvider) {
         $interpolateProvider.startSymbol('{$');
         $interpolateProvider.endSymbol('$}');
     }
 
-    function getData($q, $window, $http) {
+    function getData($q, $window, $http, $log) {
 
         var url1 = 'http://' + $window.location.host + '/get_competitions/';
         var url2 = 'http://' + $window.location.host + '/get_teams/';
@@ -26,9 +25,10 @@
         var teams = $http({method: 'GET', url: url2, cache: 'true'});
 
         return $q.all([competitions, teams])
-                    .then(function(data){
-                        return data;
-                    });
+                 .then(function(data){
+                     $log.log('data fetched');
+                     return data;
+                 });
     }
 
     function RegFormController( $scope, $http, $timeout, $window, $log, getData ) {
@@ -50,20 +50,23 @@
         vm.filterToursByAge = filterToursByAge;
         vm.tourDisable = tourDisable;
         vm.clearPersons = clearPersons;
+
         vm.addPerson = addPerson;
         vm.removePerson = removePerson;
         vm.addCompetitor = addCompetitor;
         vm.removeCompetitor = removeCompetitor;
+
         vm.submitRequest = submitRequest;
 
         activate();
 
         function activate() {
+
             getData.then(function(response) {
-                vm.baka = response;
-                vm.competitions = vm.baka[0].data;
-                vm.teams = vm.baka[1].data;
-                return vm.baka;
+                var data = response;
+                vm.competitions = data[0].data;
+                vm.teams = data[1].data;
+                return data;
             });
         }
 
