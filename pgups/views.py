@@ -11,6 +11,39 @@ import re
 
 from .models import Userrequest, Person, Competition, Team, Competitor, Tour, Age, Distance, Style, Start, Cdsg
 
+class SplitTimeWidget(forms.widgets.MultiWidget):
+
+    def __init__(self, *args, **kwargs):
+        widgets = (
+            forms.TextInput(),
+            forms.TextInput(),
+        )
+        super(SplitTimeWidget, self).__init__(widgets, *args, **kwargs)
+
+    def decompress(self, value):
+        if value:
+            minutes,seconds = divmod(value,60)
+            return [minutes, seconds]
+        return [None, None]
+
+    def format_output(self, rendered_widgets):
+        return (rendered_widgets[0] + rendered_widgets[1])
+
+    def value_from_datadict(self, data, files, name):
+        minutes = self.widgets[0].value_from_datadict(data, files, name + '_0')
+        if not minutes:
+            minutes_seconds = 0
+        else:
+            minutes_seconds = int(minutes)*60
+
+        seconds = self.widgets[1].value_from_datadict(data, files, name + '_1')
+        if not seconds:
+            seconds = 0
+        else:
+            seconds = float(seconds)
+
+        return minutes_seconds + seconds
+
 
 def index(request):
     competitions = Competition.objects.all().order_by('date_start')
@@ -155,10 +188,11 @@ def start_result(request, start_id):
 
     #import ipdb; ipdb.set_trace()
 
-    ResultFormSet = modelformset_factory(Competitor, fields=('time',), extra=0, widgets={'time': forms.NumberInput()})
+    ResultFormSet = modelformset_factory(Competitor, fields=('time', 'disqualification'), extra=0, widgets={'time': SplitTimeWidget(), 'disqualification':forms.widgets.Select(attrs=None, choices=([0,''],[1,'Неявка'],[2,'Фальстарт'], [3,'Нарушение']))})
 
     if request.method == "POST":
         result_formset = ResultFormSet(request.POST)
+        #import ipdb; ipdb.set_trace()
         if(result_formset.is_valid()):
             result_formset.save()
             messages.success(request, 'Результат сохранён')
