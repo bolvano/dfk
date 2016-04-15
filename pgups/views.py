@@ -59,10 +59,20 @@ def index(request):
     return render(request, 'pgups/index.html', {'competitions': competitions},)
 
 def competition(request, competition_id):
-    teams = []
+
     competition = get_object_or_404(Competition, pk=competition_id)
     userrequests = Userrequest.objects.filter(competition=competition)
     teams = set([userrequest.team for userrequest in userrequests if userrequest.team is not None])
+
+    if request.method == "POST":
+        #import ipdb; ipdb.set_trace()
+        close = request.POST.get("close", '0')
+        if close == '1':
+            competition.finished=True
+        else:
+            competition.finished=False
+        competition.save()
+
     return render(request, 'pgups/competition.html', {'competition': competition, 'teams':teams},)
 
 def person(request, person_id):
@@ -78,6 +88,8 @@ def results_starts(request, competition_id):
 
 def results_tours(request, competition_id):
 
+    disqualification_dict = {1:'Неявка', 2: 'Фальстарт', 3:'Нарушение правил'}
+
     results = []
     competition = get_object_or_404(Competition, pk=competition_id)
     tours = Tour.objects.filter(competition=competition)
@@ -88,8 +100,10 @@ def results_tours(request, competition_id):
             competitors.append(c)
 
         competitors.sort(key=lambda c: c.time)
-        competitors_good = list(filter(lambda c: c.time > 0, competitors))
-        competitors_bad = list(filter(lambda c: c.time == 0, competitors))
+        competitors_good = list(filter(lambda c: c.disqualification == 0, competitors))
+        competitors_bad = list(filter(lambda c: c.disqualification > 0, competitors))
+
+        competitors_bad = [(c,disqualification_dict[c.disqualification]) for c in  competitors_bad]
 
         results.append((tour,competitors_good,competitors_bad, competitors))
 

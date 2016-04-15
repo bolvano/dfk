@@ -1,5 +1,6 @@
 {% extends 'pgups/base.html' %}
 {% load staticfiles %}
+{% load extras %}
 {% block content %}
 <div class="container">
 
@@ -34,8 +35,8 @@
 									</td>
 									<td class="column-result-wide">
 										{% if c.main_distance%}<span><b>{% endif %}
-											{{c.time}}
-										{% if c.main_distance%}</b></span>{% endif %}
+											{{c.time|formatSeconds}} {% if c.main_distance%}</b></span>{% endif %} ({{c.prior_time|formatSeconds}})
+
 									</td>
 								</tr>
 
@@ -48,11 +49,11 @@
 
 				<div class="result-tour-skipped col-lg-4 col-lg-offset-1 col-md-4 col-md-offset-1 col-sm-12 col-xs-12">
 					{% if result.2|length > 0 %}
-						<h4>Не вышли:</h4>
+						<h4>Не вышли/Дисквалифицированы</h4>
 						<ul class="basic-list">
 							{% for c in result.2 %}
 								<li class="alt-color">
-									{{c.person.last_name|title}} {{c.person.first_name|title}}
+									{{c.0.person.last_name|title}} {{c.0.person.first_name|title}} ({{c.1}})
 								</li>
 							{% endfor %}
 						</ul>

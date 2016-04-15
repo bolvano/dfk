@@ -1,5 +1,6 @@
 {% extends 'pgups/base.html' %}
 {% load staticfiles %}
+{% load extras %}
 {% block content %}
 
 <!-- Notie messages -->
@@ -27,13 +28,16 @@
 
 		<table class="table table-striped table-hover table-bordered">
 			<tbody>
+            <tr><td>№</td><td>Участник</td><td>Команда</td><td>Категория</td><td>Результат</td></tr>
+
 			{% for competitor in competitors %}
 
 				<tr>
+                    <td class="column-lane text-center">{{competitor.lane}}</td>
 					<td class="column-name">{{competitor.person.first_name|title}} {{competitor.person.last_name|title}}</td>
 					<td class="column-team">{{competitor.userrequest.team.name}}</td>
 					<td class="column-age text-center">{{competitor.age}}</td>
-					<td class="column-time column-time-animation text-center">{{competitor.time}}</td>
+					<td class="column-time column-time-animation text-center">{{competitor.time|formatSeconds}}</td>
 				</tr>
 
 			{% endfor %}

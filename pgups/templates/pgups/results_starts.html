@@ -1,5 +1,6 @@
 {% extends 'pgups/base.html' %}
 {% load staticfiles %}
+{% load extras %}
 {% block content %}
 
 <div class="container">
@@ -25,6 +26,8 @@
 			<table class="table table-striped table-hover table-bordered">
 				<tbody>
 
+                <tr><td>№</td><td>Участник</td><td>Команда</td><td>Категория</td><td>Результат/Предварительное время</td></tr>
+
 				{% for competitor in start.competitor_set.all %}
 
 					<tr>
@@ -33,10 +36,19 @@
 						<td class="column-team">{{competitor.userrequest.team}}</td>
 						<td class="column-age text-center">{{competitor.age}}</td>
 						<td class="column-time text-center">
-							{% if competitor.time > 0 %}
-								{{competitor.time}}
+							{% if competitor.disqualification == 0 %}
+								<b>{{competitor.time|formatSeconds}}</b> / {{competitor.prior_time|formatSeconds}}
 							{% else %}
-								{% if competitor.person.gender == 'Ж'%} Не вышла {% else %} Не вышел {% endif %}
+								{% if  competitor.disqualification == 1 %}
+									{% if competitor.person.gender == 'Ж'%} Не вышла {% else %} Не вышел {% endif %}
+								{% endif %}
+								{% if  competitor.disqualification == 2 %}
+									Фальстарт
+								{% endif %}
+								{% if  competitor.disqualification == 3 %}
+									Нарушение правил
+								{% endif %}
+
 							{% endif %}
 						</td>
 					</tr>

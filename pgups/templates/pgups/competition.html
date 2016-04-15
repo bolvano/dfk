@@ -50,7 +50,7 @@
 		</ul>
 		<hr> <!-- End of Tours -->
 
-		<div class="row">
+		<p class="row">
 
 			<a class="btn btn-lg btn-success starts" href="../../competition/starts/{{competition.id}}/">
 				<span>Текущая сетка стартов</span>
@@ -61,7 +61,16 @@
 					<input type="hidden" name="competition_id" value="{{competition.id}}">
 					<input type="submit" class="generate-starts btn btn-lg btn-default" value="Перегенерировать старты">
 				</form>
-				<a class="pull-right btn btn-md btn-default" href="../../competition_starts_sort/{{competition.id}}/">Ручная настройка стартов</a>
+
+				<form action="." method="POST" >{% csrf_token %}
+					<input type="hidden" name="competition_id" value="{{competition.id}}">
+					<input type="hidden" name="close" value="1">
+					<input type="submit" class="close-competition btn btn-lg btn-default" value="Закрыть соревнования">
+				</form>
+
+    				<a class="pull-right btn btn-md btn-default" href="../../competition_starts_sort/{{competition.id}}/">Ручная настройка стартов</a>
+
+
 			{% endif %}
 
 		</div>
@@ -81,6 +90,14 @@
 		<p>
 			<a class="btn btn-lg btn-primary" href="../../results/teams/{{competition.id}}/">Результаты по командам</a>
 		</p>
+
+		{% if user.is_authenticated %}
+				<form action="." method="POST" >{% csrf_token %}
+					<input type="hidden" name="competition_id" value="{{competition.id}}">
+					<input type="hidden" name="close" value="0">
+					<input type="submit" class="close-competition btn btn-lg btn-default" value="Редактировать результаты соревнований">
+				</form>
+		{% endif %}
 
 	</div>
 
