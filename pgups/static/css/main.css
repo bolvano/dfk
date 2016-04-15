@@ -6,8 +6,8 @@ html {
 }
 html,
 body {
-  padding: 0;
   margin: 0;
+  padding: 0;
   font-size: 100%;
 }
 /* sticky footer */
@@ -23,9 +23,9 @@ body {
   font-size: 0.8em;
 }
 .heading {
-  border-bottom: 1px solid #979a9d;
-  padding-bottom: 20px;
   margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #979a9d;
 }
 .small-heading {
   margin-bottom: 20px;
@@ -58,19 +58,22 @@ body {
   margin: 13px 0;
   color: #777;
 }
+.decorated-link {
+  text-decoration: underline;
+}
 /* Competition page */
 /*==================*/
 .competition-menu {
   margin-bottom: 20px;
 }
 .generate-starts {
+  margin-bottom: 40px;
   float: left;
   clear: both;
-  margin-bottom: 40px;
 }
 .starts {
-  float: left;
   margin-bottom: 20px;
+  float: left;
 }
 /* Forms       */
 /*=============*/
@@ -83,22 +86,24 @@ body {
 }
 /* centering submit button */
 .col-centered {
-  float: none;
   margin: 0 auto;
+  float: none;
 }
 /* overriding bootstrap transition */
 .form-control {
+  -webkit-transition: none;
   transition: none;
 }
 .error-block {
-  color: #5f021f;
   position: relative;
   top: 8px;
+  color: #5f021f;
 }
 input.ng-invalid.ng-dirty,
 select.ng-invalid.ng-dirty {
   border-color: #5f021f;
   box-shadow: 0 0 8px #5f021f;
+  -webkit-transition: none;
   transition: none;
 }
 .request-form {
@@ -126,8 +131,8 @@ select.ng-invalid.ng-dirty {
   display: none;
 }
 .single-competitor {
-  border-bottom: 1px solid #eee;
   margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
 }
 /* Footer */
 /*========*/
@@ -145,8 +150,8 @@ select.ng-invalid.ng-dirty {
   table-layout: fixed;
 }
 .single-start-container {
-  border-bottom: 1px solid #979a9d;
   padding: 15px 0 15px;
+  border-bottom: 1px solid #979a9d;
 }
 .start-number {
   margin-bottom: 10px;
@@ -157,41 +162,53 @@ select.ng-invalid.ng-dirty {
 }
 /* Table columns */
 .column-lane {
-  background-color: #b9f2ff;
   width: 4%;
+  background-color: #b9f2ff;
 }
 .column-name {
   width: 50%;
 }
+.column-name-narrow {
+  width: 30%;
+}
+.column-disqualified {
+  width: 11%;
+}
 .column-team {
   width: 20%;
 }
-.column-age {
-  width: 13%;
-}
+.column-age,
 .column-time {
   width: 13%;
-  padding-top: 10px !important;
+}
+.column-result > input {
+  width: 100%;
+}
+.column-result-start > input {
+  width: 50%;
 }
 /* padding overriding bootstrap */
 .column-lane,
 .column-name,
 .column-team,
-.column-age {
-  padding-top: 10px !important;
-  padding-bottom: 10px !important;
+.column-age,
+.column-name-narrow,
+.column-time {
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
 }
-.column-result {
+.column-disqualified,
+.column-result,
+.column-result-start {
   padding-top: 10px !important;
-}
-.column-result > input {
-  width: 100%;
 }
 .column-time-animation {
   -webkit-animation-name: greenish;
   -webkit-animation-duration: 3s;
-  animation-name: greenish;
-  animation-duration: 3s;
+  -webkit-animation-name: greenish;
+          animation-name: greenish;
+  -webkit-animation-duration: 3s;
+          animation-duration: 3s;
 }
 .column-name-wide {
   padding: 10px !important;
@@ -203,10 +220,10 @@ select.ng-invalid.ng-dirty {
 }
 /*    Results tour    */
 .result-tour {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
   overflow: hidden;
   border-bottom: 1px solid #979a9d;
-  padding-bottom: 20px;
-  margin-bottom: 20px;
 }
 .result-tour-finished {
   float: left;
@@ -215,8 +232,8 @@ select.ng-invalid.ng-dirty {
   margin-bottom: 20px;
 }
 .result-tour-skipped {
-  float: left;
   margin-top: 16px;
+  float: left;
 }
 /* Creation form */
 /*===============*/
@@ -227,6 +244,7 @@ select.ng-invalid.ng-dirty {
   opacity: 1;
 }
 .animation-show-hide.ng-hide-remove.ng-hide-remove-active {
+  -webkit-transition: all linear 0.5s;
   transition: all linear 0.5s;
 }
 .animation-show-hide.ng-hide {
@@ -239,23 +257,7 @@ select.ng-invalid.ng-dirty {
   overflow: hidden;
   border-top: 1px solid #979a9d;
 }
-@-moz-keyframes greenish {
-  0% {
-    background-color: rgba(128,255,128,0.6);
-  }
-  100% {
-    background-color: #fff;
-  }
-}
 @-webkit-keyframes greenish {
-  0% {
-    background-color: rgba(128,255,128,0.6);
-  }
-  100% {
-    background-color: #fff;
-  }
-}
-@-o-keyframes greenish {
   0% {
     background-color: rgba(128,255,128,0.6);
   }

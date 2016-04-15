@@ -11,12 +11,21 @@ import re
 
 from .models import Userrequest, Person, Competition, Team, Competitor, Tour, Age, Distance, Style, Start, Cdsg
 
+from django.forms.widgets import TextInput
+
+class NumberInput(TextInput):
+    input_type = 'number'
+
 class SplitTimeWidget(forms.widgets.MultiWidget):
 
     def __init__(self, *args, **kwargs):
         widgets = (
-            forms.TextInput(),
-            forms.TextInput(),
+            NumberInput(attrs={'min': '0', 'step': '1',
+                               'class': 'form-control pull-left',
+                               'placeholder': 'мин.'}),
+            NumberInput(attrs={'min': '0', 'max': '59,99',
+                               'step': '0.01', 'class': 'form-control pull-left',
+                               'placeholder': 'сек.'}),
         )
         super(SplitTimeWidget, self).__init__(widgets, *args, **kwargs)
 

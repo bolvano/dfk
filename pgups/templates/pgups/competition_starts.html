@@ -6,7 +6,7 @@
 
 	<!-- Heading -->
 	<div class="heading heading-no-margin">
-		<a href="{% url 'competition' competition_id=competition.id %}">
+		<a class="decorated-link" href="{% url 'competition' competition_id=competition.id %}">
 			<h1><b>{{competition.name}}</b></h1>
 		</a>
 	</div> <!-- End of Heading -->
@@ -24,7 +24,7 @@
 				<div class="start-number">
 					<h3 class="pull-left">Заплыв {{start.num}}</h3>
 					{% if user.is_authenticated %}
-						<a class="btn-results pull-right btn btn-info" href="../../start_result/{{start.id}}/">Результат</a>
+						<a class="btn-results btn-lg pull-right btn btn-info" href="../../start_result/{{start.id}}/">Результат</a>
 					{% endif %}
 				</div> <!-- End of Start number -->
 
