@@ -26,16 +26,25 @@
 			<table class="table table-striped table-hover table-bordered">
 				<tbody>
 
+					<tr>
+						<td class="column-lane text-center light-blue-background">№</td>
+						<td class="column-name-narrow light-blue-background">Участник</td>
+						<td class="column-team text-center light-blue-background">Команда</td>
+						<td class="column-age text-center light-blue-background">Категория</td>
+						<td class="column-result-start padding-15 text-center light-blue-background">Результат</td>
+						<td class="column-disqualified padding-15 text-center light-blue-background">Дисквалиф.</td>
+					</tr>
+
 				{% for result_form in result_formset %}
 					{{result_form.id}}
 
 					<tr>
-						<td class="column-lane text-center">{{result_form.instance.lane}}</td>
+						<td class="column-lane text-center light-blue-background">{{result_form.instance.lane}}</td>
 						<td class="column-name-narrow">{{result_form.instance.person.first_name|title}} {{result_form.instance.person.last_name|title}}</td>
 						<td class="column-team text-center">{{result_form.instance.userrequest.team}}</td>
 						<td class="column-age text-center">{{result_form.instance.age}}</td>
 						<td class="column-result-start">{{result_form.time}}</td>
-						<td class="column-disqualified">{{result_form.disqualification}}</td>
+						<td class="column-disqualified text-center">{{result_form.disqualification}}</td>
 					</tr>
 
 				{% endfor %}

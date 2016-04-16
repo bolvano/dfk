@@ -28,12 +28,19 @@
 
 		<table class="table table-striped table-hover table-bordered">
 			<tbody>
-            <tr><td>№</td><td>Участник</td><td>Команда</td><td>Категория</td><td>Результат</td></tr>
+
+				<tr>
+					<td class="column-lane text-center light-blue-background">№</td>
+					<td class="column-name light-blue-background">Участник</td>
+					<td class="column-team light-blue-background">Команда</td>
+					<td class="column-age text-center light-blue-background">Категория</td>
+					<td class="column-time text-center light-blue-background">Результат</td>
+				</tr>
 
 			{% for competitor in competitors %}
 
 				<tr>
-                    <td class="column-lane text-center">{{competitor.lane}}</td>
+					<td class="column-lane text-center light-blue-background">{{competitor.lane}}</td>
 					<td class="column-name">{{competitor.person.first_name|title}} {{competitor.person.last_name|title}}</td>
 					<td class="column-team">{{competitor.userrequest.team.name}}</td>
 					<td class="column-age text-center">{{competitor.age}}</td>

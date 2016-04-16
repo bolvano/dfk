@@ -19,6 +19,9 @@ body {
 .alt-color {
   color: #5f021f;
 }
+.light-blue-background {
+  background-color: #b9f2ff;
+}
 .note {
   font-size: 0.8em;
 }
@@ -163,19 +166,22 @@ select.ng-invalid.ng-dirty {
 /* Table columns */
 .column-lane {
   width: 4%;
-  background-color: #b9f2ff;
 }
 .column-name {
-  width: 50%;
+  width: 40%;
 }
 .column-name-narrow {
   width: 30%;
 }
 .column-disqualified {
+  word-break: break-all;
   width: 11%;
 }
+.column-disqualified select {
+  width: 100%;
+}
 .column-team {
-  width: 20%;
+  width: 17%;
 }
 .column-age,
 .column-time {
@@ -201,6 +207,10 @@ select.ng-invalid.ng-dirty {
 .column-result,
 .column-result-start {
   padding-top: 10px !important;
+}
+.padding-15 {
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
 }
 .column-time-animation {
   -webkit-animation-name: greenish;
