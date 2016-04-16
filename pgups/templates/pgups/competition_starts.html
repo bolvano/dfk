@@ -51,7 +51,7 @@
 							<td class="column-age text-center">{{competitor.age}}</td>
 							<td class="column-time text-center">{{competitor.prior_time|formatSeconds|localize}}</td>
 							<td class="column-time text-center">{% if competitor.disqualification == 0 %}
-								<b>{{competitor.time|formatSeconds}}</b> / {{competitor.prior_time|formatSeconds|localize}}
+								<b>{{competitor.time|formatSeconds}}</b>
 							{% else %}
 								{% if  competitor.disqualification == 1 %}
 									{% if competitor.person.gender == 'Ж'%} Не вышла {% else %} Не вышел {% endif %}
