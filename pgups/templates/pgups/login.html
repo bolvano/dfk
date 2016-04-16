@@ -1,0 +1,28 @@
+{% extends "pgups/base.html" %}
+{% block content %}
+    <div id="login">
+        <form class="form-horizontal" name="LoginForm" action="/login/" method="post">
+        {% csrf_token %}
+        {% if next %}
+            <input type="hidden" name="next" value="{{ next }}" />
+        {% endif %}
+        <div class="control-group">
+            <label class="control-label" for="username">Имя пользователя</label>
+            <div class="controls">
+                <input type="text" id="username" name="username">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="password">Пароль</label>
+            <div class="controls">
+                <input type="password" name="password" id="password">
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn">Войти</button>
+            </div>
+        </div>
+        </form>
+    </div>
+{% endblock %}
