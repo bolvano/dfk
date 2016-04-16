@@ -353,9 +353,9 @@ def generate_starts(request):
                     competitor.start = None
                     competitor.lane = None
                     competitor.result = None
-                    competitor.points = None
-                    competitor.disqualification = None
-                    competitor.time = None
+                    competitor.points = 0
+                    competitor.disqualification = 0
+                    competitor.time = 0
                     competitor.save()
             cdsg.delete()
 
