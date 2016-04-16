@@ -35,6 +35,7 @@
 					<td class="column-team light-blue-background">Команда</td>
 					<td class="column-age text-center light-blue-background">Категория</td>
 					<td class="column-time text-center light-blue-background">Результат</td>
+                    <td class="column-result text-center light-blue-background">Дисквалиф.</td>
 				</tr>
 
 			{% for competitor in competitors %}
@@ -45,6 +46,15 @@
 					<td class="column-team">{{competitor.userrequest.team.name}}</td>
 					<td class="column-age text-center">{{competitor.age}}</td>
 					<td class="column-time column-time-animation text-center">{{competitor.time|formatSeconds}}</td>
+                    <td class="column-result text-center">{% if  competitor.disqualification == 1 %}
+                        {% if competitor.person.gender == 'Ж'%} Не вышла {% else %} Не вышел {% endif %}
+                    {% endif %}
+                    {% if  competitor.disqualification == 2 %}
+                        Фальстарт
+                    {% endif %}
+                    {% if  competitor.disqualification == 3 %}
+                        Нарушение правил
+                    {% endif %}</td>
 				</tr>
 
 			{% endfor %}
