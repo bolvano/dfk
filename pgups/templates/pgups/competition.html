@@ -20,7 +20,7 @@
 					{% else %}
 						индивидуальная заявка
 					{% endif %}
-					</a> (Подтверждено {{userrequest.approved_competitors|length}}/{{userrequest.competitor_set.all|length}} )
+					</a> {% if user.is_authenticated %} (Подтверждено {{userrequest.approved_competitors|length}}/{{userrequest.competitor_set.all|length}} ) {% endif %}
 				</li>
 			{% endfor %}
 		</ul>
