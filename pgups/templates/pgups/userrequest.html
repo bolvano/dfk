@@ -35,24 +35,33 @@
 
 			<table class="table table-striped table-hover table-bordered">
 
-                <tr><td><b>Участник</b></td><td><b>Дистанция</b></td>{% if user.is_authenticated %}<td><b>Подтверждение</b></td>{% endif %}</tr>
-                <tbody>
+				<tr>
+					<td class="column-name light-blue-background"><b>Участник</b></td>
+					<td class="column-tour padding-15 light-blue-background"><b>Дистанция</b></td>
+					{% if user.is_authenticated %}
+					<td class="column-approved padding-15 light-blue-background"><b>Подтверждение</b></td>
+					{% endif %}
+				</tr>
+
+				<tbody>
 				{% for competitor_form in competitor_formset %}
 					{{competitor_form.id}}
 
 					<tr>
 						<td class="column-name">{{competitor_form.instance.person.first_name|title}} {{competitor_form.instance.person.last_name|title}}</td>
-                        <td class="column-tour">{{competitor_form.instance.tour.style.name}} {{competitor_form.instance.tour.distance.name}}</td>
-						{% if user.is_authenticated %}<td class="column-approved">{{competitor_form.approved}}</td>{% endif %}
+						<td class="column-tour padding-15">{{competitor_form.instance.tour.style.name}} {{competitor_form.instance.tour.distance.name}}</td>
+						{% if user.is_authenticated %}
+						<td class="column-approved padding-15 text-center">{{competitor_form.approved}}</td>
+						{% endif %}
 					</tr>
 
 				{% endfor %}
 
 				</tbody>
 			</table>
-            {% if user.is_authenticated %}
-			<button class="btn btn-success pull-right" type="submit">Сохранить изменения</button>
-            {% endif %}
+			{% if user.is_authenticated %}
+				<button class="btn btn-lg btn-success pull-right" type="submit">Сохранить изменения</button>
+			{% endif %}
 		</form>
 
 </div>

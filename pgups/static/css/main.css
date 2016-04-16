@@ -193,6 +193,18 @@ select.ng-invalid.ng-dirty {
 .column-result-start > input {
   width: 50%;
 }
+.column-tour {
+  width: 20%;
+}
+.column-approved {
+  width: 10%;
+  word-break: break-all;
+}
+.column-approved > input[type='checkbox'] {
+  margin: 0 10px;
+  -webkit-transform: scale(2);
+          transform: scale(2);
+}
 /* padding overriding bootstrap */
 .column-lane,
 .column-name,
