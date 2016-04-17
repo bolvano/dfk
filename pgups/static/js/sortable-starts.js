@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-    .module('sortableStartsApp', [])
+    .module('sortableStartsApp', ['ui.sortable'])
     .config(altTemplateTags)
     .controller('SortController', SortController)
     .filter('ucf', capitalize)
@@ -60,6 +60,16 @@
                 return data;
             });
         }
+
+    function createOptions () {
+        var options = {
+            placeholder: "app",
+            connectWith: ".sortable-start",
+        };
+        return options;
+    }
+
+    $scope.sortableOptions = createOptions();
 
     }
 })();

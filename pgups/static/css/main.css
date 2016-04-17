@@ -56,6 +56,9 @@ body {
 .hidden-field {
   display: none;
 }
+.no-type {
+  list-style-type: none;
+}
 /* index, login info, top right */
 .navbar .login {
   margin: 13px 0;
@@ -285,6 +288,25 @@ select.ng-invalid.ng-dirty {
   padding: 30px;
   padding-bottom: 15px;
   background-color: #eee;
+  border-radius: 10px;
+}
+/* Sortable   */
+/*============*/
+.single-start {
+  background-color: #eee;
+  padding: 20px;
+  margin: 20px;
+  border-radius: 10px;
+}
+.single-competitor {
+  background-color: #b9f2ff;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
+}
+.sortable-start {
+  padding: 40px;
+  border: 1px dashed #808080;
   border-radius: 10px;
 }
 @-webkit-keyframes greenish {
