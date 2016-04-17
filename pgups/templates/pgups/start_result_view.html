@@ -1,5 +1,6 @@
 {% extends 'pgups/base.html' %}
 {% load staticfiles %}
+{% load extras %}
 {% block content %}
 
 <!-- Notie messages -->
@@ -12,28 +13,59 @@
 
 	<div class="row">
 
+		<!-- Heading -->
+		<div class="heading">
+			<a class="decorated-link" href="../../starts/{{competition_id}}/">
+				<h1><b>Все старты</b></h1>
+			</a>
+		</div> <!-- End of Heading -->
+
 		<!-- Start number -->
 		<div class="start-number">
 			<h3 class="pull-left">Заплыв {{start_num}} ({{cdsg_name}})</h3>
-			<a class="btn-results btn btn-info pull-right" href="../../starts/{{competition_id}}/">Все старты</a>
+			<!--<a class="btn-results btn-lg btn btn-info pull-right" href="../../starts/{{competition_id}}/">Все старты</a>-->
 		</div> <!-- End of Start number -->
 
 		<table class="table table-striped table-hover table-bordered">
 			<tbody>
+
+				<tr>
+					<td class="column-lane text-center light-blue-background">№</td>
+					<td class="column-name light-blue-background">Участник</td>
+					<td class="column-team light-blue-background">Команда</td>
+					<td class="column-age text-center light-blue-background">Категория</td>
+					<td class="column-time text-center light-blue-background">Результат</td>
+                    <td class="column-disqualified padding-15 text-center light-blue-background">Дисквалиф.</td>
+				</tr>
+
 			{% for competitor in competitors %}
 
 				<tr>
+					<td class="column-lane text-center light-blue-background">{{competitor.lane}}</td>
 					<td class="column-name">{{competitor.person.first_name|title}} {{competitor.person.last_name|title}}</td>
 					<td class="column-team">{{competitor.userrequest.team.name}}</td>
 					<td class="column-age text-center">{{competitor.age}}</td>
-					<td class="column-time column-time-animation text-center">{{competitor.time}}</td>
+					<td class="column-time column-time-animation text-center">{{competitor.time|formatSeconds}}</td>
+                    <td class="column-disqualified padding-15 text-center">{% if  competitor.disqualification == 1 %}
+                        {% if competitor.person.gender == 'Ж'%} Не вышла {% else %} Не вышел {% endif %}
+                    {% endif %}
+                    {% if  competitor.disqualification == 2 %}
+                        Фальстарт
+                    {% endif %}
+                    {% if  competitor.disqualification == 3 %}
+                        Нарушение правил поворота
+                    {% endif %}
+                    {% if  competitor.disqualification == 4 %}
+                        Нарушение правил прохождения дистанции
+                    {% endif %}
+                    </td>
 				</tr>
 
 			{% endfor %}
 			</tbody>
 		</table>
 
-		<a class="btn btn-default pull-right" href="../../start_result/{{start_id}}/">Редактировать</a>
+		<a class="btn btn-default btn-lg pull-right" href="../../start_result/{{start_id}}/">Редактировать</a>
 
 	</div>
 
@@ -42,13 +74,13 @@
 	<hr>
 
 	{% if prev_start_id %}
-		<a class="btn btn-primary pull-left" href="../../start_result/{{prev_start_id}}/">
+		<a class="btn btn-primary btn-lg pull-left" href="../../start_result/{{prev_start_id}}/">
 			<span class="glyphicon glyphicon-chevron-left"></span> Предыдущий заплыв
 		</a>
 	{% endif %}
 
 	{% if next_start_id %}
-		<a class="btn btn-primary pull-right" href="../../start_result/{{next_start_id}}/">
+		<a class="btn btn-primary btn-lg pull-right" href="../../start_result/{{next_start_id}}/">
 			Следующий заплыв <span class="glyphicon glyphicon-chevron-right"></span>
 		</a>
 	{% endif %}

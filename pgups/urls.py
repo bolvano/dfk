@@ -26,10 +26,15 @@ urlpatterns = [
     # starts and tours
     url(r'^generate_tours/(?P<competition_id>\d+)/(?P<kids>(0|1))/$', views.generate_tours),
     url(r'^generate_starts/$', views.generate_starts),
+    url(r'^generate_starts2/$', views.generate_starts2),
 
     # competition create
     url(r'^competition_create/$', views.create_competition, name="competitioncreate"),
 
-    #sortable starts
-    url(r'^competition_starts_sort/(?P<competition_id>\d+)/$', views.competition_starts_sort, name="competition_starts_sort"),
+    # sortable starts
+    url(r'^competition_starts_sort/(?P<competition_id>\d+)/$', views.competition_starts_sort,
+        name="competition_starts_sort"),
+
+    url(r'^login/$', views.login_user, name="login"),
+    url(r'^logout/$', views.logout_user, name="logout"),
 ]

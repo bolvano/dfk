@@ -12,7 +12,9 @@
 	<![endif]-->
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"> <!-- Bootstrap CSS-->
 	<link href="{% static 'css/main.css' %}" rel="stylesheet"> <!-- Main CSS -->
+	<link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet"> <!-- jQueryUI CSS -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> <!-- jQuery core -->
+	<script src="{% static 'js/jquery-ui.min.js' %}"></script> <!-- jQueryUI -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> <!-- Bootstrap JS -->
 
 </head>
@@ -33,9 +35,9 @@
 				<div class="login pull-right">
 					<span>
 						{% if user.is_authenticated %}
-							Здравствуйте, {{user.username}}
+							Здравствуйте, {{user.username}} <a href="{% url 'logout' %}">Выйти</a>
 						{% else %}
-							Вы не залогинены
+							Вы не залогинены  <a href="{% url 'login' %}">Войти</a>
 						{% endif %}
 					</span>
 				</div>

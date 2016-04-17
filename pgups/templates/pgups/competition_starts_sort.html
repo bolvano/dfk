@@ -2,62 +2,61 @@
 {% load staticfiles %}
 {% block content %}
 
-	<div ng-app="sortableStartsApp" ng-controller="sortController as sortableVM">
+	{% if user.is_authenticated %}
+
+	<div ng-app="sortableStartsApp" ng-controller="SortController as sortCtrl">
 
 		<input type="hidden" name="csrf_token" ng-init="csrf_token='{{csrf_token}}'" ng-model="csrf_token">
-		<input type="hidden" name="competition_id" ng-init="competition_id='{{competition_id}}'" ng-model="competition_id">
 
 		<div class="container">
 
 			<!-- Heading -->
 			<div class="heading heading-no-margin">
-				<a href="{% url 'competition' competition_id=competition_id %}">
-					<h1><b>{$ sortableVM.data.competition_name $}</b></h1>
+				<a class="decorated-link" href="{% url 'competition' competition_id=competition_id %}">
+					<h1><b>{$ sortCtrl.data.competition_name $}</b></h1>
 				</a>
 			</div> <!-- End of Heading -->
 
-			<!-- Single start -->
-			<div class="single-start-container" ng-repeat="cdsg in sortableVM.data.cdsg_starts_list">
+			<ul class="no-type" ui-sortable ng-model="sortCtrl.data.starts_list">
 
-				<h2><b>{$ cdsg.name $}</b></h2>
-
-				<div ng-repeat="start in cdsg.starts">
+				<li class="single-start" ng-repeat="start in sortCtrl.data.starts_list">
 
 					<!-- Start number -->
 					<div class="start-number">
-						<h3 class="pull-left">Заплыв {$ start.num $}</h3>
+						<h3 class="pull-left">Заплыв {$ $index + 1 $}</h3>
 					</div> <!-- End of Start number -->
 
-					<table class="table table-striped table-hover table-bordered">
-						<tbody>
+					<ul class="sortable-start no-type" ui-sortable="sortableOptions" ng-model="start.competitors">
 
-							<tr ng-repeat="competitor in start.competitors">
+						<li class="app single-competitor" ng-repeat="competitor in start.competitors">
+							{$ competitor.last_name | ucf $} {$ competitor.first_name | ucf $} {$ competitor.age $} {$ competitor.team $} {$ competitor.prior_time $}
+						</li>
 
-								<td class="column-lane text-center">{$ competitor.lane $}</td>
-								<td class="column-name">{$ competitor.first_name | ucf $} {$ competitor.last_name | ucf $}</td>
-								<td class="column-team">{$ competitor.team $}</td>
-								<td class="column-age text-center">{$ competitor.age $}</td>
-								<td class="column-time text-center">{$ competitor.prior_time | number : 1 $}</td>
+					</ul>
 
-							</tr>
+				</li>
 
-						</tbody>
-					</table>
+			</ul>
 
-				</div>
-
-			</div> <!-- End of Single start -->
-
-			{$ sortableVM.data $}
+			{$ sortCtrl.data $}
 
 		</div>
 
 	</div>
 
+	{% else %}
+
+	<div class="container">
+		<h3 style="margin-top: 20%">
+			<span style="font-size: larger" class="alt-color glyphicon glyphicon-alert"></span> Для просмотра этой страницы необходимо залогиниться.
+		</h3>
+	</div>
+
+	{% endif %}
+
 {% endblock %}
 
 {% block additionaljs %}
-
 	<script src="{% static 'js/sortable-starts.js' %}"></script> <!-- SortableStartsApp -->
-
+	<script src="{% static 'js/sortable.js' %}"></script> <!-- sortable directive -->
 {% endblock %}

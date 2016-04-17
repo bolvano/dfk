@@ -12,10 +12,10 @@
 					<p class="lead">Пожалуйста, внимательно прочитайте правила и заполните заявку. <br>Укажите свои контактные данные, имена и фамилии участников, год рождения,
 				основную и при необходимости дополнительную дистанцию, а также предварительное время.</p>
 					<p><i>Кнопка отправки становится активной, если заполнены все обязательные поля.</i></p>
-                    <p>Если у вас возникли сложности с отправкой заявки, звоните:<br>
-                        +7 (921) 953 23 45 Притула Елена Ивановна<br>
-                        +7 (911) 771 55 49 Пономарёв Сергей Анатольевич
-                    </p>
+					<p>Если у вас возникли сложности с отправкой заявки, звоните:<br>
+						+7 (921) 953-23-45 Притула Елена Ивановна<br>
+						+7 (911) 771-55-49 Пономарёв Сергей Анатольевич
+					</p>
 				</div>
 			</div>
 		</div>
@@ -23,7 +23,7 @@
 
 	<br>
 
-	<div ng-app="validationApp" ng-controller="formCtrl">
+	<div ng-app="validationApp" ng-controller="RegFormController as reg" ng-strict-di>
 
 		<input type="hidden" name="csrf_token" ng-init="csrf_token='{{csrf_token}}'" ng-model="csrf_token">
 
@@ -48,7 +48,7 @@
 					<div class="form-group">
 						<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="competition">Соревнования:</label>
 						<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-							<select class="form-control" name="competition" ng-model="form.competition" ng-selected="form.competition == competition.id" ng-options="competition.name for competition in fetchedData.data track by competition.id" ng-change="filterCompetition()" required>
+							<select class="form-control" name="competition" ng-model="reg.form.competition" ng-selected="reg.form.competition == competition.id" ng-options="competition.name for competition in reg.competitions track by competition.id" ng-change="reg.filterCompetition()" required>
 								<option value="" disabled selected>Выберите соревнование из списка:</option>
 							</select>
 							<p class="error-block" ng-show="requestForm.competition.$dirty && requestForm.competition.$invalid">Выберите соревнование</p>
@@ -59,7 +59,7 @@
 					<div class="form-group">
 						<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="team">Команда (необязательно):</label>
 						<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-							<select class="form-control" name="team" ng-options="team.name for team in teamsData.data track by team.id" ng-model="form.team" ng-change="clearPersons()">
+							<select class="form-control" name="team" ng-options="team.name for team in reg.teams track by team.id" ng-model="reg.form.team" ng-change="reg.clearPersons()">
 								<option value="" selected="selected">Выберите команду:</option>
 							</select>
 						</div>
@@ -69,7 +69,7 @@
 					<div class="form-group">
 						<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="representative">Заявитель/Представитель команды:</label>
 						<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-							<input class="form-control" name="representative" ng-minlength="2" ng-model="form.representative" type="text" required/>
+							<input class="form-control" name="representative" ng-minlength="2" ng-model="reg.form.representative" type="text" required/>
 							<p class="error-block" ng-show="requestForm.representative.$dirty && requestForm.representative.$error.required">Введите имя заявителя</p>
 							<p class="error-block" ng-show="requestForm.representative.$dirty && requestForm.representative.$error.minlength">Слишком короткое имя</p>
 						</div>
@@ -79,7 +79,7 @@
 					<div class="form-group">
 						<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="phone">Телефон:</label>
 						<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-							<input class="form-control" name="phone" ng-model="form.phone" type="text" required/>
+							<input class="form-control" name="phone" ng-model="reg.form.phone" type="text" required/>
 							<p class="error-block" ng-show="requestForm.phone.$dirty && requestForm.phone.$error.required">Введите номер телефона</p>
 						</div>
 					</div> <!-- End of Phone -->
@@ -88,7 +88,7 @@
 					<div class="form-group">
 						<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="email">Электронная почта:</label>
 						<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-							<input class="form-control" name="email" ng-model="form.email" type="email" placeholder="mail@example.ru" required/>
+							<input class="form-control" name="email" ng-model="reg.form.email" type="email" placeholder="mail@example.ru" required/>
 							<p class="error-block" ng-show="requestForm.email.$dirty && requestForm.email.$error.required">Введите адрес электронной почты</p>
 							<p class="error-block" ng-show="requestForm.email.$dirty && requestForm.email.$error.email">Неверный формат электронной почты</p>
 						</div>
@@ -117,7 +117,7 @@
 			<form class="person-form" name="personsForm" role="form" novalidate>
 
 				<!-- Persons -->
-				<div class="row" ng-repeat="person in persons">
+				<div class="row" ng-repeat="person in reg.persons">
 
 					<hr><br>
 
@@ -147,7 +147,7 @@
 							<div class="form-group row">
 								<label class="col-lg-4 col-md-4 col-sm-4 col-xs-12 control-label text-left" for="birth_year">Год рождения:</label>
 								<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
-									<select class="form-control" name="birth_year" ng-model="person.birth_year" ng-options="year for year in years" ng-change="" required>
+									<select class="form-control" name="birth_year" ng-model="person.birth_year" ng-options="year for year in reg.years" ng-change="" required>
 										<option value="" disabled selected>Выберите год:</option>
 									</select>
 									<p class="error-block" ng-show="personForm.birth_year.$dirty && personForm.birth_year.$error.required">Это обязательное поле</p>
@@ -171,8 +171,8 @@
 
 						<!-- Buttons -->
 						<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
-							<a id="remove-person-{$ person.personId $}" href="#" class="btn btn-danger btn-md btn-block" ng-click="removePerson($index)">Удалить участника</a>
-							<a id="add-competitor-{$ person.personId $}" href="#" class="btn btn-success btn-md btn-block" ng-click="addCompetitor($index)">Добавить заплыв</a>
+							<a id="remove-person-{$ person.personId $}" href="#" class="btn btn-danger btn-md btn-block" ng-click="reg.removePerson($index)">Удалить участника</a>
+							<a id="add-competitor-{$ person.personId $}" href="#" class="btn btn-success btn-md btn-block" ng-click="reg.addCompetitor($index)">Добавить заплыв</a>
 						</div>
 
 						<!-- Competitors -->
@@ -193,7 +193,7 @@
 
 											<div class="col-md-10">
 
-												<select class="{$ person.personId $}-tour-select form-control" name="tour" ng-model="competitor.tour" ng-options="tour.name for tour in (tours | filter: { gender: person.gender } | filter: filterToursByAge(person.birth_year) ) track by tour.id" ng-change="tourDisable($parent.$index)" required>
+												<select class="{$ person.personId $}-tour-select form-control" name="tour" ng-model="competitor.tour" ng-options="tour.name for tour in (reg.tours | filter: { gender: person.gender } | filter: reg.filterToursByAge(person.birth_year) ) track by tour.id" ng-change="reg.tourDisable($parent.$index)" required>
 
 												</select>
 
@@ -253,7 +253,7 @@
 
 									<!-- Remove competitor -->
 									<div class="col-lg-2 col-md-2 col-sm-8 col-xs-12 ">
-										<a href="#" class="remove-competitor-{$ competitor.competitorId $} remove-competitor-btn btn btn-danger btn-sm" ng-click="removeCompetitor($parent.$index, $index)"><span class="glyphicon glyphicon-remove"></span></a>
+										<a href="#" class="remove-competitor-{$ competitor.competitorId $} remove-competitor-btn btn btn-danger btn-sm" ng-click="reg.removeCompetitor($parent.$index, $index)"><span class="glyphicon glyphicon-remove"></span></a>
 									</div> <!-- End of Remove competitor -->
 
 								</ng-form>
@@ -273,7 +273,7 @@
 			<hr>
 
 			<!-- Add person button -->
-			<button id="add-person-button" href="#" class="add-person-button btn btn-default btn-lg" ng-click="addPerson()" ng-disabled="indRequestOnePerson && (form.team === undefined || form.team === '')">Добавить участника</button>
+			<button id="add-person-button" href="#" class="add-person-button btn btn-default btn-lg" ng-click="reg.addPerson()" ng-disabled="reg.indRequestOnePerson && (reg.form.team === undefined || reg.form.team === null)">Добавить участника</button>
 
 			<br>
 
@@ -284,11 +284,11 @@
 				<div class="container">
 					<div class="row">
 						<div class="col-lg-3 col-md-4 col-sm-5 col-xs-6 col-centered">
-							<button id="submit-request-button" type="submit" class="btn btn-success btn-xxl" ng-disabled="requestForm.$invalid || personsForm.$invalid" ng-click="submitRequest()">Отправить заявку</button>
+							<button id="submit-request-button" type="submit" class="btn btn-success btn-xxl" ng-disabled="requestForm.$invalid || personsForm.$invalid" ng-click="reg.submitRequest()">Отправить заявку</button>
 						</div>
 					</div>
 
-					<!-- {$ form $} -->
+					<!-- {$ reg.form $} -->
 
 				</div>
 			</div> <!-- End of jumbotron -->

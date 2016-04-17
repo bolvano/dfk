@@ -6,10 +6,17 @@
 
 	<div class="row">
 
+		<!-- Heading -->
+		<div class="heading">
+			<a class="decorated-link" href="../../starts/{{competition_id}}/">
+				<h1><b>Все старты</b></h1>
+			</a>
+		</div> <!-- End of Heading -->
+
 		<!-- Start number -->
 		<div class="start-number">
 			<h3 class="pull-left">Заплыв {{start_num}} ({{cdsg_name}})</h3>
-			<a class="btn-results btn btn-info pull-right" href="../../starts/{{competition_id}}/">Все старты</a>
+			<!--<a class="btn-results btn-lg btn btn-info pull-right" href="../../starts/{{competition_id}}/">Все старты</a>-->
 		</div> <!-- End of Start number -->
 
 		<form role="form" method="POST">{% csrf_token %}
@@ -19,15 +26,25 @@
 			<table class="table table-striped table-hover table-bordered">
 				<tbody>
 
+					<tr>
+						<td class="column-lane text-center light-blue-background">№</td>
+						<td class="column-name-narrow light-blue-background">Участник</td>
+						<td class="column-team text-center light-blue-background">Команда</td>
+						<td class="column-age text-center light-blue-background">Категория</td>
+						<td class="column-result-start padding-15 text-center light-blue-background">Результат</td>
+						<td class="column-disqualified padding-15 text-center light-blue-background">Дисквалиф.</td>
+					</tr>
+
 				{% for result_form in result_formset %}
 					{{result_form.id}}
 
 					<tr>
-						<td class="column-lane text-center">{{result_form.instance.lane}}</td>
-						<td class="column-name">{{result_form.instance.person.first_name|title}} {{result_form.instance.person.last_name|title}}</td>
-						<td class="column-team">{{result_form.instance.userrequest.team}}</td>
+						<td class="column-lane text-center light-blue-background">{{result_form.instance.lane}}</td>
+						<td class="column-name-narrow">{{result_form.instance.person.first_name|title}} {{result_form.instance.person.last_name|title}}</td>
+						<td class="column-team text-center">{{result_form.instance.userrequest.team}}</td>
 						<td class="column-age text-center">{{result_form.instance.age}}</td>
-						<td class="column-result">{{result_form.time}}</td>
+						<td class="column-result-start">{{result_form.time}}</td>
+						<td class="column-disqualified text-center">{{result_form.disqualification}}</td>
 					</tr>
 
 				{% endfor %}
@@ -35,7 +52,7 @@
 				</tbody>
 			</table>
 
-			<button class="btn btn-success pull-right" type="submit">Сохранить результат</button>
+			<button class="btn btn-success btn-lg pull-right" type="submit">Сохранить результат</button>
 
 		</form>
 
@@ -46,13 +63,13 @@
 		<hr>
 
 		{% if prev_start_id %}
-			<a class="btn btn-primary pull-left" href="../../start_result/{{prev_start_id}}/">
+			<a class="btn btn-lg btn-primary pull-left" href="../../start_result/{{prev_start_id}}/">
 				<span class="glyphicon glyphicon-chevron-left"></span> Предыдущий заплыв
 			</a>
 		{% endif %}
 
 		{% if next_start_id %}
-			<a class="btn btn-primary pull-right" href="../../start_result/{{next_start_id}}/">
+			<a class="btn btn-lg btn-primary pull-right" href="../../start_result/{{next_start_id}}/">
 				Следующий заплыв <span class="glyphicon glyphicon-chevron-right"></span>
 			</a>
 		{% endif %}

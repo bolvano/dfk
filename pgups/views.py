@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*- 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, render_to_response,redirect
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
 from django import forms
@@ -11,21 +11,74 @@ import re
 
 from .models import Userrequest, Person, Competition, Team, Competitor, Tour, Age, Distance, Style, Start, Cdsg
 
+from django.forms.widgets import TextInput
+
+#from django.http import *
+from django.template import RequestContext
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+
+class NumberInput(TextInput):
+    input_type = 'number'
+
+class SplitTimeWidget(forms.widgets.MultiWidget):
+
+    def __init__(self, *args, **kwargs):
+        widgets = (
+            NumberInput(attrs={'min': '0', 'step': '1',
+                               'class': 'form-control pull-left',
+                               'placeholder': 'мин.'}),
+            NumberInput(attrs={'min': '0', 'max': '59,99',
+                               'step': '0.01', 'class': 'form-control pull-left',
+                               'placeholder': 'сек.'}),
+        )
+        super(SplitTimeWidget, self).__init__(widgets, *args, **kwargs)
+
+    def decompress(self, value):
+        if value:
+            minutes,seconds = divmod(value,60)
+            return [minutes, seconds]
+        return [None, None]
+
+    def format_output(self, rendered_widgets):
+        return (rendered_widgets[0] + rendered_widgets[1])
+
+    def value_from_datadict(self, data, files, name):
+        minutes = self.widgets[0].value_from_datadict(data, files, name + '_0')
+        if not minutes:
+            minutes_seconds = 0
+        else:
+            minutes_seconds = int(minutes)*60
+
+        seconds = self.widgets[1].value_from_datadict(data, files, name + '_1')
+        if not seconds:
+            seconds = 0
+        else:
+            seconds = float(seconds)
+
+        return minutes_seconds + seconds
+
 
 def index(request):
     competitions = Competition.objects.all().order_by('date_start')
     return render(request, 'pgups/index.html', {'competitions': competitions},)
 
 def competition(request, competition_id):
-    teams = []
+
     competition = get_object_or_404(Competition, pk=competition_id)
     userrequests = Userrequest.objects.filter(competition=competition)
     teams = set([userrequest.team for userrequest in userrequests if userrequest.team is not None])
-    return render(request, 'pgups/competition.html', {'competition': competition, 'teams':teams},)
 
-def userrequest(request, userrequest_id):
-    userrequest = get_object_or_404(Userrequest, pk=userrequest_id)
-    return render(request, 'pgups/userrequest.html', {'userrequest': userrequest},)
+    if request.method == "POST":
+        #import ipdb; ipdb.set_trace()
+        close = request.POST.get("close", '0')
+        if close == '1':
+            competition.finished=True
+        else:
+            competition.finished=False
+        competition.save()
+
+    return render(request, 'pgups/competition.html', {'competition': competition, 'teams':teams},)
 
 def person(request, person_id):
     person = get_object_or_404(Person, pk=person_id)
@@ -40,6 +93,8 @@ def results_starts(request, competition_id):
 
 def results_tours(request, competition_id):
 
+    disqualification_dict = {1:'Неявка', 2: 'Фальстарт', 3:'Нарушение правил поворота', 4:'Нарушение правил прохождения дистанции'}
+
     results = []
     competition = get_object_or_404(Competition, pk=competition_id)
     tours = Tour.objects.filter(competition=competition)
@@ -50,8 +105,10 @@ def results_tours(request, competition_id):
             competitors.append(c)
 
         competitors.sort(key=lambda c: c.time)
-        competitors_good = list(filter(lambda c: c.time > 0, competitors))
-        competitors_bad = list(filter(lambda c: c.time == 0, competitors))
+        competitors_good = list(filter(lambda c: c.disqualification == 0, competitors))
+        competitors_bad = list(filter(lambda c: c.disqualification > 0, competitors))
+
+        competitors_bad = [(c,disqualification_dict[c.disqualification]) for c in  competitors_bad]
 
         results.append((tour,competitors_good,competitors_bad, competitors))
 
@@ -122,6 +179,22 @@ def competition_team(request, competition_id, team_id):
     result = [(Person.objects.get(pk=k),v) for k,v in result.items()]
     return render(request, 'pgups/competition_team.html', {'result': result, 'team':team, 'competition':competition},)
 
+def userrequest(request, userrequest_id):
+    userrequest = get_object_or_404(Userrequest, pk=userrequest_id)
+    competitors = userrequest.competitor_set.all()
+    CompetitorFormSet = modelformset_factory(Competitor, fields=('approved',), extra=0, widgets={'approved': forms.CheckboxInput()})
+
+    if request.method == "POST":
+        competitor_formset = CompetitorFormSet(request.POST)
+        if(competitor_formset.is_valid()):
+            competitor_formset.save()
+            messages.success(request, 'Изменения сохранены')
+            return HttpResponseRedirect('/userrequest/'+userrequest_id+'/')
+    else:
+        competitor_formset = CompetitorFormSet(queryset=competitors.order_by('person__last_name'))
+
+    return render(request, 'pgups/userrequest.html', {'userrequest': userrequest, 'competitor_formset': competitor_formset},)
+
 def start_result(request, start_id):
 
     start = Start.objects.get(pk=start_id)
@@ -143,10 +216,11 @@ def start_result(request, start_id):
 
     #import ipdb; ipdb.set_trace()
 
-    ResultFormSet = modelformset_factory(Competitor, fields=('time',), extra=0, widgets={'time': forms.NumberInput()})
+    ResultFormSet = modelformset_factory(Competitor, fields=('time', 'disqualification'), extra=0, widgets={'time': SplitTimeWidget(), 'disqualification':forms.widgets.Select(attrs=None, choices=([0,''],[1,'Неявка'],[2,'Фальстарт'], [3,'Нарушение правил поворота'], [4,'Нарушение правил прохождения дистанции']))})
 
     if request.method == "POST":
         result_formset = ResultFormSet(request.POST)
+        #import ipdb; ipdb.set_trace()
         if(result_formset.is_valid()):
             result_formset.save()
             messages.success(request, 'Результат сохранён')
@@ -219,7 +293,7 @@ def reg_request(request):
                     prior_time = 0
                 if 'prior_time_minutes' in competitor and competitor['prior_time_minutes']:
                     prior_time += int(competitor['prior_time_minutes'])*60
-                new_competitor = Competitor(person=new_person, userrequest=userrequest, tour=tour, age=age, prior_time=prior_time, main_distance=main_distance)
+                new_competitor = Competitor(person=new_person, userrequest=userrequest, tour=tour, age=age, prior_time=prior_time, main_distance=main_distance, time=0)
                 new_competitor.save()
                 main_distance = False
     else:
@@ -284,9 +358,9 @@ def generate_starts(request):
                     competitor.start = None
                     competitor.lane = None
                     competitor.result = None
-                    competitor.points = None
-                    competitor.disqualification = None
-                    competitor.time = None
+                    competitor.points = 0
+                    competitor.disqualification = 0
+                    competitor.time = 0
                     competitor.save()
             cdsg.delete()
 
@@ -306,8 +380,8 @@ def generate_starts(request):
                     tours = Tour.objects.filter(competition=competition, distance=distance, style=style, gender=gender)
                     if tours:
                         #import ipdb; ipdb.set_trace()
-                        competitors_no_prior = Competitor.objects.filter(tour__in=tours).filter(prior_time=0)
-                        competitors_prior = Competitor.objects.filter(tour__in=tours).filter(prior_time__gt=0).order_by('-prior_time')
+                        competitors_no_prior = Competitor.objects.filter(tour__in=tours).filter(approved=True).filter(prior_time=0)
+                        competitors_prior = Competitor.objects.filter(tour__in=tours).filter(approved=True).filter(prior_time__gt=0).order_by('-prior_time')
                         competitors = list(competitors_no_prior) + list(competitors_prior)
 
                         if competitors:
@@ -384,6 +458,131 @@ def generate_starts(request):
     
     return HttpResponseRedirect('../../competition/starts/'+competition_id+'/')
 
+def generate_starts2(request):
+
+    if request.method == "POST":
+
+        competition_id = request.POST.get("competition_id", "")
+
+        num_of_lanes = 5
+        minimal = 3
+
+        all_starts = []
+
+        competition = Competition.objects.get(pk=competition_id)
+
+        # delete old starts
+        cdsgs = Cdsg.objects.filter(competition=competition)
+        for cdsg in cdsgs:
+            starts = Start.objects.filter(cdsg=cdsg)
+            for start in starts:
+                competitors = Competitor.objects.filter(start=start)
+                for competitor in competitors:
+                    competitor.start = None
+                    competitor.lane = None
+                    competitor.result = 0
+                    competitor.points = 0
+                    competitor.disqualification = 0
+                    competitor.time = 0
+                    competitor.save()
+            cdsg.delete()
+
+        distances = Distance.objects.all().order_by('meters') #[50, 100]
+        styles = [Style.objects.get(name='на спине'), Style.objects.get(name='вольный стиль'), Style.objects.get(name='брасс'), Style.objects.get(name='баттерфляй'), Style.objects.get(name='комплекс') ]
+        genders = ['Ж','М']
+        ages = Age.objects.all().order_by('min_age')
+
+        i_cdsg = 1
+        i_starts = 1
+
+        for distance in distances:
+            for style in styles:
+                for age in ages:
+                    for gender in genders:
+
+                        starts = []
+
+                        tours = Tour.objects.filter(competition=competition, distance=distance, style=style, gender=gender, age=age)
+                        if tours:
+                            #import ipdb; ipdb.set_trace()
+                            competitors_no_prior = Competitor.objects.filter(tour__in=tours).filter(approved=True).filter(prior_time=0)
+                            competitors_prior = Competitor.objects.filter(tour__in=tours).filter(approved=True).filter(prior_time__gt=0).order_by('-prior_time')
+                            competitors = list(competitors_no_prior) + list(competitors_prior)
+
+                            if competitors:
+
+                                #import ipdb; ipdb.set_trace()
+
+                                cdsg = Cdsg(competition=competition, number=i_cdsg)
+                                cdsg.name = distance.name + ' ' + style.name + ' ' + age.name + ' ' + gender
+                                cdsg.save()
+                                i_cdsg += 1
+
+                                (full_starts, remainders) = divmod(len(competitors), num_of_lanes)
+
+                                #import ipdb; ipdb.set_trace()
+
+                                if remainders > 0: # есть остаток
+                                    if full_starts > 0 and remainders < minimal: #есть полные и остаток меньше трёх, перегруппировка первых двух
+                                        starts.append(competitors[:minimal]) # первый старт - три участника
+                                        if full_starts == 1: # был один полный старт: будет два неполных
+                                            starts.append(competitors[minimal:])
+                                        else: # было более одного полного: второй будет неполным, остальные полными
+                                            begin = minimal
+                                            end = begin + num_of_lanes - (minimal - remainders)
+
+                                            starts.append(competitors[begin:end])
+
+                                            begin = end
+                                            for i in range(0, full_starts - 1):
+                                                end = begin + num_of_lanes
+                                                starts.append(competitors[begin:end])
+                                                begin = end
+
+                                    elif full_starts > 0 and remainders >= minimal: # есть полные старты и остаток три или больше
+                                        starts.append(competitors[:remainders])
+                                        begin = remainders
+                                        for i in range(0, full_starts):
+                                            end = begin + num_of_lanes
+                                            starts.append(competitors[begin:end])
+                                            begin = end
+
+                                    else:
+                                        starts.append(competitors[:])
+
+                                elif full_starts: # нет остатков, просто раскидываем
+                                    begin = 0
+                                    for i in range(0, full_starts):
+                                        end = begin + num_of_lanes
+                                        starts.append(competitors[begin:end])
+                                        begin = end
+
+                                num_starts = len(starts)
+
+                                starts2 = []
+
+
+                                for competitor_set in starts:
+                                    start = Start()
+                                    start.num = i_starts
+                                    start.name = distance.name + ' ' + style.name + ' ' + age.name + ' ' + gender
+                                    start.cdsg = cdsg
+                                    start.save()
+
+                                    #import ipdb; ipdb.set_trace()
+
+                                    competitor_set = attribute_lanes(competitor_set)
+                                    for lane, competitor in competitor_set.items():
+                                        competitor.lane = lane
+                                        competitor.start = start
+                                        competitor.save()
+
+                                    starts2.append(start)
+                                    i_starts += 1
+
+
+    return HttpResponseRedirect('../../competition/starts/'+competition_id+'/')
+
 def tour(request, id):
 
     res = []    
@@ -448,7 +647,7 @@ def get_ages_distances_styles(request):
         style_list.append(style)
     return HttpResponse(json.dumps({'ages':age_list, 'distances':distance_list, 'styles':style_list}), content_type="application/json")
 
-def get_competition_starts(request, id):
+'''def get_competition_starts(request, id):
     cdsg_starts_list = []
     competition = Competition.objects.get(pk=id)
     cdsg_list = Cdsg.objects.filter(competition=competition)
@@ -462,7 +661,21 @@ def get_competition_starts(request, id):
                 start_obj['competitors'].append({'id':competitor.id, 'lane': competitor.lane,'last_name':competitor.person.last_name, 'first_name':competitor.person.first_name, 'team':competitor.userrequest.team.name, 'age':competitor.age.name, 'prior_time':competitor.prior_time})
             cdsg_obj['starts'].append(start_obj)
         cdsg_starts_list.append(cdsg_obj)
-    return HttpResponse(json.dumps({'competition_id':competition.id, 'competition_name':competition.name,'cdsg_starts_list':cdsg_starts_list}), content_type="application/json")
+    return HttpResponse(json.dumps({'competition_id':competition.id, 'competition_name':competition.name,'cdsg_starts_list':cdsg_starts_list}), content_type="application/json")'''
+
+def get_competition_starts(request, id):
+    starts_list = []
+    competition = Competition.objects.get(pk=id)
+    cdsg_list = Cdsg.objects.filter(competition=competition)
+    for cdsg in cdsg_list:
+        starts = Start.objects.filter(cdsg=cdsg)
+        for start in starts:
+            start_obj = {'id':start.id, 'num': start.num, 'competitors':[]}
+            competitors = Competitor.objects.filter(start=start)
+            for competitor in competitors:
+                start_obj['competitors'].append({'id':competitor.id, 'lane': competitor.lane,'last_name':competitor.person.last_name, 'first_name':competitor.person.first_name, 'team':competitor.userrequest.team.name, 'age':competitor.age.name, 'prior_time':competitor.prior_time})
+            starts_list.append(start_obj)
+    return HttpResponse(json.dumps({'competition_id':competition.id, 'competition_name':competition.name,'starts_list':starts_list}), content_type="application/json")
 
 # форма создания соревнований
 def create_competition(request):
@@ -506,3 +719,21 @@ def create_competition(request):
 
 def competition_starts_sort(request, competition_id):
     return render(request, 'pgups/competition_starts_sort.html', { 'competition_id': competition_id, }, )
+
+def login_user(request):
+    logout(request)
+    username = password = ''
+    if request.POST:
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect('/')
+    return render(request, 'pgups/login.html')
+
+def logout_user(request):
+    logout(request)
+    return HttpResponseRedirect('/')

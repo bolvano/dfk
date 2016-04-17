@@ -1,246 +1,223 @@
-'use strict';
+(function() {
+    'use strict';
 
-var validationApp = angular.module('validationApp', []);
+    angular
+    .module('validationApp', [])
+    .config(altTemplateTags)
+    .controller('RegFormController', RegFormController)
+    .factory('getData', getData);
 
+    altTemplateTags.$inject = ['$interpolateProvider'];
+    getData.$inject = ['$q', '$window', '$http', '$log'];
+    RegFormController.$inject = ['$scope', '$http', '$timeout', '$window', '$log', 'getData'];
 
-// handling conflicting django/angular template tags
-// (setting {$ $} tags for angular stuff)
-validationApp.config(function($interpolateProvider) {
-    $interpolateProvider.startSymbol('{$');
-    $interpolateProvider.endSymbol('$}');
-});
-
-
-// form controller
-validationApp.controller( 'formCtrl', function( $scope, $http, $timeout ) {
-
-
-    // initial data request
-    var initRequest = $http.get( 'http://' + window.location.host + '/get_competitions/' )
-        .then(function(response) {
-
-            console.log($scope.csrf_token);
-
-            console.log('data fetched');
-            $scope.fetchedData = angular.fromJson(response);
-            return response;
-
-        });
-
-    var teamRequest = $http.get( 'http://' + window.location.host + '/get_teams/' )
-        .then(function(response) {
-
-            console.log('teams fetched');
-            $scope.teamsData = angular.fromJson(response);
-            return response;
-
-        });
-
-    // person counter resets on document load, setting initial value = 1
-    var personCounter = 1;
-
-    // max number of competitors per person
-    var maxCompetitorsNum = 2;
-
-    // saving year of birth options
-    var year = new Date().getFullYear();
-    var range = [];
-    for ( var i = 1936; i <= ( year - 3 ); i++) {
-        range.push(i);
+    function altTemplateTags($interpolateProvider) {
+        $interpolateProvider.startSymbol('{$');
+        $interpolateProvider.endSymbol('$}');
     }
 
-    // if no team selected, forbids adding more than one person (true/false)
-    $scope.indRequestOnePerson = false;
+    function getData($q, $window, $http, $log) {
 
-    // adding initial element on load (at least one person per request required)
-    $scope.persons = [ { personId: 'person-0',
-                         competitors: [{ competitorId: 'competitor-0'}]
-                       }
-                     ];
+        var url1 = 'http://' + $window.location.host + '/get_competitions/';
+        var url2 = 'http://' + $window.location.host + '/get_teams/';
 
-    // adding persons list to form object
-    $scope.form = { persons: $scope.persons };
+        var competitions = $http({method: 'GET', url: url1, cache: 'true'});
+        var teams = $http({method: 'GET', url: url2, cache: 'true'});
 
-    // birth year options
-    $scope.years = range;
+        return $q.all([competitions, teams])
+                 .then(function(data){
+                     $log.log('data fetched');
+                     return data;
+                 });
+    }
 
+    function RegFormController($scope, $http, $timeout, $window, $log, getData) {
 
-    // filtering data in personsForm based on selected competition
-    $scope.filterCompetition = function() {
+        var vm = this;
 
-        // filtering birth year options by competition type
-        if ( $scope.form.competition.type.toLowerCase() === 'детские' ) {
+        // settings
+        var maxCompetitorsNum = 2; // max number of competitors per person
+        var indRequestOnePerson = false; // forbids adding more than one person if no team selected (true/false)
 
-            $scope.years = range.slice(-15);
+        var personCounter = 1; // used for assigning ids to persons
+        var year = new Date().getFullYear(); // current year
 
-        } else {
+        vm.indRequestOnePerson = indRequestOnePerson; 
+        vm.persons = [{personId: 'person-0', competitors: [{competitorId: 'competitor-0'}] }];
+        vm.form = { persons: vm.persons };
 
-            $scope.years = range.slice(0, -15);
+        vm.filterCompetition = filterCompetition;
+        vm.filterToursByAge = filterToursByAge;
+        vm.tourDisable = tourDisable;
+        vm.clearPersons = clearPersons;
 
+        vm.addPerson = addPerson;
+        vm.removePerson = removePerson;
+        vm.addCompetitor = addCompetitor;
+        vm.removeCompetitor = removeCompetitor;
+
+        vm.submitRequest = submitRequest;
+
+        activate();
+
+        function activate() {
+
+            getData.then(function(response) {
+                var data = response;
+                vm.competitions = data[0].data;
+                vm.teams = data[1].data;
+                return data;
+            });
         }
 
-        // adding tour options to competitorForm
-        $scope.tours = $scope.form.competition.tours;
+        function filterCompetition() {
 
-    };
+            var range = calcYears();
 
+            if ( vm.form.competition.type.toLowerCase() === 'детские' ) {
+                vm.years = range.slice(-15);
+            } else {
+                vm.years = range.slice(0, -15);
+            }
 
-    // filtering tours by age
-    $scope.filterToursByAge = function(birth_year) {
+            vm.tours = vm.form.competition.tours;
+        }
 
-        return function(item) {
+        function calcYears() {
 
-            // calculating persons age
-            var age = year - birth_year;
+            var oldest = 1936;
+            var youngest = 3;
+            var range = [];
 
-            return item['max_age'] >= age && item['min_age'] <= age;
+            for (var i = oldest; i <= (year - youngest); i++) {
+                range.push(i);
+            }
 
-        };
-    };
+            return range;
+        }
 
+        function filterToursByAge(birth_year) {
 
-    // disabling tour option if already selected elsewhere
-    var tourDisable = function(personIdx) {
+            return function(item) {
+                var age = year - birth_year;
+                return item.max_age >= age && item.min_age <= age;
+            };
+        }
 
-        // setting everything to enabled
-        $('.' + $scope.persons[personIdx].personId + '-tour-select option').attr('disabled', false);
+        function tourDisable(personIdx) {
 
-        // loop each select and set the selected value to disabled in all other selects
-        $('.' + $scope.persons[personIdx].personId + '-tour-select').each(function() {
+            // setting everything to enabled
+            angular.element('.' + vm.persons[personIdx].personId + '-tour-select option').attr('disabled', false);
 
-            var $this = $(this);
+            // loop each select and set the selected value to disabled in all other selects
+            angular.element('.' + vm.persons[personIdx].personId + '-tour-select').each(function() {
 
-            $('.' + $scope.persons[personIdx].personId + '-tour-select').not($this).find('option').each( function(){
+                var $this = angular.element(this);
 
-                if($(this).attr('value') == $this.val())
-                    $(this).attr('disabled', true);
+                angular.element('.' + vm.persons[personIdx].personId + '-tour-select').not($this).find('option').each( function(){
 
+                    if(angular.element(this).attr('value') == $this.val())
+                        angular.element(this).attr('disabled', true);
+
+                });
+            }); 
+        }
+
+        function basicAnimation(id) {
+
+            angular.element('html, body').animate({
+                scrollTop: angular.element(id).offset().top
             });
+        }
 
-        }); 
+        // remove all but one persons if team changes to none
+        function clearPersons() {
 
-    };
-
-
-    $scope.tourDisable = tourDisable;
-
-
-    // jQuery animation
-    function basicAnimation(id) {
-
-        $('html, body').animate({
-            scrollTop: $(id).offset().top
-        });
-    }
-
-
-    // remove all but one persons if team changes to none
-    $scope.clearPersons = function() {
-
-        if ( $scope.indRequestOnePerson && $scope.form.team === '' && $scope.persons.length > 1 ) {
-            for ( var i = $scope.persons.length - 1; i >= 1; i-- ) {
-                $scope.persons.splice(i, 1);
+            if ( vm.indRequestOnePerson && vm.form.team === null && vm.persons.length > 1 ) {
+                for ( var i = vm.persons.length - 1; i >= 1; i-- ) {
+                    vm.persons.splice(i, 1);
+                }
             }
         }
 
-    };
+        function addPerson() {
 
-
-    // add person
-    $scope.addPerson = function() {
-
-        $scope.persons.push({ 'personId':'person-' + personCounter,
+            vm.persons.push({ 'personId':'person-' + personCounter,
                               'competitors': [{ competitorId: 'competitor-0'}]
                             });
-        personCounter++;
+            personCounter++;
 
-        basicAnimation( '#add-person-button' );
-
-    };
-
-
-    // remove person
-    $scope.removePerson = function(idx) {
-
-        $scope.persons.splice(idx, 1);
-
-        basicAnimation( '#remove-person-' + $scope.persons[idx-1].personId );
-
-    };
-
-
-    // add competitor
-    $scope.addCompetitor = function(idx) {
-
-        var newCompetitor = $scope.persons[idx].competitors.length;
-        $scope.persons[idx].competitors.push({ 'competitorId':'competitor-' + newCompetitor });
-
-        // if max number of competitors reached, disable add-competitor button
-        if ( $scope.persons[idx].competitors.length === maxCompetitorsNum ) {
-            $( '#add-competitor-' + $scope.persons[idx].personId ).addClass('disabled');
+            basicAnimation( '#add-person-button' );
         }
 
-        basicAnimation( '#add-competitor-' + $scope.persons[idx].personId );
+        function removePerson(idx) {
 
-        // delayed call, waiting for DOM to update
-        $timeout(function() {
-            tourDisable(idx);
-        }, 500);
+            vm.persons.splice(idx, 1);
 
-    };
+            basicAnimation( '#remove-person-' + vm.persons[idx-1].personId );
+        }
 
+        function addCompetitor(idx) {
 
-    // remove competitor
-    $scope.removeCompetitor = function(personIdx, idx) {
+            var newCompetitor = vm.persons[idx].competitors.length;
+            vm.persons[idx].competitors.push({ 'competitorId':'competitor-' + newCompetitor });
 
-        $scope.persons[personIdx].competitors.splice(idx, 1);
+            // if max number of competitors reached, disable add-competitor button
+            if ( vm.persons[idx].competitors.length === maxCompetitorsNum ) {
+                angular.element( '#add-competitor-' + vm.persons[idx].personId ).addClass('disabled');
+            }
 
-        // enable add-competitor button
-        $( '#add-competitor-' + $scope.persons[personIdx].personId ).removeClass('disabled');
+            basicAnimation( '#add-competitor-' + vm.persons[idx].personId );
 
-        basicAnimation( '#add-competitor-' + $scope.persons[personIdx].personId );
+            // delayed call, waiting for DOM to update
+            $timeout(function() {
+                tourDisable(idx);
+            }, 500);
+        }
 
-        // delayed call, waiting for DOM to update
-        $timeout(function() {
-            tourDisable(personIdx);
-        }, 500);
+        function removeCompetitor(personIdx, idx) {
 
-    };
+            vm.persons[personIdx].competitors.splice(idx, 1);
 
+            // enable add-competitor button
+            angular.element( '#add-competitor-' + vm.persons[personIdx].personId ).removeClass('disabled');
 
-    // submit form data
-    $scope.submitRequest = function() {
+            basicAnimation( '#add-competitor-' + vm.persons[personIdx].personId );
 
-        // disabling submit button to prevent duplicate requests
-        $('#submit-request-button').attr('disabled', true).html('Идет отправка заявки...');
+            // delayed call, waiting for DOM to update
+            $timeout(function() {
+                tourDisable(personIdx);
+            }, 500);
+        }
 
-        var req = {
-            method: 'POST',
-            url: 'http://' + window.location.host + '/regrequest/',
-            headers: {
-                'X-CSRFToken' : $scope.csrf_token,
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            data: angular.toJson($scope.form)
-        };
+        function submitRequest() {
 
-        var postRequest = $http(req)
-            .then(function(response) {
+            // disabling button to prevent duplicate requests
+            angular.element('#submit-request-button').attr('disabled', true).html('Идет отправка заявки...');
 
-                // displaying success message
-                notie.alert(1, 'Заявка отправлена! Страница сейчас обновится', 5);
+            var req = {
+                method: 'POST',
+                url: 'http://' + $window.location.host + '/regrequest/',
+                headers: {
+                    'X-CSRFToken' : $scope.csrf_token,
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                data: angular.toJson(vm.form)
+            };
 
-                // delayed page refreshing
-                $timeout(function() {
-                    location.reload();
-                }, 2000);
+            $http(req)
+                .then(function() {
 
-            }, function(response) {
-                notie.alert(3, 'Произошла ошибка!', 3);
-                $('#submit-request-button').attr('disabled', false).html('Отправить заявку');
-            });
+                    notie.alert(1, 'Заявка отправлена! Вы будете перенаправлены на страницу соревнования.', 2);
 
-    };
+                    $timeout(function() {
+                        $window.location.href = '/competition/'+vm.form.competition.id;
+                    }, 4000);
 
-}
-);
+                }, function() {
+                    notie.alert(3, 'Произошла ошибка!', 3);
+                    angular.element('#submit-request-button').attr('disabled', false).html('Отправить заявку');
+                });
+        }
+    }
+})();

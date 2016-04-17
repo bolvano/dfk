@@ -18,7 +18,7 @@
 		</div>
 	</div> <!-- End of Jumbotron -->
 
-	<div ng-app="createCompetitionApp" ng-controller="creationFormCtrl"> <!-- createCompetitionApp -->
+	<div ng-app="createCompetitionApp" ng-controller="CreationFormController as creation"> <!-- createCompetitionApp -->
 
 	<input type="hidden" name="csrf_token" ng-init="csrf_token='{{csrf_token}}'" ng-model="csrf_token">
 
@@ -26,10 +26,12 @@
 
 			<div class="container">
 
-				 {$ data $}
+				{$ creation.data $}
+
+				{$ creation.tours $}
 
 				<!-- Step 1 -->
-				<div ng-show="step === 1" class="animation-show-hide">
+				<div ng-show="creation.step === 1" class="animation-show-hide">
 
 					<!-- Heading -->
 					<div class="heading">
@@ -42,7 +44,7 @@
 						<div class="form-group">
 							<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="name">Название:</label>
 							<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-								<input class="form-control" name="name" ng-model="data.name" type="text" required/>
+								<input class="form-control" name="name" ng-model="creation.data.name" type="text" required/>
 								<p class="error-block" ng-show="creationForm.name.$dirty && creationForm.name.$error.required">Введите название</p>
 							</div>
 						</div> <!-- End of Name -->
@@ -51,7 +53,7 @@
 						<div class="form-group">
 							<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="representative">Тип:</label>
 							<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-								<select class="form-control" name="type" ng-model="data.type" type="text" required/>
+								<select class="form-control" name="type" ng-model="creation.data.type" type="text" required/>
 									<option value="0">детские</option>
 									<option value="1">взрослые</option>
 								</select>
@@ -63,7 +65,7 @@
 						<div class="form-group">
 							<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="name">Дата начала:</label>
 							<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-								<input class="form-control" name="date_start" ng-model="data.date_start" type="date" placeholder="2016-01-01" required/>
+								<input class="form-control" name="date_start" ng-model="creation.data.date_start" type="date" placeholder="2016-01-01" required/>
 								<p class="error-block" ng-show="creationForm.date_start.$dirty && creationForm.date_start.$error.required">Введите дату начала соревнований</p>
 								<p class="error-block" ng-show="creationForm.date_start.$dirty && creationForm.date_start.$error.date">Введите дату в формате 2016-01-01</p>
 							</div>
@@ -73,7 +75,7 @@
 						<div class="form-group">
 							<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="name">Дата завершения:</label>
 							<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-								<input class="form-control" name="date_finish" ng-model="data.date_finish" type="date" placeholder="2016-01-01" required/>
+								<input class="form-control" name="date_finish" ng-model="creation.data.date_finish" type="date" placeholder="2016-01-01" required/>
 								<p class="error-block" ng-show="creationForm.date_finish.$dirty && creationForm.date_finish.$error.required">Введите дату завершения соревнований</p>
 								<p class="error-block" ng-show="creationForm.date_finish.$dirty && creationForm.date_finish.$error.date">Введите дату в формате 2016-01-01</p>
 							</div>
@@ -83,7 +85,7 @@
 
 					<div class="button-wrapper row">
 
-						<button class="btn btn-lg btn-success pull-right col-lg-2" ng-click="nextStep()" ng-disabled="false">
+						<button class="btn btn-lg btn-success pull-right col-lg-2" ng-click="creation.nextStep()" ng-disabled="false">
 							Продолжить <span class="glyphicon glyphicon-chevron-right"></span>
 						</button>
 
@@ -92,7 +94,7 @@
 				</div> <!-- End of Step 1 -->
 
 				<!-- Step 2 -->
-				<div ng-show="step === 2" class="animation-show-hide">
+				<div ng-show="creation.step === 2" class="animation-show-hide">
 
 					<!-- Heading -->
 					<div class="heading">
@@ -106,9 +108,9 @@
 
 							<h3>Возрастные группы</h3>
 
-							<div class="checkbox" ng-repeat="group in fetchedData.data.ages">
+							<div class="checkbox" ng-repeat="group in creation.fetchedData.ages">
 								<label>
-									<input type="checkbox" value="{$ group.id $}" ng-model="group.selected" ng-disabled="data.type == group.kids"> {$ group.name $}
+									<input type="checkbox" value="{$ group.id $}" ng-model="group.selected" ng-disabled="creation.data.type == group.kids"> {$ group.name $}
 								</label>
 							</div>
 
@@ -119,7 +121,7 @@
 
 							<h3>Стили</h3>
 
-							<div class="checkbox" ng-repeat="style in fetchedData.data.styles | orderBy: 'name'">
+							<div class="checkbox" ng-repeat="style in creation.fetchedData.styles | orderBy: 'name'">
 								<label>
 									<input type="checkbox" value="{$ style.id $}" ng-model="style.selected"> {$ style.name $}
 								</label>
@@ -132,7 +134,7 @@
 
 							<h3>Дистанции</h3>
 
-							<div class="checkbox" ng-repeat="distance in fetchedData.data.distances">
+							<div class="checkbox" ng-repeat="distance in creation.fetchedData.distances">
 								<label>
 									<input type="checkbox" value="{$ distance.id $}" ng-model="distance.selected"> {$ distance.name $}
 								</label>
@@ -144,11 +146,11 @@
 
 					<div class="button-wrapper row">
 
-						<button class="btn btn-lg btn-danger pull-left col-lg-2" ng-click="prevStep()">
+						<button class="btn btn-lg btn-danger pull-left col-lg-2" ng-click="creation.prevStep()">
 							<span class="glyphicon glyphicon-chevron-left"></span> Вернуться
 						</button>
 
-						<button class="btn btn-lg btn-success pull-right col-lg-2" ng-click="nextStep(); generateTours();">
+						<button class="btn btn-lg btn-success pull-right col-lg-2" ng-click="creation.nextStep(); creation.generateTours(); creation.checkIfAllSelected()">
 							Продолжить <span class="glyphicon glyphicon-chevron-right"></span>
 						</button>
 
@@ -157,7 +159,7 @@
 				</div> <!-- End of Step 2 -->
 
 				<!-- Step 3 -->
-				<div ng-show="step === 3" class="animation-show-hide">
+				<div ng-show="creation.step === 3" class="animation-show-hide">
 
 					<!-- Heading -->
 					<div class="heading">
@@ -166,25 +168,25 @@
 
 					<div class="checkbox">
 						<label>
-							<input type="checkbox" ng-model="selectedAll" ng-click="selectAll()"> <b>Выбрать все</b>
+							<input type="checkbox" ng-model="creation.selectedAll" ng-click="creation.selectAll()"> <b>Выбрать все</b>
 						</label>
 					</div>
 
 					<br>
 
-					<div class="checkbox tour-{$ tour.age $}" ng-repeat="tour in tours">
+					<div class="checkbox tour-{$ tour.age $}" ng-repeat="tour in creation.tours">
 						<label>
-							<input type="checkbox" value="{$ tour.id $}" ng-model="tour.selected" ng-click="checkIfAllSelected()"> {$ tour.name $}
+							<input type="checkbox" value="{$ tour.id $}" ng-model="tour.selected" ng-click="creation.checkIfAllSelected()"> {$ tour.name $}
 						</label>
 					</div>
 
 					<div class="button-wrapper row">
 
-						<button class="btn btn-lg btn-danger pull-left col-lg-2" ng-click="prevStep()">
+						<button class="btn btn-lg btn-danger pull-left col-lg-2" ng-click="creation.prevStep()">
 							<span class="glyphicon glyphicon-chevron-left"></span> Вернуться
 						</button>
 
-						<button class="btn btn-lg btn-success pull-right col-lg-3" ng-click="nextStep(); groupTours(selectedTours())">
+						<button class="btn btn-lg btn-success pull-right col-lg-3" ng-click="creation.nextStep(); creation.groupTours(creation.selected(creation.tours))">
 							Продолжить <span class="glyphicon glyphicon-chevron-right"></span>
 						</button>
 
@@ -193,19 +195,19 @@
 				</div> <!-- End of Step 3 -->
 
 				<!-- Step 4 -->
-				<div ng-show="step === 4" class="animation-show-hide">
+				<div ng-show="creation.step === 4" class="animation-show-hide">
 
 					<!-- Heading -->
 					<div class="heading">
 
 						<h2>
-							{$ data.name $}<br>
-							({$ data.date_start | date:'dd.MM.yyyy' $} &ndash; {$ data.date_finish | date:'dd.MM.yyyy' $})
+							{$ creation.data.name $}<br>
+							({$ creation.data.date_start | date:'dd.MM.yyyy' $} &ndash; {$ creation.data.date_finish | date:'dd.MM.yyyy' $})
 						</h2>
 
 						<h3>
-							<span ng-if="data.type === '0'">Детские соревнования</span>
-							<span ng-if="data.type === '1'">Взрослые соревнования</span>
+							<span ng-if="creation.data.type === '0'">Детские соревнования</span>
+							<span ng-if="creation.data.type === '1'">Взрослые соревнования</span>
 						</h3>
 
 					</div> <!-- End of Heading -->
@@ -214,17 +216,17 @@
 
 					<div>
 						<ul class="basic-list">
-							<li class="tour-{$ tour.age $}" ng-repeat="tour in selectedTours()">{$ tour.name $}
+							<li class="tour-{$ tour.age $}" ng-repeat="tour in creation.selected(creation.tours)">{$ tour.name $}
 						</ul>
 					</div>
 
 					<div class="button-wrapper row">
 
-						<button class="btn btn-lg btn-danger pull-left col-lg-2" ng-click="prevStep()">
+						<button class="btn btn-lg btn-danger pull-left col-lg-2" ng-click="creation.prevStep()">
 							<span class="glyphicon glyphicon-chevron-left"></span> Вернуться
 						</button>
 
-						<button id="create-competition-button" class="btn btn-lg btn-success pull-right col-lg-3" ng-click="submitForm()">
+						<button id="create-competition-button" class="btn btn-lg btn-success pull-right col-lg-3" ng-click="creation.submitForm()">
 							Создать соревнования <span class="glyphicon glyphicon-ok"></span>
 						</button>
 

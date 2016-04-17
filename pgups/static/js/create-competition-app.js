@@ -1,181 +1,158 @@
-'use strict';
+(function() {
+    'use strict';
 
-var createCompetitionApp = angular.module('createCompetitionApp', ['ngAnimate']);
+    angular
+    .module('createCompetitionApp', ['ngAnimate'])
 
+    // avoiding conflict with django template tags
+    .config(function($interpolateProvider) {
+        $interpolateProvider.startSymbol('{$');
+        $interpolateProvider.endSymbol('$}');
+    })
 
-// handling conflicting django/angular template tags
-// (setting {$ $} tags for angular stuff)
-createCompetitionApp.config(function($interpolateProvider) {
-    $interpolateProvider.startSymbol('{$');
-    $interpolateProvider.endSymbol('$}');
-});
+    .controller('CreationFormController', CreationFormController)
 
+    .factory('initRequest', initRequest);
 
-// form controller
-createCompetitionApp.controller( 'creationFormCtrl', function( $scope, $http, $timeout, filterFilter ) {
+    function initRequest($http, $window, $log) {
+        var initRequest = {
+            async: function() {
 
-    // initializing empty data object
-    $scope.data = {};
+                var promise = $http.get('http://' +
+                                        $window.location.host +
+                                        '/get_ages_distances_styles/')
 
+                .then(function (response) {
+                    $log.log('ages/styles/distances fetched');
+                    return response.data;
+                });
 
-    // initial data request
-    var initRequest = $http.get( 'http://' + window.location.host + '/get_ages_distances_styles/' )
-        .then(function(response) {
+                return promise;
 
-            console.log($scope.csrf_token);
+            }
+        };
 
-            console.log('ages/styles/distances fetched');
-            $scope.fetchedData = angular.fromJson(response);
-            return response;
+        return initRequest;
 
+    }
+
+    function CreationFormController($scope, $http, $timeout, $window, $log, filterFilter, initRequest) {
+
+        var vm = this;
+
+        vm.data = {};
+        vm.step = 1;
+        vm.groupTours = groupTours;
+        vm.selected = selected;
+        vm.generateTours = generateTours;
+        vm.selectAll = selectAll;
+        vm.checkIfAllSelected = checkIfAllSelected;
+        vm.submitForm = submitForm;
+
+        initRequest.async().then(function(response) {
+            vm.fetchedData = angular.fromJson(response);
+            $log.log($scope.csrf_token);
         });
 
+        vm.nextStep = function() {
+            vm.step++;
+            $window.scrollTo(0, 0);
+        };
 
-    // switch between parts of the form
-    $scope.step = 1;
+        vm.prevStep = function() {
+            vm.step--;
+            $window.scrollTo(0, 0);
+        };
 
-    $scope.nextStep = function() {
-        $scope.step++;
-        // scroll to top
-        window.scrollTo(0, 0);
-    };
-
-    $scope.prevStep = function() {
-        $scope.step--;
-        // scroll to top
-        window.scrollTo(0, 0);
-    };
-
-
-    // returns list of selected age groups
-    $scope.selectedAgeGroups = function () {
-        return filterFilter($scope.fetchedData.data.ages, { selected: true });
-    };
-
-
-    // returns list of selected distances
-    $scope.selectedDistances = function () {
-        return filterFilter($scope.fetchedData.data.distances, { selected: true });
-    };
-
-
-    // returns list of selected styles
-    $scope.selectedStyles = function () {
-        return filterFilter($scope.fetchedData.data.styles, { selected: true });
-    };
-
-
-    // returns list of selected tours
-    $scope.selectedTours = function () {
-        return filterFilter($scope.tours, { selected: true });
-    };
-
-
-    // group tours
-    $scope.groupTours = function (lst) {
-
-        for ( var z = 0; z < lst.length; z++ ) {
-            $( '.tour-' + lst[z].id ).last().css('margin-bottom', '20px');
+        function selected(arr) {
+            return filterFilter(arr, { selected: true });
         }
 
-    };
-
-
-    // generates tours combining selected age groups, distances & styles
-    $scope.generateTours = function () {
-
-        // reset tour list & idCount
-        $scope.tours = [];
-        var idCount = 0;
-
-        // generate every possible combination and append to tours list
-        for ( var i = 0; i < $scope.selectedAgeGroups().length; i++ ) {
-
-            for ( var j = 0; j < $scope.selectedDistances().length; j++ ) {
-
-                for ( var k = 0; k < $scope.selectedStyles().length; k++ ) {
-
-                    $scope.tours.push( {
-                        'id': idCount,
-                        'age': $scope.selectedAgeGroups()[i].id,
-
-                        'name':        $scope.selectedAgeGroups()[i].name +
-                                 ' лет, ' + $scope.selectedDistances()[j].name +
-                                 ', ' + $scope.selectedStyles()[k].name,
-
-                        'distance': $scope.selectedDistances()[j].id,
-                        'style': $scope.selectedStyles()[k].id
-                    }
-                                     );
-
-                    // increment idCount
-                    idCount++;
-
-                }
+        function groupTours(arr) {
+            for ( var i = 0; i < arr.length; i++ ) {
+                angular.element( '.tour-' + arr[i].id ).last().css('margin-bottom', '20px');
             }
         }
 
+        function generateTours() {
 
-        // group tours by age, delayed call, waiting for DOM to update
-        $timeout(function() {
+            vm.tours = [];
+            var idCount = 0;
+            var ages = selected(vm.fetchedData.ages);
+            var distances = selected(vm.fetchedData.distances);
+            var styles = selected(vm.fetchedData.styles);
 
-            $scope.groupTours($scope.selectedAgeGroups());
+            for (var i = 0; i < ages.length; i++) {
+                for (var j = 0; j < distances.length; j++) {
+                    for (var k = 0; k < styles.length; k++) {
 
-        }, 500);
+                        vm.tours.push({
+                            'id': idCount,
+                            'age': ages[i].id,
+                            'name': ages[i].name +
+                                    ' лет, ' + distances[j].name +
+                                    ', ' + styles[k].name,
+                            'distance': distances[j].id,
+                            'style': styles[k].id
+                        });
 
-    };
+                        idCount++;
 
+                    }
+                }
+            }
 
-    // selectAll checkbox for tours
-    $scope.selectAll = function() {
-        angular.forEach($scope.tours, function(tour) {
-            tour.selected = $scope.selectedAll;
-        });
-    };
+            $timeout(function() {
+                groupTours(ages);
+            }, 500);
 
+        }
 
-    // checks whether all checkboxes are checked, changes selectAll value accordingly
-    $scope.checkIfAllSelected = function() {
-        $scope.selectedAll = $scope.tours.every(function(tour) {
-            return tour.selected == true;
-        });
-    };
-
-
-    // submit form
-    $scope.submitForm = function() {
-
-        $scope.data.tours = $scope.selectedTours();
-
-        // disabling button to prevent multiple requests
-        $('#create-competition-button').attr('disabled', true).html('Создаются соревнования...');
-
-        var req = {
-            method: 'POST',
-            url: 'http://' + window.location.host + '/competition_create/',
-            headers: {
-                'X-CSRFToken' : $scope.csrf_token,
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            data: angular.toJson($scope.data)
-        };
-
-        var postRequest = $http(req)
-            .then(function(response) {
-
-                // displaying success message
-                notie.alert(1, 'Создание соревнования', 5);
-
-                // delayed page refreshing
-                $timeout(function() {
-                    location.reload();
-                }, 2000);
-
-            }, function(response) {
-                notie.alert(3, 'Произошла ошибка!', 3);
-                $('#create-competition-button').attr('disabled', false).html('Создать соревнования');
+        function selectAll() {
+            angular.forEach(vm.tours, function(tour) {
+                tour.selected = vm.selectedAll;
             });
+        }
 
-    };
+        function checkIfAllSelected() {
+            vm.selectedAll = vm.tours.every(function(tour) {
+                return tour.selected === true;
+            });
+        }
 
-});
+        function submitForm() {
+
+            vm.data.tours = selected(vm.tours);
+
+            //$log.log($scope.csrf_token);
+
+            // disable button to prevent multiple requests
+            angular.element('#create-competition-button').attr('disabled', true).html('Создаются соревнования...');
+
+            var req = {
+                method: 'POST',
+                url: 'http://' + $window.location.host + '/competition_create/',
+                headers: {
+                    'X-CSRFToken' : $scope.csrf_token,
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                data: angular.toJson(vm.data)
+            };
+
+            $http(req)
+                .then(function() {
+
+                    notie.alert(1, 'Создаются соревнования... Вы будете перенаправлены на главную страницу.');
+
+                    $timeout(function() {
+                        $window.location.href = '/';
+                    }, 4000);
+
+                }, function() {
+                    notie.alert(3, 'Произошла ошибка!', 3);
+                    angular.element('#create-competition-button').attr('disabled', false).html('Создать соревнования');
+                });
+        }
+
+    }
+})();
