@@ -1,44 +1,65 @@
-'use strict';
+(function() {
+    'use strict';
 
-angular.
-module('sortableStartsApp', []).
+    angular
+    .module('sortableStartsApp', [])
+    .config(altTemplateTags)
+    .controller('SortController', SortController)
+    .filter('ucf', capitalize)
+    .factory('getStarts', getStarts);
 
-// handling conflicting django/angular template tags
-// (setting {$ $} tags for angular stuff)
-config(function($interpolateProvider) {
-    $interpolateProvider.startSymbol('{$');
-    $interpolateProvider.endSymbol('$}');
-}).
+    altTemplateTags.$inject = ['$interpolateProvider'];
+    SortController.$inject = ['$scope', '$http', '$window', '$log', 'getStarts'];
+    getStarts.$inject = ['$http', '$window', '$log', '$location'];
 
-filter('ucf', function() {
-    return function(word) {
-        return word.substring(0,1).toUpperCase() + word.slice(1);
-    };
-}).
+    function capitalize() {
+        return function(word) {
+            return word.substring(0,1).toUpperCase() + word.slice(1);
+        };
+    }
 
-controller( 'SortController', function( $scope, $http, $window, $log ) {
+    function altTemplateTags($interpolateProvider) {
+        $interpolateProvider.startSymbol('{$');
+        $interpolateProvider.endSymbol('$}');
+    }
 
-    var vm = this;
+    function getStarts($http, $window, $log, $location) {
+        var starts = {
+            async: function() {
 
-    // $watch waiting for competition_id in template to load
-    $scope.$watch(
-        function(scope) { return scope.competition_id; },
-        function() {
+                var url = $location.absUrl();
+                var urlArr = url.split('/');
+                var competition_id = urlArr[urlArr.length - 2];
 
-            $http.get( 'http://' + $window.location.host +
-                       '/get_competition_starts/' +
-                       $scope.competition_id)
+                var promise = $http.get('http://' +
+                                        $window.location.host +
+                                        '/get_competition_starts/' +
+                                        competition_id)
 
-            .then(function(response) {
+                .then(function (response) {
+                    $log.log('starts fetched');
+                    return response.data;
+                });
 
-                $log.log($scope.csrf_token);
-                $log.log('starts fetched');
-                vm.fetchedData = angular.fromJson(response);
-                vm.data = vm.fetchedData.data;
-                return response;
+                return promise;
+            }
+        };
+        return starts;
+    }
 
+    function SortController($scope, $http, $window, $log, getStarts) {
+
+        var vm = this;
+
+        activate();
+
+        function activate() {
+            getStarts.async().then(function(response) {
+                var data = response;
+                vm.data = response;
+                return data;
             });
         }
-    );
 
-});
+    }
+})();
