@@ -28,7 +28,7 @@
 
 					<ul class="sortable-start no-type" ui-sortable="sortableOptions" ng-model="start.competitors">
 
-						<li class="app single-competitor" ng-repeat="competitor in start.competitors">
+						<li class="app single-competitor-sort" ng-repeat="competitor in start.competitors">
 							{$ competitor.last_name | ucf $} {$ competitor.first_name | ucf $} {$ competitor.age $} {$ competitor.team $} {$ competitor.prior_time $}
 						</li>
 

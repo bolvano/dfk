@@ -5,14 +5,14 @@
     .module('sortableStartsApp', ['ui.sortable'])
     .config(altTemplateTags)
     .controller('SortController', SortController)
-    .filter('ucf', capitalize)
+    .filter('ucf', capitalizeWord)
     .factory('getStarts', getStarts);
 
     altTemplateTags.$inject = ['$interpolateProvider'];
-    SortController.$inject = ['$scope', '$http', '$window', '$log', 'getStarts'];
+    SortController.$inject = ['$scope', 'getStarts'];
     getStarts.$inject = ['$http', '$window', '$log', '$location'];
 
-    function capitalize() {
+    function capitalizeWord() {
         return function(word) {
             return word.substring(0,1).toUpperCase() + word.slice(1);
         };
@@ -47,9 +47,10 @@
         return starts;
     }
 
-    function SortController($scope, $http, $window, $log, getStarts) {
+    function SortController($scope, getStarts) {
 
         var vm = this;
+        $scope.sortableOptions = createOptions();
 
         activate();
 
@@ -61,15 +62,13 @@
             });
         }
 
-    function createOptions () {
-        var options = {
-            placeholder: "app",
-            connectWith: ".sortable-start",
-        };
-        return options;
-    }
-
-    $scope.sortableOptions = createOptions();
+        function createOptions () {
+            var options = {
+                placeholder: 'app',
+                connectWith: '.sortable-start'
+            };
+            return options;
+        }
 
     }
 })();
