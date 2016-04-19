@@ -93,7 +93,7 @@ def results_starts(request, competition_id):
 
 def results_tours(request, competition_id):
 
-    disqualification_dict = {1:'Неявка', 2: 'Фальстарт', 3:'Нарушение правил'}
+    disqualification_dict = {1:'Неявка', 2: 'Фальстарт', 3:'Нарушение правил поворота', 4:'Нарушение правил прохождения дистанции'}
 
     results = []
     competition = get_object_or_404(Competition, pk=competition_id)
@@ -216,7 +216,7 @@ def start_result(request, start_id):
 
     #import ipdb; ipdb.set_trace()
 
-    ResultFormSet = modelformset_factory(Competitor, fields=('time', 'disqualification'), extra=0, widgets={'time': SplitTimeWidget(), 'disqualification':forms.widgets.Select(attrs=None, choices=([0,''],[1,'Неявка'],[2,'Фальстарт'], [3,'Нарушение']))})
+    ResultFormSet = modelformset_factory(Competitor, fields=('time', 'disqualification'), extra=0, widgets={'time': SplitTimeWidget(), 'disqualification':forms.widgets.Select(attrs=None, choices=([0,''],[1,'Неявка'],[2,'Фальстарт'], [3,'Нарушение правил поворота'], [4,'Нарушение правил прохождения дистанции']))})
 
     if request.method == "POST":
         result_formset = ResultFormSet(request.POST)

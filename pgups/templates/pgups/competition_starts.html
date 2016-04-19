@@ -60,7 +60,10 @@
 									Фальстарт
 								{% endif %}
 								{% if  competitor.disqualification == 3 %}
-									Нарушение правил
+									Нарушение правил поворота
+								{% endif %}
+								{% if  competitor.disqualification == 4 %}
+									Нарушение правил прохождения дистанции
 								{% endif %}
 							{% endif %}</td>
 						</tr>

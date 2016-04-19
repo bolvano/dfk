@@ -171,24 +171,24 @@ select.ng-invalid.ng-dirty {
   width: 4%;
 }
 .column-name {
-  width: 40%;
+  width: 39%;
 }
 .column-name-narrow {
   width: 30%;
 }
 .column-disqualified {
   word-break: break-all;
-  width: 11%;
+  width: 22%;
 }
 .column-disqualified select {
   width: 100%;
 }
 .column-team {
-  width: 17%;
+  width: 12%;
 }
 .column-age,
 .column-time {
-  width: 13%;
+  width: 8%;
 }
 .column-result > input {
   width: 100%;
