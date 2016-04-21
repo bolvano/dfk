@@ -50,24 +50,29 @@
     function SortController($scope, getStarts) {
 
         var vm = this;
-        $scope.sortableOptions = createOptions();
 
         activate();
+
+        vm.sortableOptions = {
+            placeholder: 'single-competitor-sort-highlight',
+            connectWith: '.sortable-start',
+            opacity: 0.75
+        };
+
+        vm.sortableStartList = {
+            placeholder: 'single-start-sort-highlight',
+            items: 'div.sortable-start-list',
+            opacity: 0.75
+        };
 
         function activate() {
             getStarts.async().then(function(response) {
                 var data = response;
                 vm.data = response;
+                //adding empty element as a buffer
+                vm.data.starts_list.unshift({ role: 'buffer', competitors: []});
                 return data;
             });
-        }
-
-        function createOptions () {
-            var options = {
-                placeholder: 'app',
-                connectWith: '.sortable-start'
-            };
-            return options;
         }
 
     }

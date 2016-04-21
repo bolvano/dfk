@@ -171,24 +171,23 @@ select.ng-invalid.ng-dirty {
   width: 4%;
 }
 .column-name {
-  width: 39%;
+  width: 40%;
 }
 .column-name-narrow {
   width: 30%;
 }
 .column-disqualified {
-  word-break: break-all;
-  width: 22%;
+  width: 11%;
 }
 .column-disqualified select {
   width: 100%;
 }
 .column-team {
-  width: 12%;
+  width: 17%;
 }
 .column-age,
 .column-time {
-  width: 8%;
+  width: 13%;
 }
 .column-result > input {
   width: 100%;
@@ -293,21 +292,38 @@ select.ng-invalid.ng-dirty {
 /* Sortable   */
 /*============*/
 .single-start {
-  background-color: #eee;
-  padding: 20px;
   margin: 20px;
+  padding: 20px;
+  background-color: #eee;
   border-radius: 10px;
 }
 .single-competitor-sort {
-  background-color: #b9f2ff;
-  padding: 10px;
   margin: 10px;
+  padding: 10px;
+  cursor: pointer;
+  background-color: #b9f2ff;
   border-radius: 10px;
 }
 .sortable-start {
   padding: 40px;
   border: 1px dashed #808080;
   border-radius: 10px;
+}
+.single-competitor-sort-highlight {
+  margin: 10px;
+  padding: 10px;
+  height: 40px;
+  background-color: #e7d4fa;
+  border-radius: 10px;
+  opacity: 0.8;
+}
+.single-start-sort-highlight {
+  margin: 10px;
+  padding: 10px;
+  height: 200px;
+  background-color: #979a9d;
+  border-radius: 10px;
+  opacity: 0.3;
 }
 @-webkit-keyframes greenish {
   0% {
