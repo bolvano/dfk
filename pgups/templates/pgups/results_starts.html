@@ -38,13 +38,11 @@
 
 					<tr>
 						<td class="column-lane text-center light-blue-background">{{competitor.lane}}</td>
-						<td class="column-name">{{competitor.person.first_name|title}} {{competitor.person.last_name|title}}</td>
+						<td class="column-name">{{competitor.person.last_name|title}} {{competitor.person.first_name|title}}</td>
 						<td class="column-team text-center">{{competitor.userrequest.team}}</td>
 						<td class="column-age text-center">{{competitor.age}}</td>
 						<td class="column-time text-center">
-							{% if competitor.disqualification == 0 %}
-								<b>{{competitor.time|formatSeconds}}</b> / {{competitor.prior_time|formatSeconds}}
-							{% else %}
+
 								{% if  competitor.disqualification == 1 %}
 									{% if competitor.person.gender == 'Ж'%} Не вышла {% else %} Не вышел {% endif %}
 								{% endif %}
@@ -57,7 +55,12 @@
 								{% if  competitor.disqualification == 4 %}
 									Нарушение правил прохождения дистанции
 								{% endif %}
-							{% endif %}
+
+                                {% if  competitor.time > 0%}
+
+                                    <b>{{competitor.time|formatSeconds}}</b>
+
+                                {% endif %}
 						</td>
 					</tr>
 

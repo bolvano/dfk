@@ -26,7 +26,6 @@ urlpatterns = [
     # starts and tours
     url(r'^generate_tours/(?P<competition_id>\d+)/(?P<kids>(0|1))/$', views.generate_tours),
     url(r'^generate_starts/$', views.generate_starts),
-    url(r'^generate_starts2/$', views.generate_starts2),
 
     # competition create
     url(r'^competition_create/$', views.create_competition, name="competitioncreate"),

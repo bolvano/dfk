@@ -157,9 +157,12 @@ def get_client_ip(request):
     return ip
 
 
-def attribute_lanes(competitor_set):
+def attribute_lanes(competitor_set, num_of_lanes):
     return_set = {}
-    lanes = [3,2,4,1,5]
+    if num_of_lanes == 5:
+        lanes = [3,2,4,1,5]
+    elif num_of_lanes == 6:
+        lanes = [3,4,2,5,1,6]
     for competitor in reversed(competitor_set):
         return_set[lanes.pop(0)] = competitor
 
@@ -339,9 +342,11 @@ def generate_starts(request):
 
     if request.method == "POST":
 
+        #import ipdb; ipdb.set_trace()
         competition_id = request.POST.get("competition_id", "")
+        num_of_lanes = int(request.POST.get("lanes", 5))
+        age_diff = bool(request.POST.get("ages", False))
 
-        num_of_lanes = 5
         minimal = 3
 
         all_starts = []
@@ -367,129 +372,6 @@ def generate_starts(request):
         distances = Distance.objects.all().order_by('meters') #[50, 100]
         styles = [Style.objects.get(name='на спине'), Style.objects.get(name='вольный стиль'), Style.objects.get(name='брасс'), Style.objects.get(name='баттерфляй'), Style.objects.get(name='комплекс') ]
         genders = ['Ж','М']
-
-        i_cdsg = 1
-        i_starts = 1
-
-        for distance in distances:
-            for style in styles:
-                for gender in genders:
-
-                    starts = []
-
-                    tours = Tour.objects.filter(competition=competition, distance=distance, style=style, gender=gender)
-                    if tours:
-                        #import ipdb; ipdb.set_trace()
-                        competitors_no_prior = Competitor.objects.filter(tour__in=tours).filter(approved=True).filter(prior_time=0)
-                        competitors_prior = Competitor.objects.filter(tour__in=tours).filter(approved=True).filter(prior_time__gt=0).order_by('-prior_time')
-                        competitors = list(competitors_no_prior) + list(competitors_prior)
-
-                        if competitors:
-
-                            #import ipdb; ipdb.set_trace()
-
-                            cdsg = Cdsg(competition=competition, number=i_cdsg)
-                            cdsg.name = distance.name + ' ' + style.name + ' ' + gender
-                            cdsg.save()
-                            i_cdsg += 1
-
-                            (full_starts, remainders) = divmod(len(competitors), num_of_lanes)
-
-                            #import ipdb; ipdb.set_trace()
-
-                            if remainders > 0: # есть остаток
-                                if full_starts > 0 and remainders < minimal: #есть полные и остаток меньше трёх, перегруппировка первых двух
-                                    starts.append(competitors[:minimal]) # первый старт - три участника
-                                    if full_starts == 1: # был один полный старт: будет два неполных
-                                        starts.append(competitors[minimal:])
-                                    else: # было более одного полного: второй будет неполным, остальные полными
-                                        begin = minimal
-                                        end = begin + num_of_lanes - (minimal - remainders)
-
-                                        starts.append(competitors[begin:end])
-
-                                        begin = end
-                                        for i in range(0, full_starts - 1):
-                                            end = begin + num_of_lanes
-                                            starts.append(competitors[begin:end])
-                                            begin = end
-
-                                elif full_starts > 0 and remainders >= minimal: # есть полные старты и остаток три или больше
-                                    starts.append(competitors[:remainders])
-                                    begin = remainders
-                                    for i in range(0, full_starts):
-                                        end = begin + num_of_lanes
-                                        starts.append(competitors[begin:end])
-                                        begin = end
-
-                                else:
-                                    starts.append(competitors[:])
-
-                            elif full_starts: # нет остатков, просто раскидываем
-                                begin = 0
-                                for i in range(0, full_starts):
-                                    end = begin + num_of_lanes
-                                    starts.append(competitors[begin:end])
-                                    begin = end
-
-                            num_starts = len(starts)
-
-                            starts2 = []
-
-
-                            for competitor_set in starts:
-                                start = Start()
-                                start.num = i_starts
-                                start.name = distance.name + ' ' + style.name + ' ' + gender
-                                start.cdsg = cdsg
-                                start.save()
-
-                                #import ipdb; ipdb.set_trace()
-
-                                competitor_set = attribute_lanes(competitor_set)
-                                for lane, competitor in competitor_set.items():
-                                    competitor.lane = lane
-                                    competitor.start = start
-                                    competitor.save()
-
-                                starts2.append(start)
-                                i_starts += 1
-                
-    
-    return HttpResponseRedirect('../../competition/starts/'+competition_id+'/')
-
-def generate_starts2(request):
-
-    if request.method == "POST":
-
-        competition_id = request.POST.get("competition_id", "")
-
-        num_of_lanes = 5
-        minimal = 3
-
-        all_starts = []
-
-        competition = Competition.objects.get(pk=competition_id)
-
-        # delete old starts
-        cdsgs = Cdsg.objects.filter(competition=competition)
-        for cdsg in cdsgs:
-            starts = Start.objects.filter(cdsg=cdsg)
-            for start in starts:
-                competitors = Competitor.objects.filter(start=start)
-                for competitor in competitors:
-                    competitor.start = None
-                    competitor.lane = None
-                    competitor.result = 0
-                    competitor.points = 0
-                    competitor.disqualification = 0
-                    competitor.time = 0
-                    competitor.save()
-            cdsg.delete()
-
-        distances = Distance.objects.all().order_by('meters') #[50, 100]
-        styles = [Style.objects.get(name='на спине'), Style.objects.get(name='вольный стиль'), Style.objects.get(name='брасс'), Style.objects.get(name='баттерфляй'), Style.objects.get(name='комплекс') ]
-        genders = ['Ж','М']
         ages = Age.objects.all().order_by('min_age')
 
         i_cdsg = 1
@@ -497,29 +379,101 @@ def generate_starts2(request):
 
         for distance in distances:
             for style in styles:
-                for age in ages:
+                if age_diff:
+                    for age in ages:
+                        for gender in genders:
+
+                            starts = []
+                            tours = Tour.objects.filter(competition=competition, distance=distance, style=style, gender=gender, age=age)
+                            if tours:
+                                #import ipdb; ipdb.set_trace()
+                                competitors_no_prior = Competitor.objects.filter(tour__in=tours).filter(approved=True).filter(prior_time=0)
+                                competitors_prior = Competitor.objects.filter(tour__in=tours).filter(approved=True).filter(prior_time__gt=0).order_by('-prior_time')
+                                competitors = list(competitors_no_prior) + list(competitors_prior)
+
+                                if competitors:
+                                    #import ipdb; ipdb.set_trace()
+                                    cdsg = Cdsg(competition=competition, number=i_cdsg)
+                                    cdsg.name = distance.name + ' ' + style.name + ' ' + age.name + ' ' + gender
+                                    cdsg.save()
+                                    i_cdsg += 1
+                                    (full_starts, remainders) = divmod(len(competitors), num_of_lanes)
+
+                                    #import ipdb; ipdb.set_trace()
+
+                                    if remainders > 0: # есть остаток
+                                        if full_starts > 0 and remainders < minimal: #есть полные и остаток меньше трёх, перегруппировка первых двух
+                                            starts.append(competitors[:minimal]) # первый старт - три участника
+                                            if full_starts == 1: # был один полный старт: будет два неполных
+                                                starts.append(competitors[minimal:])
+                                            else: # было более одного полного: второй будет неполным, остальные полными
+                                                begin = minimal
+                                                end = begin + num_of_lanes - (minimal - remainders)
+
+                                                starts.append(competitors[begin:end])
+
+                                                begin = end
+                                                for i in range(0, full_starts - 1):
+                                                    end = begin + num_of_lanes
+                                                    starts.append(competitors[begin:end])
+                                                    begin = end
+
+                                        elif full_starts > 0 and remainders >= minimal: # есть полные старты и остаток три или больше
+                                            starts.append(competitors[:remainders])
+                                            begin = remainders
+                                            for i in range(0, full_starts):
+                                                end = begin + num_of_lanes
+                                                starts.append(competitors[begin:end])
+                                                begin = end
+
+                                        else:
+                                            starts.append(competitors[:])
+
+                                    elif full_starts: # нет остатков, просто раскидываем
+                                        begin = 0
+                                        for i in range(0, full_starts):
+                                            end = begin + num_of_lanes
+                                            starts.append(competitors[begin:end])
+                                            begin = end
+
+                                    num_starts = len(starts)
+
+                                    starts2 = []
+
+
+                                    for competitor_set in starts:
+                                        start = Start()
+                                        start.num = i_starts
+                                        start.name = distance.name + ' ' + style.name + ' ' + age.name + ' ' + gender
+                                        start.cdsg = cdsg
+                                        start.save()
+
+                                        #import ipdb; ipdb.set_trace()
+
+                                        competitor_set = attribute_lanes(competitor_set, num_of_lanes)
+                                        for lane, competitor in competitor_set.items():
+                                            competitor.lane = lane
+                                            competitor.start = start
+                                            competitor.save()
+
+                                        starts2.append(start)
+                                        i_starts += 1
+                else:
                     for gender in genders:
-
                         starts = []
-
-                        tours = Tour.objects.filter(competition=competition, distance=distance, style=style, gender=gender, age=age)
+                        tours = Tour.objects.filter(competition=competition, distance=distance, style=style, gender=gender)
                         if tours:
                             #import ipdb; ipdb.set_trace()
                             competitors_no_prior = Competitor.objects.filter(tour__in=tours).filter(approved=True).filter(prior_time=0)
                             competitors_prior = Competitor.objects.filter(tour__in=tours).filter(approved=True).filter(prior_time__gt=0).order_by('-prior_time')
                             competitors = list(competitors_no_prior) + list(competitors_prior)
-
                             if competitors:
-
                                 #import ipdb; ipdb.set_trace()
-
                                 cdsg = Cdsg(competition=competition, number=i_cdsg)
-                                cdsg.name = distance.name + ' ' + style.name + ' ' + age.name + ' ' + gender
+                                cdsg.name = distance.name + ' ' + style.name + ' ' + gender
                                 cdsg.save()
                                 i_cdsg += 1
-
-                                (full_starts, remainders) = divmod(len(competitors), num_of_lanes)
-
+                                (full_starts, remainders) = divmod(len(competitors), int(num_of_lanes))
                                 #import ipdb; ipdb.set_trace()
 
                                 if remainders > 0: # есть остаток
@@ -558,20 +512,18 @@ def generate_starts2(request):
                                         begin = end
 
                                 num_starts = len(starts)
-
                                 starts2 = []
-
 
                                 for competitor_set in starts:
                                     start = Start()
                                     start.num = i_starts
-                                    start.name = distance.name + ' ' + style.name + ' ' + age.name + ' ' + gender
+                                    start.name = distance.name + ' ' + style.name + ' ' + gender
                                     start.cdsg = cdsg
                                     start.save()
 
                                     #import ipdb; ipdb.set_trace()
 
-                                    competitor_set = attribute_lanes(competitor_set)
+                                    competitor_set = attribute_lanes(competitor_set, num_of_lanes)
                                     for lane, competitor in competitor_set.items():
                                         competitor.lane = lane
                                         competitor.start = start
@@ -579,9 +531,10 @@ def generate_starts2(request):
 
                                     starts2.append(start)
                                     i_starts += 1
-
-
+                
+    
     return HttpResponseRedirect('../../competition/starts/'+competition_id+'/')
+
 
 def tour(request, id):
 
