@@ -692,8 +692,6 @@ def logout_user(request):
 
 def cdsg_print(request, cdsg_id):
 
-    disqualification_dict = {1:'Неявка', 2: 'Фальстарт', 3:'Нарушение правил поворота', 4:'Нарушение правил прохождения дистанции'}
-
     cdsg = Cdsg.objects.get(pk=cdsg_id)
 
     starts = Start.objects.filter(cdsg=cdsg)
@@ -701,10 +699,47 @@ def cdsg_print(request, cdsg_id):
     tour_dict = defaultdict(list)
     competitors = Competitor.objects.filter(start__in=starts)
     for competitor in competitors:
-        tour_dict[competitor.tour.__str__()].append(competitor)
+        tour_dict[competitor.tour.id].append(competitor)
 
     tour_dict = dict(tour_dict)
 
     tour_dict = {k: sorted((c for c in v if c.disqualification==0), key=lambda k:k.time)+list(filter(lambda c: c.disqualification > 0, v)) for k, v in tour_dict.items()}
-    #tour_list = [(v, k) for k, v in tour_dict.iteritems()]
-    return render(request, 'pgups/cdsg_print.html', { 'cdsg': cdsg, 'tour_dict':tour_dict}, )
+    tour_list = [(Tour.objects.get(pk=k), v) for k, v in tour_dict.items()]
+    #tour_list.sort(key=lambda tup: tup[0].style)
+    return render(request, 'pgups/cdsg_print.html', { 'cdsg': cdsg, 'tour_dict':tour_dict, 'tour_list':tour_list}, )
+
+def starts_print(request, competition_id):
+    competition = Competition.objects.get(pk=competition_id)
+    cdsg_list = Cdsg.objects.filter(competition=competition)
+    return render(request, 'pgups/starts_print.html', {'cdsg_list': cdsg_list,
+                                                             'competition_id':competition_id,
+                                                             'competition': competition,
+                                                            },)
+
+def final_print(request, competition_id):
+    competition = Competition.objects.get(pk=competition_id)
+
+    cdsgs = Cdsg.objects.filter(competition=competition)
+
+    starts = Start.objects.filter(cdsg__in=cdsgs)
+
+    tour_dict = defaultdict(list)
+    competitors = Competitor.objects.filter(start__in=starts)
+    for competitor in competitors:
+        tour_dict[competitor.tour.id].append(competitor)
+
+    tour_dict = dict(tour_dict)
+
+    tour_dict = {k: sorted((c for c in v if c.disqualification==0), key=lambda k:k.time)+list(filter(lambda c: c.disqualification > 0, v)) for k, v in tour_dict.items()}
+    tour_list = [(Tour.objects.get(pk=k), v) for k, v in tour_dict.items()]
+
+    styles = {'на спине': 1, 'вольный стиль': 2, 'брасс': 3, 'баттерфляй': 4, 'комплекс': 5 }
+    ages = Age.objects.all().order_by('min_age')
+    ages = {key.name: index for index, key in enumerate(ages)}
+    genders = {'Ж':1,'М':2}
+
+    tour_list.sort(key=lambda tup: genders[tup[0].gender])
+    tour_list.sort(key=lambda tup: ages[tup[0].age.name])
+    tour_list.sort(key=lambda tup: styles[tup[0].style.name])
+
+    return render(request, 'pgups/final_print.html', { 'competition': competition, 'tour_dict':tour_dict, 'tour_list':tour_list}, )
