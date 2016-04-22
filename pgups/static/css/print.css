@@ -1,0 +1,42 @@
+@media all {
+
+    body {
+
+        width: 100%;
+        margin: 0;
+    }
+
+    table {
+        border-collapse:collapse;
+        text-align:left;
+        width: 45%;
+        table-layout: fixed;
+        /*display: inline-block;*/
+        /*float:left;*/
+    }
+
+    .div_table {
+        float:left;
+    }
+
+/*    table:nth-child(odd) {
+        float:left;
+    }
+
+    table:nth-child(even) {
+        float:right;
+    }
+*/
+    td,th {
+        border: 1px solid black;
+    }
+    .col1 {
+        width: 50%;
+    }
+    .col2 {
+        width: 25%;
+    }
+    .col3 {
+        width: 25%;
+    }
+}

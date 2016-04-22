@@ -7,19 +7,14 @@ from django.forms import modelformset_factory
 
 import datetime
 import json
-import re
 
 from .models import Userrequest, Person, Competition, Team, Competitor, Tour, Age, Distance, Style, Start, Cdsg
 
 from django.forms.widgets import TextInput
 
-#from django.http import *
-from django.template import RequestContext
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
 from collections import defaultdict
-from operator import itemgetter
 
 
 class NumberInput(TextInput):
@@ -696,6 +691,9 @@ def logout_user(request):
     return HttpResponseRedirect('/')
 
 def cdsg_print(request, cdsg_id):
+
+    disqualification_dict = {1:'Неявка', 2: 'Фальстарт', 3:'Нарушение правил поворота', 4:'Нарушение правил прохождения дистанции'}
+
     cdsg = Cdsg.objects.get(pk=cdsg_id)
 
     starts = Start.objects.filter(cdsg=cdsg)
@@ -708,4 +706,5 @@ def cdsg_print(request, cdsg_id):
     tour_dict = dict(tour_dict)
 
     tour_dict = {k: sorted((c for c in v if c.disqualification==0), key=lambda k:k.time)+list(filter(lambda c: c.disqualification > 0, v)) for k, v in tour_dict.items()}
+    tour_list = [(v, k) for k, v in tour_dict.iteritems()]
     return render(request, 'pgups/cdsg_print.html', { 'cdsg': cdsg, 'tour_dict':tour_dict}, )
