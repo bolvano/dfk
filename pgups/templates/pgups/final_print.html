@@ -20,19 +20,24 @@
 	{% for tuple in tour_list %}
 		<div class="div-table">
 			<table>
-
+                <col class="col0">
 				<col class="col1">
 				<col class="col2">
 				<col class="col3">
 
-				<tr><th colspan="3">{{tuple.0.style|capfirst}}, {{tuple.0.distance|capfirst}}, {{tuple.0.gender|capfirst}}, {{tuple.0.age|capfirst}} </th></tr>
+				<tr><th colspan="4">{{tuple.0.style|capfirst}}, {{tuple.0.distance|capfirst}}, {{tuple.0.gender|capfirst}}, {{tuple.0.age|capfirst}} </th></tr>
 					{% for competitor in tuple.1 %}
 				<tr>
-					<td class="competitor">{{competitor.person.last_name|title}} {{competitor.person.first_name|title}}</td>
+                    <td class="position">{{ forloop.counter }}</td>
+					<td class="competitor">
+						{% if competitor.main_distance%}<span><b>{% endif %}
+						{{competitor.person.last_name|title}} {{competitor.person.first_name|title}}
+						{% if competitor.main_distance%}<span><b>{% endif %}
+					</td>
 					<td class="team">{{competitor.userrequest.team.name}}</td>
 					<td class="time"> {{competitor.time|formatSeconds}}  {% if competitor.disqualification > 0 %} <b>
 
-                        								{% if  competitor.disqualification == 1 %}
+                        		{% if  competitor.disqualification == 1 %}
 									{% if competitor.person.gender == 'Ж'%} Не вышла {% else %} Не вышел {% endif %}
 								{% endif %}
 								{% if  competitor.disqualification == 2 %}
