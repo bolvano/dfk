@@ -23,7 +23,7 @@
 			{% for start in cdsg.start_set.all %}
 
 				<!-- Start number -->
-				<div class="start-number" name="#start{{start.num}}">
+				<div class="start-number" id="start{{start.num}}">
 					<h3 class="pull-left">Заплыв {{start.num}}</h3>
 					{% if user.is_authenticated %}
 						<a class="btn-results btn-lg pull-right btn btn-info" href="{% url 'start_result' start_id=start.id %}">Редактировать результат</a>

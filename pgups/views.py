@@ -703,7 +703,7 @@ def cdsg_print(request, cdsg_id):
 
     tour_dict = dict(tour_dict)
 
-    tour_dict = {k: sorted((c for c in v if c.disqualification==0), key=lambda k:k.time)+list(filter(lambda c: c.disqualification > 0, v)) for k, v in tour_dict.items()}
+    tour_dict = {k: sorted((c for c in v if c.disqualification==0 and c.time>0), key=lambda k:k.time)+list(filter(lambda c: c.disqualification > 0 or c.time == 0, v)) for k, v in tour_dict.items()}
     tour_list = [(Tour.objects.get(pk=k), v) for k, v in tour_dict.items()]
     #tour_list.sort(key=lambda tup: tup[0].style)
     return render(request, 'pgups/cdsg_print.html', { 'cdsg': cdsg, 'tour_dict':tour_dict, 'tour_list':tour_list}, )

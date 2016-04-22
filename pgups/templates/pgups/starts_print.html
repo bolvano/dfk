@@ -37,7 +37,11 @@
                     {% for competitor in start.competitor_set.all %}
 				<tr>
                     <td class="lane"> {{competitor.lane}}</td>
-					<td class="competitor">{{competitor.person.last_name|title}} {{competitor.person.first_name|title}}</td>
+					<td class="competitor">
+						{% if competitor.main_distance%}<span><b>{% endif %}
+						{{competitor.person.last_name|title}} {{competitor.person.first_name|title}}
+						{% if competitor.main_distance%}<span><b>{% endif %}
+					</td>
 					<td class="team">{{competitor.userrequest.team.name}}</td>
 					<td class="time"> {{competitor.age.name}}</td>
 				</tr>
