@@ -15,7 +15,7 @@
 
 	{% for cdsg in cdsg_list %}
 
-		<!-- Single start -->
+		<!-- Single discipline -->
 		<div class="single-start-container">
 
 			<h2><b>{{cdsg.name}}</b></h2>
@@ -26,7 +26,7 @@
 				<div class="start-number">
 					<h3 class="pull-left">Заплыв {{start.num}}</h3>
 					{% if user.is_authenticated %}
-						<a class="btn-results btn-lg pull-right btn btn-info" href="../../start_result/{{start.id}}/">Редактировать результат</a>
+						<a class="btn-results btn-lg pull-right btn btn-info" href="{% url 'start_result' start_id=start.id %}">Редактировать результат</a>
 					{% endif %}
 				</div> <!-- End of Start number -->
 
@@ -75,8 +75,10 @@
 				</table>
 
 			{% endfor %}
+            <a class="btn-results btn-lg pull-right btn btn-info" href="{% url 'cdsg_print' cdsg_id=cdsg.id %}">Печать результата</a>
+            <br>
 
-		</div> <!-- End of Single start -->
+		</div> <!-- End of Single discipline -->
 
 	{% endfor %}
 </div>

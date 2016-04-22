@@ -18,6 +18,10 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 
+from collections import defaultdict
+from operator import itemgetter
+
+
 class NumberInput(TextInput):
     input_type = 'number'
 
@@ -690,3 +694,18 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     return HttpResponseRedirect('/')
+
+def cdsg_print(request, cdsg_id):
+    cdsg = Cdsg.objects.get(pk=cdsg_id)
+
+    starts = Start.objects.filter(cdsg=cdsg)
+
+    tour_dict = defaultdict(list)
+    competitors = Competitor.objects.filter(start__in=starts)
+    for competitor in competitors:
+        tour_dict[competitor.tour.__str__()].append(competitor)
+
+    tour_dict = dict(tour_dict)
+
+    tour_dict = {k: sorted((c for c in v if c.disqualification==0), key=lambda k:k.time)+list(filter(lambda c: c.disqualification > 0, v)) for k, v in tour_dict.items()}
+    return render(request, 'pgups/cdsg_print.html', { 'cdsg': cdsg, 'tour_dict':tour_dict}, )

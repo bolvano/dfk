@@ -1,0 +1,13 @@
+{% load extras %}
+
+Результаты дисциплины: {{cdsg.name}} ({{cdsg.competition.name}})
+<br>
+
+{% for tour_name, competitors in tour_dict.items %}
+    <b>{{tour_name|capfirst}}</b><br>
+        {% for competitor in competitors %}
+
+            {{competitor}}: {{competitor.time|formatSeconds}} : {% if competitor.disqualification > 0 %} <b>Дисквалифицирован:{{competitor.disqualification}}</b> {% endif %}<br>
+
+        {% endfor %}
+{% endfor %}
