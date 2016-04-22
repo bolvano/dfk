@@ -31,34 +31,35 @@
 
 				<tr>
 					<td class="column-lane text-center light-blue-background">№</td>
-					<td class="column-name light-blue-background">Участник</td>
-					<td class="column-team light-blue-background">Команда</td>
+					<td class="column-name-narrow light-blue-background">Участник</td>
+					<td class="column-team text-center light-blue-background">Команда</td>
 					<td class="column-age text-center light-blue-background">Категория</td>
 					<td class="column-time text-center light-blue-background">Результат</td>
-                    <td class="column-disqualified padding-15 text-center light-blue-background">Дисквалиф.</td>
+					<td class="column-disqualified padding-15 text-center light-blue-background">Дисквалиф.</td>
 				</tr>
 
 			{% for competitor in competitors %}
 
 				<tr>
 					<td class="column-lane text-center light-blue-background">{{competitor.lane}}</td>
-					<td class="column-name">{{competitor.person.first_name|title}} {{competitor.person.last_name|title}}</td>
-					<td class="column-team">{{competitor.userrequest.team.name}}</td>
+					<td class="column-name-narrow">{{competitor.person.last_name|title}} {{competitor.person.first_name|title}}</td>
+					<td class="column-team text-center">{{competitor.userrequest.team.name}}</td>
 					<td class="column-age text-center">{{competitor.age}}</td>
 					<td class="column-time column-time-animation text-center">{{competitor.time|formatSeconds}}</td>
-                    <td class="column-disqualified padding-15 text-center">{% if  competitor.disqualification == 1 %}
-                        {% if competitor.person.gender == 'Ж'%} Не вышла {% else %} Не вышел {% endif %}
-                    {% endif %}
-                    {% if  competitor.disqualification == 2 %}
-                        Фальстарт
-                    {% endif %}
-                    {% if  competitor.disqualification == 3 %}
-                        Нарушение правил поворота
-                    {% endif %}
-                    {% if  competitor.disqualification == 4 %}
-                        Нарушение правил прохождения дистанции
-                    {% endif %}
-                    </td>
+					<td class="column-disqualified padding-15 text-center">
+						{% if  competitor.disqualification == 1 %}
+							{% if competitor.person.gender == 'Ж'%} Не вышла {% else %} Не вышел {% endif %}
+						{% endif %}
+						{% if  competitor.disqualification == 2 %}
+							Фальстарт
+						{% endif %}
+						{% if  competitor.disqualification == 3 %}
+							Нарушение правил поворота
+						{% endif %}
+						{% if  competitor.disqualification == 4 %}
+							Нарушение правил прохождения дистанции
+						{% endif %}
+					</td>
 				</tr>
 
 			{% endfor %}

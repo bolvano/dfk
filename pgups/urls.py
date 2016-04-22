@@ -12,7 +12,7 @@ urlpatterns = [
     url(r'^results/tours/(?P<competition_id>\d+)/$', views.results_tours),
     url(r'^results/teams/(?P<competition_id>\d+)/$', views.results_teams),
     url(r'^competition/starts/(?P<competition_id>\d+)/$', views.competition_starts, name='competition_starts'),
-    url(r'^competition/start_result/(?P<start_id>\d+)/$', views.start_result),
+    url(r'^competition/start_result/(?P<start_id>\d+)/$', views.start_result, name='start_result'),
     url(r'^competition/start_result_view/(?P<start_id>\d+)/$', views.start_result_view),
     url(r'^tour/(?P<id>\d+)/$', views.tour),
     url(r'^competition/team/(?P<competition_id>\d+)/(?P<team_id>\d+)/$', views.competition_team),
@@ -26,7 +26,6 @@ urlpatterns = [
     # starts and tours
     url(r'^generate_tours/(?P<competition_id>\d+)/(?P<kids>(0|1))/$', views.generate_tours),
     url(r'^generate_starts/$', views.generate_starts),
-    url(r'^generate_starts2/$', views.generate_starts2),
 
     # competition create
     url(r'^competition_create/$', views.create_competition, name="competitioncreate"),
@@ -37,4 +36,8 @@ urlpatterns = [
 
     url(r'^login/$', views.login_user, name="login"),
     url(r'^logout/$', views.logout_user, name="logout"),
+
+    url(r'^starts_print/(?P<competition_id>\d+)/$', views.starts_print, name="starts_print"),
+    url(r'^cdsg_print/(?P<cdsg_id>\d+)/$', views.cdsg_print, name="cdsg_print"),
+    url(r'^final_print/(?P<competition_id>\d+)/$', views.final_print, name="final_print"),
 ]

@@ -5,14 +5,14 @@
     .module('sortableStartsApp', ['ui.sortable'])
     .config(altTemplateTags)
     .controller('SortController', SortController)
-    .filter('ucf', capitalize)
+    .filter('ucf', capitalizeWord)
     .factory('getStarts', getStarts);
 
     altTemplateTags.$inject = ['$interpolateProvider'];
-    SortController.$inject = ['$scope', '$http', '$window', '$log', 'getStarts'];
+    SortController.$inject = ['$scope', 'getStarts'];
     getStarts.$inject = ['$http', '$window', '$log', '$location'];
 
-    function capitalize() {
+    function capitalizeWord() {
         return function(word) {
             return word.substring(0,1).toUpperCase() + word.slice(1);
         };
@@ -47,29 +47,33 @@
         return starts;
     }
 
-    function SortController($scope, $http, $window, $log, getStarts) {
+    function SortController($scope, getStarts) {
 
         var vm = this;
 
         activate();
 
+        vm.sortableOptions = {
+            placeholder: 'single-competitor-sort-highlight',
+            connectWith: '.sortable-start',
+            opacity: 0.75
+        };
+
+        vm.sortableStartList = {
+            placeholder: 'single-start-sort-highlight',
+            items: 'div.sortable-start-list',
+            opacity: 0.75
+        };
+
         function activate() {
             getStarts.async().then(function(response) {
                 var data = response;
                 vm.data = response;
+                //adding empty element as a buffer
+                vm.data.starts_list.unshift({ role: 'buffer', competitors: []});
                 return data;
             });
         }
-
-    function createOptions () {
-        var options = {
-            placeholder: "app",
-            connectWith: ".sortable-start",
-        };
-        return options;
-    }
-
-    $scope.sortableOptions = createOptions();
 
     }
 })();

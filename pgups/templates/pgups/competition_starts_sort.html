@@ -6,6 +6,8 @@
 
 	<div ng-app="sortableStartsApp" ng-controller="SortController as sortCtrl">
 
+		<!-- {$ sortCtrl.data.starts_list $} -->
+
 		<input type="hidden" name="csrf_token" ng-init="csrf_token='{{csrf_token}}'" ng-model="csrf_token">
 
 		<div class="container">
@@ -17,28 +19,26 @@
 				</a>
 			</div> <!-- End of Heading -->
 
-			<ul class="no-type" ui-sortable ng-model="sortCtrl.data.starts_list">
+			<div ui-sortable="sortCtrl.sortableStartList" ng-model="sortCtrl.data.starts_list">
 
-				<li class="single-start" ng-repeat="start in sortCtrl.data.starts_list">
+				<div class="single-start start-{$ $index $}" ng-class="{'sortable-start-list': !$first}" ng-repeat="start in sortCtrl.data.starts_list">
 
 					<!-- Start number -->
-					<div class="start-number">
-						<h3 class="pull-left">Заплыв {$ $index + 1 $}</h3>
+					<div class="start-number" ng-class="{'hidden': $first}">
+						<h3 class="pull-left">Заплыв {$ $index $}</h3>
 					</div> <!-- End of Start number -->
 
-					<ul class="sortable-start no-type" ui-sortable="sortableOptions" ng-model="start.competitors">
+					<div class="sortable-start" ui-sortable="sortCtrl.sortableOptions" ng-model="start.competitors">
 
-						<li class="app single-competitor" ng-repeat="competitor in start.competitors">
+						<div class="single-competitor-sort" ng-repeat="competitor in start.competitors">
 							{$ competitor.last_name | ucf $} {$ competitor.first_name | ucf $} {$ competitor.age $} {$ competitor.team $} {$ competitor.prior_time $}
-						</li>
+						</div>
 
-					</ul>
+					</div>
 
-				</li>
+				</div>
 
-			</ul>
-
-			{$ sortCtrl.data $}
+			</div>
 
 		</div>
 

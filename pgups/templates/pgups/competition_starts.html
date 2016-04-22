@@ -15,7 +15,7 @@
 
 	{% for cdsg in cdsg_list %}
 
-		<!-- Single start -->
+		<!-- Single discipline -->
 		<div class="single-start-container">
 
 			<h2><b>{{cdsg.name}}</b></h2>
@@ -23,10 +23,10 @@
 			{% for start in cdsg.start_set.all %}
 
 				<!-- Start number -->
-				<div class="start-number">
+				<div class="start-number" name="#start{{start.num}}">
 					<h3 class="pull-left">Заплыв {{start.num}}</h3>
 					{% if user.is_authenticated %}
-						<a class="btn-results btn-lg pull-right btn btn-info" href="../../start_result/{{start.id}}/">Редактировать результат</a>
+						<a class="btn-results btn-lg pull-right btn btn-info" href="{% url 'start_result' start_id=start.id %}">Редактировать результат</a>
 					{% endif %}
 				</div> <!-- End of Start number -->
 
@@ -46,13 +46,11 @@
 
 						<tr>
 							<td class="column-lane text-center light-blue-background">{{competitor.lane}}</td>
-							<td class="column-name">{{competitor.person.first_name|title}} {{competitor.person.last_name|title}}</td>
+							<td class="column-name">{{competitor.person.last_name|title}} {{competitor.person.first_name|title}}</td>
 							<td class="column-team text-center">{{competitor.userrequest.team}}</td>
 							<td class="column-age text-center">{{competitor.age}}</td>
 							<td class="column-time text-center">{{competitor.prior_time|formatSeconds|localize}}</td>
-							<td class="column-time text-center">{% if competitor.disqualification == 0 %}
-								<b>{{competitor.time|formatSeconds}}</b>
-							{% else %}
+							<td class="column-time text-center">
 								{% if  competitor.disqualification == 1 %}
 									{% if competitor.person.gender == 'Ж'%} Не вышла {% else %} Не вышел {% endif %}
 								{% endif %}
@@ -65,15 +63,22 @@
 								{% if  competitor.disqualification == 4 %}
 									Нарушение правил прохождения дистанции
 								{% endif %}
-							{% endif %}</td>
+
+                                {% if  competitor.time > 0%}
+
+                                <b>{{competitor.time|formatSeconds}}</b>
+
+							    {% endif %}</td>
 						</tr>
 					{% endfor %}
 					</tbody>
 				</table>
 
 			{% endfor %}
+            <a class="btn-results btn-lg pull-right btn btn-info" href="{% url 'cdsg_print' cdsg_id=cdsg.id %}" target="_blank">Печать результата</a>
+            <br>
 
-		</div> <!-- End of Single start -->
+		</div> <!-- End of Single discipline -->
 
 	{% endfor %}
 </div>

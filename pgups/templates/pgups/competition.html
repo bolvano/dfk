@@ -71,16 +71,17 @@
 				<div class="col-lg-12">
 					<form action="../../generate_starts/" method="POST" >{% csrf_token %}
 						<input type="hidden" name="competition_id" value="{{competition.id}}">
-						<input type="submit" class="generate-starts btn btn-lg btn-default" value="Перегенерировать старты">
+						<select name="lanes">
+							<option value="5">5 дорожек</option>
+							<option value="6">6 дорожек</option>
+						</select>
+						<input type="checkbox" name="ages"> С разбивкой по возрастам
+                        <input type="submit" onclick="return confirm('Результаты будут удалены. Продолжить?')" class="generate-starts btn btn-lg btn-default" value="Перегенерировать старты">
 					</form>
 				</div>
 
-				<div class="col-lg-12">
-					<form action="../../generate_starts2/" method="POST" >{% csrf_token %}
-						<input type="hidden" name="competition_id" value="{{competition.id}}">
-						<input type="submit" class="generate-starts btn btn-lg btn-default" value="Перегенерировать старты (с разбивкой по возрастам)">
-					</form>
-				</div>
+
+                <a class="pull-right btn btn-md btn-default" href="{% url 'starts_print' competition_id=competition.id %}" target="_blank">Стартовые протоколы (печать)</a>
 
 				<a class="pull-right btn btn-md btn-default" href="../../competition_starts_sort/{{competition.id}}/">Ручная настройка стартов</a>
 
@@ -111,6 +112,10 @@
 					<input type="submit" class="close-competition btn btn-lg btn-default" value="Редактировать результаты соревнований">
 				</form>
 		{% endif %}
+
+		<p>
+			<a class="btn btn-lg btn-primary" href="{% url 'final_print' competition_id=competition.id %}" target="_blank">Итоговые протоколы</a>
+		</p>
 
 	</div>
 

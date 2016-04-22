@@ -43,7 +43,7 @@ class Person(models.Model):
     userrequest = models.ForeignKey('Userrequest')
     
     def __str__(self):
-        return self.first_name.title() + ' ' + self.last_name.title() + ' (' + str(self.birth_year) + '/' + self.gender +')'
+        return self.last_name.title() + ' ' + self.first_name.title() + ' (' + str(self.birth_year) + '/' + self.gender +')'
 
 
 #Возрастные группы

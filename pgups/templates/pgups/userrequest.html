@@ -48,7 +48,7 @@
 					{{competitor_form.id}}
 
 					<tr>
-						<td class="column-name">{{competitor_form.instance.person.first_name|title}} {{competitor_form.instance.person.last_name|title}}</td>
+						<td class="column-name">{{competitor_form.instance.person.last_name|title}} {{competitor_form.instance.person.first_name|title}}</td>
 						<td class="column-tour padding-15">{{competitor_form.instance.tour.style.name}} {{competitor_form.instance.tour.distance.name}}</td>
 						{% if user.is_authenticated %}
 						<td class="column-approved padding-15 text-center">{{competitor_form.approved}}</td>
@@ -61,9 +61,9 @@
 			</table>
 			{% if user.is_authenticated %}
 				<button class="btn btn-lg btn-success pull-right" type="submit">Сохранить изменения</button>
-			{% endif %}
-		</form>
 
+		</form>
+			{% endif %}
 </div>
 
 {% endblock %}
