@@ -706,5 +706,5 @@ def cdsg_print(request, cdsg_id):
     tour_dict = dict(tour_dict)
 
     tour_dict = {k: sorted((c for c in v if c.disqualification==0), key=lambda k:k.time)+list(filter(lambda c: c.disqualification > 0, v)) for k, v in tour_dict.items()}
-    tour_list = [(v, k) for k, v in tour_dict.iteritems()]
+    #tour_list = [(v, k) for k, v in tour_dict.iteritems()]
     return render(request, 'pgups/cdsg_print.html', { 'cdsg': cdsg, 'tour_dict':tour_dict}, )
