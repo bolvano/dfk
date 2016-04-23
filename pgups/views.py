@@ -168,18 +168,21 @@ def attribute_lanes(competitor_set, num_of_lanes):
     return return_set
 
 def competition_team(request, competition_id, team_id):
-    result = {}
     competition = Competition.objects.get(pk=competition_id)
     team = Team.objects.get(pk=team_id)
     userrequests = Userrequest.objects.filter(competition=competition, team=team)
     competitors = Competitor.objects.filter(userrequest__in=userrequests)
-    for competitor in competitors:
-        if competitor.person.id in result:
-            result[competitor.person.id].append(competitor)
-        else:
-            result[competitor.person.id] = [competitor,]
-    result = [(Person.objects.get(pk=k),v) for k,v in result.items()]
-    return render(request, 'pgups/competition_team.html', {'result': result, 'team':team, 'competition':competition},)
+    CompetitorFormSet = modelformset_factory(Competitor, fields=('approved',), extra=0, widgets={'approved': forms.CheckboxInput()})
+    if request.method == "POST":
+        competitor_formset = CompetitorFormSet(request.POST)
+        if(competitor_formset.is_valid()):
+            competitor_formset.save()
+            messages.success(request, 'Изменения сохранены')
+            return HttpResponseRedirect('/competition/team/'+competition_id+'/'+team_id+'/')
+    else:
+        competitor_formset = CompetitorFormSet(queryset=competitors.order_by('person__last_name'))
+
+    return render(request, 'pgups/competition_team.html', {'competitor_formset': competitor_formset, 'team':team, 'competition':competition},)
 
 def userrequest(request, userrequest_id):
     userrequest = get_object_or_404(Userrequest, pk=userrequest_id)
@@ -540,6 +543,10 @@ def tour(request, id):
     res = []    
 
     tour = Tour.objects.get(pk=id)
+
+    competition_id = tour.competition.id
+    competition_name = tour.competition.name
+
     tour_name = tour.distance.name + ' ' + tour.style.name + ' ' + tour.age.name + ' ' + tour.gender
     competitors = Competitor.objects.filter(tour=tour)
     for competitor in competitors:
@@ -556,7 +563,7 @@ def tour(request, id):
 
     res = sorted(res, key=lambda x: x[1])
             
-    return render(request, 'pgups/tour.html', {'res': res, 'tour_name': tour_name},)    
+    return render(request, 'pgups/tour.html', {'competition_id':competition_id, 'competition_name':competition_name, 'res': res, 'tour_name': tour_name},)
 
 
 # ajax-контроллер
