@@ -29,10 +29,10 @@
         var starts = {
             async: function() {
 
-                var urlArr = $location.absUrl().split('/');
-                var competition_id = urlArr[urlArr.length - 2];
+                var urlArr = $location.absUrl().split('/'),
+                    competition_id = urlArr[urlArr.length - 2],
 
-                var promise = $http.get('http://' +
+                    promise = $http.get('http://' +
                                         $window.location.host +
                                         '/get_competition_starts/' +
                                         competition_id)
@@ -56,7 +56,8 @@
             restrict: 'A',
             link: function (scope, element, attrs) {
 
-                var topClass = attrs.fixOnScroll, // get CSS class from directive's attribute value
+                // get CSS class from directive's attribute value
+                var topClass = attrs.fixOnScroll, 
                     offsetTop = element.offset().top,
                     width = element.width();
 
@@ -96,9 +97,12 @@
         function activate() {
             getStarts.async().then(function(response) {
                 var data = response;
+
                 vm.data = response;
-                //adding empty element as a buffer
+
+                //adding an empty list to act as a buffer
                 vm.data.starts_list.unshift({ role: 'buffer', competitors: []});
+
                 return data;
             });
         }
@@ -113,9 +117,15 @@
             vm.data.starts_list.push({
                 'competitors': []
             });
+
+            basicAnimation('#add-start-button');
         }
 
-        function removeStart() {}
+        function removeStart(idx) {
+            vm.data.starts_list.splice(idx, 1);
+            // TODO: add animation,
+            // move competitors from deleted array to buffer
+        }
 
     }
 })();
