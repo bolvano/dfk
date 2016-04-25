@@ -84,7 +84,7 @@
             opacity: 0.75
         };
 
-        vm.sortableStartListOptions = {
+        vm.sortableStartsListOptions = {
             placeholder: 'single-start-sort-highlight',
             items: 'div.sortable-start-list',
             opacity: 0.75
@@ -103,7 +103,17 @@
             });
         }
 
-        function addStart() {}
+        function basicAnimation(id) {
+            angular.element('html, body').animate({
+                scrollTop: angular.element(id).offset().top
+            });
+        }
+
+        function addStart() {
+            vm.data.starts_list.push({
+                'competitors': []
+            });
+        }
 
         function removeStart() {}
 
