@@ -19,16 +19,28 @@
 				</a>
 			</div> <!-- End of Heading -->
 
-			<div ui-sortable="sortCtrl.sortableStartList" ng-model="sortCtrl.data.starts_list">
+			<div class="row" ui-sortable="sortCtrl.sortableStartListOptions" ng-model="sortCtrl.data.starts_list">
 
-				<div class="single-start start-{$ $index $}" ng-class="{'sortable-start-list': !$first}" ng-repeat="start in sortCtrl.data.starts_list">
+				<div class="single-start-sort start-{$ $index $} col-lg-5 col-md-5" ng-repeat-start="start in sortCtrl.data.starts_list" ng-if="$first" fix-on-scroll="fix-to-top">
+
+					<div class="competitor-list-sort" ui-sortable="sortCtrl.sortableStartOptions" ng-model="start.competitors">
+
+						<div class="single-competitor-sort" ng-repeat="competitor in start.competitors">
+							{$ competitor.last_name | ucf $} {$ competitor.first_name | ucf $} {$ competitor.age $} {$ competitor.team $} {$ competitor.prior_time $}
+						</div>
+
+					</div>
+
+				</div>
+
+				<div class="single-start-sort start-{$ $index $} sortable-start-list col-lg-offset-6 col-md-offset-5" ng-class="{'sortable-start-list': !$first, 'fix-on-scroll': $first}" ng-repeat-end ng-if="!$first">
 
 					<!-- Start number -->
-					<div class="start-number" ng-class="{'hidden': $first}">
+					<div class="start-number">
 						<h3 class="pull-left">Заплыв {$ $index $}</h3>
 					</div> <!-- End of Start number -->
 
-					<div class="sortable-start" ui-sortable="sortCtrl.sortableOptions" ng-model="start.competitors">
+					<div class="competitor-list-sort" ui-sortable="sortCtrl.sortableStartOptions" ng-model="start.competitors">
 
 						<div class="single-competitor-sort" ng-repeat="competitor in start.competitors">
 							{$ competitor.last_name | ucf $} {$ competitor.first_name | ucf $} {$ competitor.age $} {$ competitor.team $} {$ competitor.prior_time $}

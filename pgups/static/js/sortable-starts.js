@@ -6,11 +6,13 @@
     .config(altTemplateTags)
     .controller('SortController', SortController)
     .filter('ucf', capitalizeWord)
-    .factory('getStarts', getStarts);
+    .factory('getStarts', getStarts)
+    .directive('fixOnScroll', fixOnScroll);
 
     altTemplateTags.$inject = ['$interpolateProvider'];
     SortController.$inject = ['$scope', 'getStarts'];
     getStarts.$inject = ['$http', '$window', '$log', '$location'];
+    fixOnScroll.$inject = ['$window'];
 
     function capitalizeWord() {
         return function(word) {
@@ -27,8 +29,7 @@
         var starts = {
             async: function() {
 
-                var url = $location.absUrl();
-                var urlArr = url.split('/');
+                var urlArr = $location.absUrl().split('/');
                 var competition_id = urlArr[urlArr.length - 2];
 
                 var promise = $http.get('http://' +
@@ -47,23 +48,50 @@
         return starts;
     }
 
+    function fixOnScroll($window) {
+
+        var win = angular.element($window);
+
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+
+                var topClass = attrs.fixOnScroll, // get CSS class from directive's attribute value
+                    offsetTop = element.offset().top,
+                    width = element.width();
+
+                win.on('scroll', function () {
+                    if (win.scrollTop() >= offsetTop) {
+                        element.addClass(topClass);
+                        element.width(width);
+                    } else {
+                        element.removeClass(topClass);
+                    }
+                });
+            }
+        };
+    }
+
     function SortController($scope, getStarts) {
 
         var vm = this;
 
         activate();
 
-        vm.sortableOptions = {
+        vm.sortableStartOptions = {
             placeholder: 'single-competitor-sort-highlight',
-            connectWith: '.sortable-start',
+            connectWith: '.competitor-list-sort',
             opacity: 0.75
         };
 
-        vm.sortableStartList = {
+        vm.sortableStartListOptions = {
             placeholder: 'single-start-sort-highlight',
             items: 'div.sortable-start-list',
             opacity: 0.75
         };
+
+        vm.addStart = addStart;
+        vm.removeStart = removeStart;
 
         function activate() {
             getStarts.async().then(function(response) {
@@ -74,6 +102,10 @@
                 return data;
             });
         }
+
+        function addStart() {}
+
+        function removeStart() {}
 
     }
 })();

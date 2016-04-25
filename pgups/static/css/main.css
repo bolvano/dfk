@@ -291,8 +291,13 @@ select.ng-invalid.ng-dirty {
 }
 /* Sortable   */
 /*============*/
-.single-start {
-  margin: 20px;
+.fix-to-top {
+  position: fixed;
+  top: 0;
+}
+.single-start-sort {
+  margin-top: 20px;
+  margin-bottom: 20px;
   padding: 20px;
   background-color: #eee;
   border-radius: 10px;
@@ -304,9 +309,9 @@ select.ng-invalid.ng-dirty {
   background-color: #b9f2ff;
   border-radius: 10px;
 }
-.sortable-start {
-  padding: 40px;
-  border: 1px dashed #808080;
+.competitor-list-sort {
+  padding: 30px;
+  border: 1px dashed #979a9d;
   border-radius: 10px;
 }
 .single-competitor-sort-highlight {
@@ -319,9 +324,11 @@ select.ng-invalid.ng-dirty {
 }
 .single-start-sort-highlight {
   margin: 10px;
+  margin-left: 50%;
   padding: 10px;
-  height: 200px;
-  background-color: #979a9d;
+  width: 50%;
+  height: 150px;
+  border: 2px dashed #808080;
   border-radius: 10px;
   opacity: 0.3;
 }
