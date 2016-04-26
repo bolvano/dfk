@@ -10,7 +10,7 @@
     .directive('fixOnScroll', fixOnScroll);
 
     altTemplateTags.$inject = ['$interpolateProvider'];
-    SortController.$inject = ['$scope', '$log', '$timeout', 'getStarts'];
+    SortController.$inject = ['$scope', '$log', '$timeout', '$window', 'getStarts'];
     getStarts.$inject = ['$http', '$window', '$log', '$location'];
     fixOnScroll.$inject = ['$window'];
 
@@ -73,7 +73,7 @@
         };
     }
 
-    function SortController($scope, $log, $timeout, getStarts) {
+    function SortController($scope, $log, $timeout, $window, getStarts) {
 
         var vm = this;
 
@@ -94,10 +94,12 @@
             step: 1,
             next: function() {
                 this.step++;
+                $window.scrollTo(0, 0);
             },
               
             prev: function() {
                 this.step--;
+                $window.scrollTo(0, 0);
             }
         };
 
