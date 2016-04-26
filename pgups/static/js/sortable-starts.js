@@ -93,6 +93,7 @@
 
         vm.addStart = addStart;
         vm.removeStart = removeStart;
+        vm.validateStarts = validateStarts;
 
         function activate() {
             getStarts.async().then(function(response) {
@@ -132,6 +133,12 @@
             });
 
             vm.data.starts_list.splice(idx, 1);
+
+        }
+
+        function validateStarts() {
+
+            $log.log('baka baka');
 
         }
 

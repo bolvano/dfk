@@ -300,6 +300,9 @@ select.ng-invalid.ng-dirty {
   padding-bottom: 0;
   font-size: 1.1em;
 }
+.button-margin {
+  margin: 40px 0;
+}
 .single-start-sort {
   margin-top: 20px;
   margin-bottom: 20px;
@@ -317,7 +320,7 @@ select.ng-invalid.ng-dirty {
 }
 .sort-buffer,
 .competitor-list-sort {
-  padding: 15px;
+  padding: 15px 25px;
   padding-bottom: 5px;
   border: 2px dotted #979a9d;
   border-radius: 10px;

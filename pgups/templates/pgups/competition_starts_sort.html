@@ -8,19 +8,26 @@
 
 		<input type="hidden" name="csrf_token" ng-init="csrf_token='{{csrf_token}}'" ng-model="csrf_token">
 
+		<!-- Jumbotron -->
+		<div class="jumbotron">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-11">
+						<a class="decorated-link" href="{% url 'competition' competition_id=competition_id %}">
+							<h1><b>{$ sortCtrl.data.competition_name $}</b></h1>
+						</a>
+						<p class="lead">Форма создания заплывов</p>
+					</div>
+				</div>
+			</div>
+		</div> <!-- End of Jumbotron -->
+
 		<div class="container">
 
 			<!-- DEBUG -->
-			<input type="checkbox" ng-model="showDebugData"><span> Показать данные</span>
+			<input type="checkbox" ng-model="showDebugData"><span> DEBUG: показать данные</span>
 			<p ng-show="showDebugData">{$ sortCtrl.data.starts_list $}</p>
 			<!-- DEBUG -->
-
-			<!-- Heading -->
-			<div class="heading heading-no-margin">
-				<a class="decorated-link" href="{% url 'competition' competition_id=competition_id %}">
-					<h1><b>{$ sortCtrl.data.competition_name $}</b></h1>
-				</a>
-			</div> <!-- End of Heading -->
 
 			<div class="row" ui-sortable="sortCtrl.sortableStartsListOptions" ng-model="sortCtrl.data.starts_list">
 
@@ -55,7 +62,10 @@
 
 			<div class="row">
 				<div class="col-lg-3">
-					<button id="add-start-button" class="btn btn-lg btn-success" ng-click="sortCtrl.addStart()">Добавить заплыв</button>
+					<button id="add-start-button" class="btn btn-lg btn-default button-margin" ng-click="sortCtrl.addStart()">Добавить заплыв</button>
+				</div>
+				<div class="col-lg-3 col-lg-offset-6">
+					<button class="btn btn-lg btn-success button-margin" ng-click="sortCtrl.validateStarts()">Перейти к сортировке заплывов</button>
 				</div>
 			</div>
 
