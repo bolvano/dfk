@@ -2,15 +2,17 @@
     'use strict';
 
     angular
-    .module('sortableStartsApp', ['ui.sortable'])
+    .module('sortableStartsApp', ['ui.sortable', 'ngAnimate'])
     .config(altTemplateTags)
     .controller('SortController', SortController)
     .filter('ucf', capitalizeWord)
-    .factory('getStarts', getStarts);
+    .factory('getStarts', getStarts)
+    .directive('fixOnScroll', fixOnScroll);
 
     altTemplateTags.$inject = ['$interpolateProvider'];
-    SortController.$inject = ['$scope', 'getStarts'];
+    SortController.$inject = ['$scope', '$log', '$timeout', '$window', 'getStarts'];
     getStarts.$inject = ['$http', '$window', '$log', '$location'];
+    fixOnScroll.$inject = ['$window'];
 
     function capitalizeWord() {
         return function(word) {
@@ -27,11 +29,10 @@
         var starts = {
             async: function() {
 
-                var url = $location.absUrl();
-                var urlArr = url.split('/');
-                var competition_id = urlArr[urlArr.length - 2];
+                var urlArr = $location.absUrl().split('/'),
+                    competition_id = urlArr[urlArr.length - 2],
 
-                var promise = $http.get('http://' +
+                    promise = $http.get('http://' +
                                         $window.location.host +
                                         '/get_competition_starts/' +
                                         competition_id)
@@ -47,32 +48,121 @@
         return starts;
     }
 
-    function SortController($scope, getStarts) {
+    function fixOnScroll($window) {
+
+        var win = angular.element($window);
+
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+
+                // get CSS class from directive's attribute value
+                var topClass = attrs.fixOnScroll, 
+                    offsetTop = element.offset().top,
+                    width = element.width();
+
+                win.on('scroll', function () {
+                    if (win.scrollTop() >= offsetTop) {
+                        element.addClass(topClass);
+                        element.width(width);
+                    } else {
+                        element.removeClass(topClass);
+                    }
+                });
+            }
+        };
+    }
+
+    function SortController($scope, $log, $timeout, $window, getStarts) {
 
         var vm = this;
 
         activate();
 
-        vm.sortableOptions = {
+        vm.sortableStartOptions = {
             placeholder: 'single-competitor-sort-highlight',
-            connectWith: '.sortable-start',
+            connectWith: '.connected-competitors',
             opacity: 0.75
         };
 
-        vm.sortableStartList = {
+        vm.sortableStartsListOptions = {
             placeholder: 'single-start-sort-highlight',
-            items: 'div.sortable-start-list',
             opacity: 0.75
         };
+
+        vm.stepCounter = {
+            step: 1,
+            next: function() {
+                this.step++;
+                $window.scrollTo(0, 0);
+            },
+              
+            prev: function() {
+                this.step--;
+                $window.scrollTo(0, 0);
+            }
+        };
+
+        vm.addStart = addStart;
+        vm.removeStart = removeStart;
+        vm.validateStarts = validateStarts;
+        vm.submitRequest = submitRequest;
 
         function activate() {
             getStarts.async().then(function(response) {
                 var data = response;
+
                 vm.data = response;
-                //adding empty element as a buffer
+
+                //adding an empty list to act as a buffer
                 vm.data.starts_list.unshift({ role: 'buffer', competitors: []});
+
                 return data;
             });
+        }
+
+        function basicAnimation(id) {
+            angular.element('html, body').animate({
+                scrollTop: angular.element(id).offset().top
+            });
+        }
+
+        function addStart() {
+            vm.data.starts_list.push({
+                'competitors': []
+            });
+
+            basicAnimation('#add-start-button');
+        }
+
+        function removeStart(idx) {
+
+            var removedCompetitors = vm.data.starts_list[idx].competitors,
+                buffer = vm.data.starts_list[0].competitors;
+
+            // move competitors to buffer
+            removedCompetitors.forEach(function(item){
+                buffer.push(item);
+            });
+
+            vm.data.starts_list.splice(idx, 1);
+
+        }
+
+        function validateStarts() {
+
+            // TODO: check if any items left in buffer
+            // check every list for max-length (5 or 6?)
+            // check for duplicate competitors?
+            // call submitRequest if valid,
+            // display errors otherwise
+
+        }
+
+        function submitRequest() {
+
+            $log.log('baka!');
+
         }
 
     }

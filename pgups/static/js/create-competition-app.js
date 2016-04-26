@@ -3,16 +3,19 @@
 
     angular
     .module('createCompetitionApp', ['ngAnimate'])
+    .config(altTemplateTags)
+    .controller('CreationFormController', CreationFormController)
+    .factory('initRequest', initRequest);
 
-    // avoiding conflict with django template tags
-    .config(function($interpolateProvider) {
+    altTemplateTags.$inject = ['$interpolateProvider'];
+    initRequest.$inject = ['$http', '$window', '$log'];
+    CreationFormController.$inject = ['$scope', '$http', '$timeout', '$window',
+                                      '$log', 'filterFilter', 'initRequest'];
+
+    function altTemplateTags($interpolateProvider) {
         $interpolateProvider.startSymbol('{$');
         $interpolateProvider.endSymbol('$}');
-    })
-
-    .controller('CreationFormController', CreationFormController)
-
-    .factory('initRequest', initRequest);
+    }
 
     function initRequest($http, $window, $log) {
         var initRequest = {
@@ -49,10 +52,15 @@
         vm.checkIfAllSelected = checkIfAllSelected;
         vm.submitForm = submitForm;
 
-        initRequest.async().then(function(response) {
-            vm.fetchedData = angular.fromJson(response);
-            $log.log($scope.csrf_token);
-        });
+        activate();
+
+        function activate() {
+            initRequest.async().then(function(response) {
+                var data = response;
+                vm.fetchedData = angular.fromJson(response);
+                return data;
+            });
+        }
 
         vm.nextStep = function() {
             vm.step++;
@@ -123,8 +131,6 @@
         function submitForm() {
 
             vm.data.tours = selected(vm.tours);
-
-            //$log.log($scope.csrf_token);
 
             // disable button to prevent multiple requests
             angular.element('#create-competition-button').attr('disabled', true).html('Создаются соревнования...');

@@ -3,6 +3,7 @@
 
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
 
 	<meta charset="utf-8">
@@ -12,54 +13,66 @@
 	<title> Результаты дисциплины: {{cdsg.name}} ({{cdsg.competition.name}})</title>
 
 </head>
+
 <body>
 Результаты дисциплины: {{cdsg.name}} ({{cdsg.competition.name}})
 <br>
 <br>
 <div>
 	{% for tuple in tour_list %}
+
 		<div class="div-table">
+
 			<table>
-                <col class="col0">
+
+				<col class="col0">
 				<col class="col1">
 				<col class="col2">
 				<col class="col3">
 
-				<tr><th colspan="4">{{tuple.0.style|capfirst}}, {{tuple.0.distance|capfirst}}, {{tuple.0.gender|capfirst}}, {{tuple.0.age|capfirst}} </th></tr>
-					{% for competitor in tuple.1 %}
 				<tr>
-                    <td class="position">{{ forloop.counter }}</td>
+					<th colspan="4">
+						{{tuple.0.style|capfirst}}, {{tuple.0.distance|capfirst}}, {{tuple.0.gender|capfirst}}, {{tuple.0.age|capfirst}}
+					</th>
+				</tr>
+
+				{% for competitor in tuple.1 %}
+
+				<tr>
+					<td class="position">{{ forloop.counter }}</td>
 					<td class="competitor">
-					{% if competitor.main_distance%}<span><b>{% endif %}
-						{{competitor.person.last_name|title}} {{competitor.person.first_name|title}}
-					{% if competitor.main_distance%}<span><b>{% endif %}
+						{% if competitor.main_distance%}<span><b>{% endif %}
+							{{competitor.person.last_name|title}} {{competitor.person.first_name|title}}
+						{% if competitor.main_distance%}<span><b>{% endif %}
 					</td>
 					<td class="team">{{competitor.userrequest.team.name}}</td>
-					<td class="time"> {{competitor.time|formatSeconds}}  {% if competitor.disqualification > 0 %} <b>
+					<td class="time"> {{competitor.time|formatSeconds}}  {% if competitor.disqualification > 0 %} 
 
-                        		{% if  competitor.disqualification == 1 %}
-									{% if competitor.person.gender == 'Ж'%} Не вышла {% else %} Не вышел {% endif %}
-								{% endif %}
-								{% if  competitor.disqualification == 2 %}
-									Фальстарт
-								{% endif %}
-								{% if  competitor.disqualification == 3 %}
-									Нарушение правил поворота
-								{% endif %}
-								{% if  competitor.disqualification == 4 %}
-									Нарушение правил прохождения дистанции
-								{% endif %}
-
-
-                    </b> {% endif %}</td>
+						<b>
+							{% if  competitor.disqualification == 1 %}
+								{% if competitor.person.gender == 'Ж'%} Не вышла {% else %} Не вышел {% endif %}
+							{% endif %}
+							{% if  competitor.disqualification == 2 %}
+								Фальстарт
+							{% endif %}
+							{% if  competitor.disqualification == 3 %}
+								Нарушение правил поворота
+							{% endif %}
+							{% if  competitor.disqualification == 4 %}
+								Нарушение правил прохождения дистанции
+							{% endif %}
+						</b> 
+						{% endif %}
+					</td>
 				</tr>
-					{% endfor %}
+
+				{% endfor %}
+
 			</table>
 		</div>
 
 	{% endfor %}
+
 	</div>
 </body>
 </html>
-
-

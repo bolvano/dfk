@@ -211,7 +211,7 @@
                     notie.alert(1, 'Заявка отправлена! Вы будете перенаправлены на страницу соревнования.', 2);
 
                     $timeout(function() {
-                        $window.location.href = '/competition/'+vm.form.competition.id;
+                        $window.location.href = '/competition/' + vm.form.competition.id;
                     }, 4000);
 
                 }, function() {

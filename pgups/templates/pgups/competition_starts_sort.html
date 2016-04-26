@@ -6,39 +6,110 @@
 
 	<div ng-app="sortableStartsApp" ng-controller="SortController as sortCtrl">
 
-		<!-- {$ sortCtrl.data.starts_list $} -->
-
 		<input type="hidden" name="csrf_token" ng-init="csrf_token='{{csrf_token}}'" ng-model="csrf_token">
+
+		<!-- Jumbotron -->
+		<div class="jumbotron">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-11">
+						<a class="decorated-link" href="{% url 'competition' competition_id=competition_id %}">
+							<h1><b>{$ sortCtrl.data.competition_name $}</b></h1>
+						</a>
+						<p class="lead">Форма создания заплывов</p>
+					</div>
+				</div>
+			</div>
+		</div> <!-- End of Jumbotron -->
 
 		<div class="container">
 
-			<!-- Heading -->
-			<div class="heading heading-no-margin">
-				<a class="decorated-link" href="{% url 'competition' competition_id=competition_id %}">
-					<h1><b>{$ sortCtrl.data.competition_name $}</b></h1>
-				</a>
-			</div> <!-- End of Heading -->
+			<!-- DEBUG -->
+			<input type="checkbox" ng-model="showDebugData"><span> DEBUG: показать данные</span>
+			<p ng-show="showDebugData">{$ sortCtrl.data.starts_list $}</p>
+			<!-- DEBUG -->
 
-			<div ui-sortable="sortCtrl.sortableStartList" ng-model="sortCtrl.data.starts_list">
+			<!-- Step 1 -->
+			<div ng-show="sortCtrl.stepCounter.step === 1" class="animation-show-hide">
 
-				<div class="single-start start-{$ $index $}" ng-class="{'sortable-start-list': !$first}" ng-repeat="start in sortCtrl.data.starts_list">
+				<div class="row" ui-sortable="sortCtrl.sortableStartsListOptions" ng-model="sortCtrl.data.starts_list">
 
-					<!-- Start number -->
-					<div class="start-number" ng-class="{'hidden': $first}">
-						<h3 class="pull-left">Заплыв {$ $index $}</h3>
-					</div> <!-- End of Start number -->
+					<div class="sort-buffer-wrapper single-start-sort col-lg-5 col-md-5" ng-repeat-start="start in sortCtrl.data.starts_list" ng-if="$first" fix-on-scroll="fix-to-top">
 
-					<div class="sortable-start" ui-sortable="sortCtrl.sortableOptions" ng-model="start.competitors">
+						<div class="connected-competitors sort-buffer" ui-sortable="sortCtrl.sortableStartOptions" ng-model="start.competitors">
 
-						<div class="single-competitor-sort" ng-repeat="competitor in start.competitors">
-							{$ competitor.last_name | ucf $} {$ competitor.first_name | ucf $} {$ competitor.age $} {$ competitor.team $} {$ competitor.prior_time $}
+							<div class="single-competitor-sort" ng-repeat="competitor in start.competitors">
+								{$ competitor.last_name | ucf $} {$ competitor.first_name | ucf $} {$ competitor.age $} {$ competitor.team $} {$ competitor.prior_time $}
+							</div>
+						</div>
+
+					</div>
+
+					<div id="start-{$ $index $}" class="single-start-sort sortable-start-list col-lg-offset-6 col-md-offset-6" ng-repeat-end ng-if="!$first">
+
+						<!-- Start number -->
+						<div class="start-number">
+							<h3 class="pull-left">Заплыв {$ $index $}</h3>
+							<button id="remove-start-button-{$ $index $}" class="btn btn-sm btn-danger pull-right remove-start-button" ng-click="sortCtrl.removeStart($index)"><span class="glyphicon glyphicon-remove"></span></button>
+						</div> <!-- End of Start number -->
+
+						<div class="connected-competitors competitor-list-sort" ui-sortable="sortCtrl.sortableStartOptions" ng-model="start.competitors">
+							<div class="single-competitor-sort" ng-repeat="competitor in start.competitors">
+								{$ competitor.last_name | ucf $} {$ competitor.first_name | ucf $} {$ competitor.age $} {$ competitor.team $} {$ competitor.prior_time $}
+							</div>
 						</div>
 
 					</div>
 
 				</div>
 
-			</div>
+				<div class="row">
+					<div class="col-lg-3">
+						<button id="add-start-button" class="btn btn-lg btn-default button-margin" ng-click="sortCtrl.addStart()">Добавить заплыв</button>
+					</div>
+					<div class="col-lg-3 col-lg-offset-6">
+						<button class="btn btn-lg btn-success button-margin" ng-click="sortCtrl.stepCounter.next()">Перейти к сортировке заплывов</button>
+					</div>
+				</div>
+
+			</div> <!-- End of Step 1 -->
+
+			<!-- Step 2 -->
+			<div ng-show="sortCtrl.stepCounter.step === 2" class="animation-show-hide">
+
+				<div ui-sortable="sortCtrl.sortableStartsListOptions" ng-model="sortCtrl.data.starts_list">
+
+					<div class="row" ng-repeat="start in sortCtrl.data.starts_list" ng-show="!$first && start.competitors.length !== 0">
+
+						<div class="single-start-sort col-lg-6 col-md-6">
+
+							<!-- Start number -->
+							<div class="start-number">
+								<h3 class="pull-left">Заплыв {$ $index $}</h3>
+							</div> <!-- End of Start number -->
+
+							<div ng-model="start.competitors">
+								<div class="single-competitor-sort" ng-repeat="competitor in start.competitors">
+									{$ competitor.last_name | ucf $} {$ competitor.first_name | ucf $} {$ competitor.age $} {$ competitor.team $} {$ competitor.prior_time $}
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+
+				<div class="row">
+					<div class="col-lg-3">
+						<button class="btn btn-lg btn-default button-margin" ng-click="sortCtrl.stepCounter.prev();">Вернуться к настройке заплывов</button>
+					</div>
+					<div class="col-lg-3 col-lg-offset-6">
+						<button class="btn btn-lg btn-success button-margin" ng-click="sortCtrl.submitRequest();">Сохранить заплывы</button>
+					</div>
+				</div>
+
+			</div> <!-- End of Step 2 -->
 
 		</div>
 
@@ -57,6 +128,7 @@
 {% endblock %}
 
 {% block additionaljs %}
+	<script src="https://code.angularjs.org/1.4.9/angular-animate.min.js"></script> <!-- Angular animations -->
 	<script src="{% static 'js/sortable-starts.js' %}"></script> <!-- SortableStartsApp -->
 	<script src="{% static 'js/sortable.js' %}"></script> <!-- sortable directive -->
 {% endblock %}
