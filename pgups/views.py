@@ -43,6 +43,7 @@ class SplitTimeWidget(forms.widgets.MultiWidget):
         return (rendered_widgets[0] + rendered_widgets[1])
 
     def value_from_datadict(self, data, files, name):
+        #import ipdb; ipdb.set_trace()
         minutes = self.widgets[0].value_from_datadict(data, files, name + '_0')
         if not minutes:
             minutes_seconds = 0
@@ -55,7 +56,7 @@ class SplitTimeWidget(forms.widgets.MultiWidget):
         else:
             seconds = float(seconds)
 
-        return minutes_seconds + seconds
+        return round(minutes_seconds + seconds, 2)
 
 
 def index(request):
