@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-    .module('sortableStartsApp', ['ui.sortable'])
+    .module('sortableStartsApp', ['ui.sortable', 'ngAnimate'])
     .config(altTemplateTags)
     .controller('SortController', SortController)
     .filter('ucf', capitalizeWord)
@@ -85,15 +85,26 @@
             opacity: 0.75
         };
 
-        /*vm.sortableStartsListOptions = {
+        vm.sortableStartsListOptions = {
             placeholder: 'single-start-sort-highlight',
-            items: 'div.sortable-start-list',
             opacity: 0.75
-        };*/
+        };
+
+        vm.stepCounter = {
+            step: 1,
+            next: function() {
+                this.step++;
+            },
+              
+            prev: function() {
+                this.step--;
+            }
+        };
 
         vm.addStart = addStart;
         vm.removeStart = removeStart;
         vm.validateStarts = validateStarts;
+        vm.submitRequest = submitRequest;
 
         function activate() {
             getStarts.async().then(function(response) {
@@ -127,7 +138,7 @@
             var removedCompetitors = vm.data.starts_list[idx].competitors,
                 buffer = vm.data.starts_list[0].competitors;
 
-            // move competitors from removed start to buffer
+            // move competitors to buffer
             removedCompetitors.forEach(function(item){
                 buffer.push(item);
             });
@@ -138,7 +149,17 @@
 
         function validateStarts() {
 
-            $log.log('baka baka');
+            // TODO: check if any items left in buffer
+            // check every list for max-length (5 or 6?)
+            // check for duplicate competitors?
+            // call submitRequest if valid,
+            // display errors otherwise
+
+        }
+
+        function submitRequest() {
+
+            $log.log('baka!');
 
         }
 
