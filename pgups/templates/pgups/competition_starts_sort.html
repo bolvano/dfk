@@ -6,11 +6,14 @@
 
 	<div ng-app="sortableStartsApp" ng-controller="SortController as sortCtrl">
 
-		<!--{$ sortCtrl.data.starts_list $}-->
-
 		<input type="hidden" name="csrf_token" ng-init="csrf_token='{{csrf_token}}'" ng-model="csrf_token">
 
 		<div class="container">
+
+			<!-- DEBUG -->
+			<input type="checkbox" ng-model="showDebugData"><span> Показать данные</span>
+			<p ng-show="showDebugData">{$ sortCtrl.data.starts_list $}</p>
+			<!-- DEBUG -->
 
 			<!-- Heading -->
 			<div class="heading heading-no-margin">
@@ -21,9 +24,10 @@
 
 			<div class="row" ui-sortable="sortCtrl.sortableStartsListOptions" ng-model="sortCtrl.data.starts_list">
 
-				<div class="single-start-sort col-lg-5 col-md-5" ng-repeat-start="start in sortCtrl.data.starts_list" ng-if="$first" fix-on-scroll="fix-to-top">
+				<div class="sort-buffer-wrapper single-start-sort col-lg-5 col-md-5" ng-repeat-start="start in sortCtrl.data.starts_list" ng-if="$first" fix-on-scroll="fix-to-top">
 
-					<div class="competitor-list-sort" ui-sortable="sortCtrl.sortableStartOptions" ng-model="start.competitors">
+					<div class="connected-competitors sort-buffer" ui-sortable="sortCtrl.sortableStartOptions" ng-model="start.competitors">
+
 						<div class="single-competitor-sort" ng-repeat="competitor in start.competitors">
 							{$ competitor.last_name | ucf $} {$ competitor.first_name | ucf $} {$ competitor.age $} {$ competitor.team $} {$ competitor.prior_time $}
 						</div>
@@ -31,15 +35,15 @@
 
 				</div>
 
-				<div id="start-$index" class="single-start-sort sortable-start-list col-lg-offset-6 col-md-offset-6" ng-repeat-end ng-if="!$first">
+				<div id="start-{$ $index $}" class="single-start-sort sortable-start-list col-lg-offset-6 col-md-offset-6" ng-repeat-end ng-if="!$first">
 
 					<!-- Start number -->
 					<div class="start-number">
 						<h3 class="pull-left">Заплыв {$ $index $}</h3>
-						<button id="remove-start-button-$index" class="btn btn-sm btn-danger pull-right" ng-click="sortCtrl.removeStart($index)"><span class="glyphicon glyphicon-remove"></span></button>
+						<button id="remove-start-button-{$ $index $}" class="btn btn-sm btn-danger pull-right remove-start-button" ng-click="sortCtrl.removeStart($index)"><span class="glyphicon glyphicon-remove"></span></button>
 					</div> <!-- End of Start number -->
 
-					<div class="competitor-list-sort" ui-sortable="sortCtrl.sortableStartOptions" ng-model="start.competitors">
+					<div class="connected-competitors competitor-list-sort" ui-sortable="sortCtrl.sortableStartOptions" ng-model="start.competitors">
 						<div class="single-competitor-sort" ng-repeat="competitor in start.competitors">
 							{$ competitor.last_name | ucf $} {$ competitor.first_name | ucf $} {$ competitor.age $} {$ competitor.team $} {$ competitor.prior_time $}
 						</div>

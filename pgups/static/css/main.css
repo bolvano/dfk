@@ -295,32 +295,55 @@ select.ng-invalid.ng-dirty {
   position: fixed;
   top: 0;
 }
+.remove-start-button {
+  margin-top: 15px;
+  padding-bottom: 0;
+  font-size: 1.1em;
+}
 .single-start-sort {
   margin-top: 20px;
   margin-bottom: 20px;
   padding: 20px;
+  padding-top: 0;
   background-color: #eee;
   border-radius: 10px;
 }
 .single-competitor-sort {
-  margin: 10px;
+  margin-bottom: 10px;
   padding: 10px;
   cursor: pointer;
-  background-color: #b9f2ff;
+  background-color: #fff;
+  border-radius: 10px;
+}
+.sort-buffer,
+.competitor-list-sort {
+  padding: 15px;
+  padding-bottom: 5px;
+  border: 2px dotted #979a9d;
   border-radius: 10px;
 }
 .competitor-list-sort {
-  padding: 30px;
-  border: 1px dashed #979a9d;
-  border-radius: 10px;
+  min-height: 50px;
+  min-height: 8vh;
 }
+.sort-buffer {
+  overflow-y: auto;
+  min-height: 50px;
+  min-height: 10vh;
+  max-height: 500px;
+  max-height: 70vh;
+}
+.sort-buffer-wrapper {
+  padding-top: 20px;
+}
+/* HIGHLIGHTS for sortables */
 .single-competitor-sort-highlight {
   margin: 10px;
   padding: 10px;
   height: 40px;
-  background-color: #e7d4fa;
+  border: 2px dashed #808080;
   border-radius: 10px;
-  opacity: 0.8;
+  opacity: 0.3;
 }
 .single-start-sort-highlight {
   margin: 10px;
@@ -328,9 +351,9 @@ select.ng-invalid.ng-dirty {
   padding: 10px;
   width: 50%;
   height: 150px;
-  border: 2px dashed #808080;
+  border: 2px dashed #979a9d;
   border-radius: 10px;
-  opacity: 0.3;
+  opacity: 0.8;
 }
 @-webkit-keyframes greenish {
   0% {

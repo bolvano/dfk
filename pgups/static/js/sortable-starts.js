@@ -10,7 +10,7 @@
     .directive('fixOnScroll', fixOnScroll);
 
     altTemplateTags.$inject = ['$interpolateProvider'];
-    SortController.$inject = ['$scope', 'getStarts'];
+    SortController.$inject = ['$scope', '$log', '$timeout', 'getStarts'];
     getStarts.$inject = ['$http', '$window', '$log', '$location'];
     fixOnScroll.$inject = ['$window'];
 
@@ -73,7 +73,7 @@
         };
     }
 
-    function SortController($scope, getStarts) {
+    function SortController($scope, $log, $timeout, getStarts) {
 
         var vm = this;
 
@@ -81,15 +81,15 @@
 
         vm.sortableStartOptions = {
             placeholder: 'single-competitor-sort-highlight',
-            connectWith: '.competitor-list-sort',
+            connectWith: '.connected-competitors',
             opacity: 0.75
         };
 
-        vm.sortableStartsListOptions = {
+        /*vm.sortableStartsListOptions = {
             placeholder: 'single-start-sort-highlight',
             items: 'div.sortable-start-list',
             opacity: 0.75
-        };
+        };*/
 
         vm.addStart = addStart;
         vm.removeStart = removeStart;
@@ -122,9 +122,17 @@
         }
 
         function removeStart(idx) {
+
+            var removedCompetitors = vm.data.starts_list[idx].competitors,
+                buffer = vm.data.starts_list[0].competitors;
+
+            // move competitors from removed start to buffer
+            removedCompetitors.forEach(function(item){
+                buffer.push(item);
+            });
+
             vm.data.starts_list.splice(idx, 1);
-            // TODO: add animation,
-            // move competitors from deleted array to buffer
+
         }
 
     }
