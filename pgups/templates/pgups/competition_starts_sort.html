@@ -31,8 +31,8 @@
 
 			<br>
 
-			<span>Выберите количество участников в заплыве: </span>
-			<select class="selectpicker" ng-model="sortCtrl.maxLength" title="">
+			<span>Выберите максимальное количество участников в заплыве: </span>
+			<select class="selectpicker" ng-model="sortCtrl.maxLength" title="" data-style="btn-info">
 				<option value="" selected disabled></option>
 				<option value="5">5</option>
 				<option value="6">6</option>
@@ -48,7 +48,7 @@
 						<div class="connected-competitors sort-buffer" ui-sortable="sortCtrl.sortableStartOptions" ng-model="start.competitors">
 
 							<div class="single-competitor-sort" ng-repeat="competitor in start.competitors">
-								{$ competitor.last_name | ucf $} {$ competitor.first_name | ucf $} {$ competitor.age $} {$ competitor.team $} {$ competitor.prior_time $}
+								{$ competitor.last_name | cap $} {$ competitor.first_name | cap $} {$ competitor.age $} {$ competitor.team $} {$ competitor.prior_time $}
 							</div>
 						</div>
 
@@ -64,7 +64,7 @@
 
 						<div class="connected-competitors competitor-list-sort" ui-sortable="sortCtrl.sortableStartOptions" ng-model="start.competitors">
 							<div class="single-competitor-sort" ng-repeat="competitor in start.competitors">
-								{$ competitor.last_name | ucf $} {$ competitor.first_name | ucf $} {$ competitor.age $} {$ competitor.team $} {$ competitor.prior_time $}
+								{$ competitor.last_name | cap $} {$ competitor.first_name | cap $} {$ competitor.age $} {$ competitor.team $} {$ competitor.prior_time $}
 							</div>
 						</div>
 
@@ -99,7 +99,7 @@
 
 							<div ng-model="start.competitors">
 								<div class="single-competitor-sort" ng-repeat="competitor in start.competitors">
-									{$ competitor.last_name | ucf $} {$ competitor.first_name | ucf $} {$ competitor.age $} {$ competitor.team $} {$ competitor.prior_time $}
+									{$ competitor.last_name | cap $} {$ competitor.first_name | cap $} {$ competitor.age $} {$ competitor.team $} {$ competitor.prior_time $}
 								</div>
 							</div>
 

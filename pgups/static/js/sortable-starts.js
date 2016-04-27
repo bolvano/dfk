@@ -5,7 +5,7 @@
     .module('sortableStartsApp', ['ui.sortable', 'ngAnimate'])
     .config(altTemplateTags)
     .controller('SortController', SortController)
-    .filter('ucf', capitalizeWord)
+    .filter('cap', capitalizeWord)
     .factory('getStarts', getStarts)
     .directive('fixOnScroll', fixOnScroll);
 
