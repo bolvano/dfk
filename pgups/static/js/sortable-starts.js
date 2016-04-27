@@ -152,7 +152,7 @@
         function validateStarts() {
 
             var startList = vm.data.starts_list,
-                tooLong = [];
+                tooLongLists = [];
                 //maxLength = 6; // value would be retrieved from vm.data
 
             if (!vm.maxLength) {
@@ -163,15 +163,16 @@
 
                 for (var i = 1; i < startList.length; i++) {
                     if (startList[i].competitors.length > vm.maxLength) {
-                        tooLong.push(i);
+                        tooLongLists.push(i);
                     }
                 }
 
                 if (startList[0].competitors.length > 0) {
                     notie.alert(3, 'В буфере остались нераспределённые участники!', 5);
-                } else if (tooLong.length > 0) {
-                    var startsPlural = tooLong.length === 1 ? 'заплыве' : 'заплывах';
-                    notie.alert(3, 'В '+ startsPlural + ' № ' + tooLong + ' более ' + vm.maxLength + ' участников!', 5);
+                } else if (tooLongLists.length > 0) {
+                    var startsPlural = tooLongLists.length === 1 ? 'заплыве' : 'заплывах';
+                    $log.log(tooLongLists);
+                    notie.alert(3, 'В '+ startsPlural + ' № ' + tooLongLists.join(', ') + ' более ' + vm.maxLength + ' участников!', 5);
                 } else {
                     notie.alert(1, 'Бублик!', 3);
                     submitRequest();
