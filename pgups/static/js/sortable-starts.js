@@ -10,7 +10,7 @@
     .directive('fixOnScroll', fixOnScroll);
 
     altTemplateTags.$inject = ['$interpolateProvider'];
-    SortController.$inject = ['$scope', '$log', '$timeout', '$window', 'getStarts'];
+    SortController.$inject = ['$scope', '$log', '$timeout', '$window', '$http', 'getStarts'];
     getStarts.$inject = ['$http', '$window', '$log', '$location'];
     fixOnScroll.$inject = ['$window'];
 
@@ -73,7 +73,7 @@
         };
     }
 
-    function SortController($scope, $log, $timeout, $window, getStarts) {
+    function SortController($scope, $log, $timeout, $window, $http, getStarts) {
 
         var vm = this;
 
@@ -151,17 +151,66 @@
 
         function validateStarts() {
 
-            // TODO: check if any items left in buffer
-            // check every list for max-length (5 or 6?)
-            // check for duplicate competitors?
-            // call submitRequest if valid,
-            // display errors otherwise
+            var startList = vm.data.starts_list,
+                tooLong = [];
+                //maxLength = 6; // value would be retrieved from vm.data
 
+            if (!vm.maxLength) {
+
+                notie.alert(3, 'Выберите максимальное количество участников!', 5);
+
+            } else {
+
+                for (var i = 1; i < startList.length; i++) {
+                    if (startList[i].competitors.length > vm.maxLength) {
+                        tooLong.push(i);
+                    }
+                }
+
+                if (startList[0].competitors.length > 0) {
+                    notie.alert(3, 'В буфере остались нераспределённые участники!', 5);
+                } else if (tooLong.length > 0) {
+                    var startsPlural = tooLong.length === 1 ? 'заплыве' : 'заплывах';
+                    notie.alert(3, 'В '+ startsPlural + ' № ' + tooLong + ' более ' + vm.maxLength + ' участников!', 5);
+                } else {
+                    notie.alert(1, 'Бублик!', 3);
+                    submitRequest();
+                }
+            }
         }
 
         function submitRequest() {
 
             $log.log('baka!');
+
+            /*
+            // disabling button to prevent duplicate requests
+            angular.element('#submit-request-button').attr('disabled', true).html('Идет сохранение заплывов...');
+
+            var req = {
+                method: 'POST',
+                url: 'http://' + $window.location.host + '...', // insert url here
+                headers: {
+                    'X-CSRFToken' : $scope.csrf_token,
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                data: angular.toJson(vm.data)
+            };
+
+            $http(req)
+                .then(function() {
+
+                    notie.alert(1, 'Заплывы сохранены! Вы будете перенаправлены на текущую сетку стартов.', 2);
+
+                    $timeout(function() {
+                        $window.location.href = '/someURL/'; // insert url here
+                    }, 4000);
+
+                }, function() {
+                    notie.alert(3, 'Произошла ошибка!', 3); // custom error text if duplicates or other errors
+                    angular.element('#submit-request-button').attr('disabled', false).html('Сохранить заплывы');
+                });
+            */
 
         }
 

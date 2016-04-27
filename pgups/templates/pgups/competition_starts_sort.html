@@ -29,6 +29,15 @@
 			<p ng-show="showDebugData">{$ sortCtrl.data.starts_list $}</p>
 			<!-- DEBUG -->
 
+			<br>
+
+			<span>Выберите количество участников в заплыве: </span>
+			<select class="selectpicker" ng-model="sortCtrl.maxLength" title="">
+				<option value="" selected disabled></option>
+				<option value="5">5</option>
+				<option value="6">6</option>
+			</select>
+
 			<!-- Step 1 -->
 			<div ng-show="sortCtrl.stepCounter.step === 1" class="animation-show-hide">
 
@@ -105,7 +114,7 @@
 						<button class="btn btn-lg btn-default button-margin" ng-click="sortCtrl.stepCounter.prev();">Вернуться к настройке заплывов</button>
 					</div>
 					<div class="col-lg-3 col-lg-offset-6">
-						<button class="btn btn-lg btn-success button-margin" ng-click="sortCtrl.submitRequest();">Сохранить заплывы</button>
+						<button id="submit-request-button" class="btn btn-lg btn-success button-margin" ng-click="sortCtrl.validateStarts();">Сохранить заплывы</button>
 					</div>
 				</div>
 
@@ -128,6 +137,8 @@
 {% endblock %}
 
 {% block additionaljs %}
+	<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css" rel="stylesheet">
+	<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
 	<script src="https://code.angularjs.org/1.4.9/angular-animate.min.js"></script> <!-- Angular animations -->
 	<script src="{% static 'js/sortable-starts.js' %}"></script> <!-- SortableStartsApp -->
 	<script src="{% static 'js/sortable.js' %}"></script> <!-- sortable directive -->
