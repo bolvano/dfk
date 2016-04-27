@@ -630,10 +630,21 @@ def get_competition_starts(request, id):
     for cdsg in cdsg_list:
         starts = Start.objects.filter(cdsg=cdsg)
         for start in starts:
-            start_obj = {'id':start.id, 'num': start.num, 'competitors':[]}
+            start_obj = {'id':start.id, 'competitors':[]}
             competitors = Competitor.objects.filter(start=start)
             for competitor in competitors:
-                start_obj['competitors'].append({'id':competitor.id, 'lane': competitor.lane,'last_name':competitor.person.last_name, 'first_name':competitor.person.first_name, 'team':competitor.userrequest.team.name, 'age':competitor.age.name, 'prior_time':competitor.prior_time})
+                start_obj['competitors'].append({'id':competitor.id,
+                                                 'last_name':competitor.person.last_name,
+                                                 'first_name':competitor.person.first_name,
+                                                 'team':competitor.userrequest.team.name,
+                                                 'age':competitor.age.name,
+                                                 'prior_time':competitor.prior_time,
+                                                 'main_distance': competitor.main_distance,
+                                                 'person_id': competitor.person.id,
+                                                 'style': competitor.tour.style.name,
+                                                 'distance': competitor.tour.distance.name,
+                                                 'gender': competitor.tour.gender
+                                                 })
             starts_list.append(start_obj)
     return HttpResponse(json.dumps({'competition_id':competition.id, 'competition_name':competition.name,'starts_list':starts_list}), content_type="application/json")
 
@@ -678,6 +689,8 @@ def create_competition(request):
 
 
 def competition_starts_sort(request, competition_id):
+    #if request.POST:
+
     return render(request, 'pgups/competition_starts_sort.html', { 'competition_id': competition_id, }, )
 
 def login_user(request):
