@@ -157,7 +157,7 @@
 
             if (!vm.maxLength) {
 
-                notie.alert(3, 'Выберите максимальное количество участников!', 5);
+                notie.alert(3, 'Укажите количество дорожек!', 5);
 
             } else {
 
@@ -171,7 +171,6 @@
                     notie.alert(3, 'В буфере остались нераспределённые участники!', 5);
                 } else if (tooLongLists.length > 0) {
                     var startsPlural = tooLongLists.length === 1 ? 'заплыве' : 'заплывах';
-                    $log.log(tooLongLists);
                     notie.alert(3, 'В '+ startsPlural + ' № ' + tooLongLists.join(', ') + ' более ' + vm.maxLength + ' участников!', 5);
                 } else {
                     notie.alert(1, 'Бублик!', 3);
