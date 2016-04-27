@@ -689,7 +689,62 @@ def create_competition(request):
 
 
 def competition_starts_sort(request, competition_id):
-    #if request.POST:
+    if request.POST:
+
+        import ipdb; ipdb.set_trace()
+
+        body_unicode = request.body.decode('utf-8')
+        data = json.loads(body_unicode)
+        competition = Competition.objects.get(pk=data['competition_id'])
+        num_of_lanes = data['max_length']
+        starts_list = data['starts_list']
+        starts_list = starts_list[1:]
+
+        cdsg = Cdsg(competition=competition, number=1)
+        cdsg.name = 'Все заплывы'
+        cdsg.save()
+
+        i_starts = 1
+
+        valid_start_ids = []
+        for s in starts_list:
+
+            if 'id' in s:
+                start = Start.objects.get(pk=s['id'])
+                start.num = i_starts
+                #start.name = distance.name + ' ' + style.name + ' ' + age.name + ' ' + gender
+                start.cdsg = cdsg
+                start.save()
+            else:
+                start = Start()
+                start.num = i_starts
+                start.name = str(start.num)
+                start.cdsg = cdsg
+                start.save()
+
+            valid_start_ids.append(start.id)
+
+            competitors = s['competitors']
+            competitor_set = []
+            for c in competitors:
+                competitor_set.append(Competitor.objects.get(pk=c['id']))
+
+            competitor_set.sort(key=lambda c: c.prior_time)
+
+            competitor_set = attribute_lanes(competitor_set, num_of_lanes)
+            for lane, competitor in competitor_set.items():
+                competitor.lane = lane
+                competitor.start = start
+                competitor.save()
+
+            i_starts += 1
+
+        all_starts = Start.objects.filter(competition=competition)
+        for start in all_starts:
+            if start.id not in valid_start_ids:
+                start.delete()
+
+        return HttpResponseRedirect('../../competition/starts/'+competition_id+'/')
 
     return render(request, 'pgups/competition_starts_sort.html', { 'competition_id': competition_id, }, )
 
