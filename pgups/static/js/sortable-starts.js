@@ -183,6 +183,8 @@
 
             $log.log('baka!');
 
+            vm.data.max_length = vm.maxLength;
+
             /*
             // disabling button to prevent duplicate requests
             angular.element('#submit-request-button').attr('disabled', true).html('Идет сохранение заплывов...');
