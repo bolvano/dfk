@@ -153,7 +153,6 @@
 
             var startList = vm.data.starts_list,
                 tooLongLists = [];
-                //maxLength = 6; // value would be retrieved from vm.data
 
             if (!vm.maxLength) {
 
@@ -173,7 +172,6 @@
                     var startsPlural = tooLongLists.length === 1 ? 'заплыве' : 'заплывах';
                     notie.alert(3, 'В '+ startsPlural + ' № ' + tooLongLists.join(', ') + ' более ' + vm.maxLength + ' участников!', 5);
                 } else {
-                    notie.alert(1, 'Бублик!', 3);
                     submitRequest();
                 }
             }
@@ -181,17 +179,14 @@
 
         function submitRequest() {
 
-            $log.log('baka!');
-
             vm.data.max_length = vm.maxLength;
 
-            /*
             // disabling button to prevent duplicate requests
             angular.element('#submit-request-button').attr('disabled', true).html('Идет сохранение заплывов...');
 
             var req = {
                 method: 'POST',
-                url: 'http://' + $window.location.host + '...', // insert url here
+                url: 'http://' + $window.location.host + '/competition_starts_sort/' + vm.data.competition_id + '/',
                 headers: {
                     'X-CSRFToken' : $scope.csrf_token,
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -204,15 +199,14 @@
 
                     notie.alert(1, 'Заплывы сохранены! Вы будете перенаправлены на текущую сетку стартов.', 2);
 
-                    $timeout(function() {
+                    /*$timeout(function() {
                         $window.location.href = '/someURL/'; // insert url here
-                    }, 4000);
+                    }, 4000);*/
 
-                }, function() {
-                    notie.alert(3, 'Произошла ошибка!', 3); // custom error text if duplicates or other errors
+                }, function(response) {
+                    notie.alert(3, 'Произошла ошибка: ' + response.status + ' ' + response.statusText, 3);
                     angular.element('#submit-request-button').attr('disabled', false).html('Сохранить заплывы');
                 });
-            */
 
         }
 
