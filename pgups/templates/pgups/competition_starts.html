@@ -20,11 +20,11 @@
 
 			<h2><b>{{cdsg.name}}</b></h2>
 
-			{% for start in cdsg.start_set.all %}
+			{% for start in cdsg.start_set.all|dictsort:"num"  %}
 
 				<!-- Start number -->
 				<div class="start-number" id="start{{start.num}}">
-					<h3 class="pull-left">Заплыв {{start.num}}</h3>
+					<h3 class="pull-left">Заплыв {{start.num}} ({{start.name}})</h3>
 					{% if user.is_authenticated %}
 						<a class="btn-results btn-lg pull-right btn btn-info" href="{% url 'start_result' start_id=start.id %}">Редактировать результат</a>
 					{% endif %}

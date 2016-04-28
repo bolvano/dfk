@@ -158,6 +158,7 @@ def get_client_ip(request):
 
 
 def attribute_lanes(competitor_set, num_of_lanes):
+    num_of_lanes = int(num_of_lanes)
     return_set = {}
     if num_of_lanes == 5:
         lanes = [3,2,4,1,5]
@@ -691,8 +692,6 @@ def create_competition(request):
 def competition_starts_sort(request, competition_id):
     if request.POST:
 
-        import ipdb; ipdb.set_trace()
-
         body_unicode = request.body.decode('utf-8')
         data = json.loads(body_unicode)
         competition = Competition.objects.get(pk=data['competition_id'])
@@ -709,6 +708,10 @@ def competition_starts_sort(request, competition_id):
         valid_start_ids = []
         for s in starts_list:
 
+            competitors = s['competitors']
+            if len(competitors) == 0:
+                continue
+
             if 'id' in s:
                 start = Start.objects.get(pk=s['id'])
                 start.num = i_starts
@@ -724,12 +727,28 @@ def competition_starts_sort(request, competition_id):
 
             valid_start_ids.append(start.id)
 
-            competitors = s['competitors']
+            #import ipdb; ipdb.set_trace()
+
+            name_dict = {'distance':set(), 'style':set(), 'age':set(), 'gender':set()}
             competitor_set = []
             for c in competitors:
                 competitor_set.append(Competitor.objects.get(pk=c['id']))
 
-            competitor_set.sort(key=lambda c: c.prior_time)
+            for c in competitor_set:
+                name_dict['distance'].add(c.tour.distance.name)
+                name_dict['style'].add(c.tour.style.name)
+                name_dict['age'].add(c.age.name)
+                name_dict['gender'].add(c.tour.gender)
+
+            start.name = ', '.join(name_dict['distance']) + ' ' + ', '.join(name_dict['style']) + ' ' + ', '.join(name_dict['age']) + ' '+', '.join(name_dict['gender'])
+            start.save()
+
+            competitors_good = list(filter(lambda c: c.prior_time > 0, competitor_set))
+            competitors_bad = list(filter(lambda c: c.prior_time == 0, competitor_set))
+
+            competitors_good.sort(key=lambda c: c.prior_time, reverse=True)
+
+            competitor_set = competitors_bad + competitors_good
 
             competitor_set = attribute_lanes(competitor_set, num_of_lanes)
             for lane, competitor in competitor_set.items():
@@ -739,10 +758,17 @@ def competition_starts_sort(request, competition_id):
 
             i_starts += 1
 
-        all_starts = Start.objects.filter(competition=competition)
+        #import ipdb; ipdb.set_trace()
+
+        cdsgs = Cdsg.objects.filter(competition=competition)
+        all_starts = Start.objects.filter(cdsg__in=cdsgs)
         for start in all_starts:
             if start.id not in valid_start_ids:
                 start.delete()
+
+        for c in cdsgs:
+            if c.id != cdsg.id:
+                c.delete()
 
         return HttpResponseRedirect('../../competition/starts/'+competition_id+'/')
 
