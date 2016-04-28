@@ -26,11 +26,13 @@
 		width: 80%;
 		vertical-align: top;
 		zoom: 1;
+
+		page-break-inside: avoid;
+		page-break-after: auto;
 	}
 
 	tr {
-		page-break-inside: avoid;
-		page-break-after: auto;
+
 	}
 
 	td,th {
