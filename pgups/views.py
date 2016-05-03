@@ -16,6 +16,8 @@ from django.contrib.auth import authenticate, login, logout
 
 from collections import defaultdict
 
+from django.db.models import Count
+
 
 class NumberInput(TextInput):
     input_type = 'number'
@@ -245,6 +247,11 @@ def start_result_view(request, start_id):
     competition = start.cdsg.competition
     cdsgs = Cdsg.objects.filter(competition=competition)
 
+    last_in_cdsg = False
+    cdsg = start.cdsg
+    if start.num == Start.objects.filter(cdsg=cdsg).order_by('-num')[0].num:
+        last_in_cdsg = True
+
     try:
         next_start = Start.objects.get(cdsg__in=cdsgs, num=start.num+1)
         next_start_id = next_start.id
@@ -258,7 +265,15 @@ def start_result_view(request, start_id):
         prev_start_id = ''
 
     competitors = Competitor.objects.filter(start=start).order_by('lane')
-    return render(request, 'pgups/start_result_view.html', {'competitors' : competitors, 'start_num': start.num, 'cdsg_name': start.cdsg.__str__(), 'start_id': start.id, 'next_start_id':next_start_id, 'prev_start_id':prev_start_id, 'competition_id':competition.id} )
+    return render(request, 'pgups/start_result_view.html', {'competitors' : competitors,
+                                                            'start_num': start.num,
+                                                            'last_in_cdsg':last_in_cdsg,
+                                                            'cdsg_id':start.cdsg.id,
+                                                            'cdsg_name': start.cdsg.__str__(),
+                                                            'start_id': start.id,
+                                                            'next_start_id':next_start_id,
+                                                            'prev_start_id':prev_start_id,
+                                                            'competition_id':competition.id} )
 
 
 def reg_request(request):
@@ -705,6 +720,8 @@ def competition_starts_sort(request, competition_id):
 
         i_starts = 1
 
+        total_competitors = {}
+
         valid_start_ids = []
         for s in starts_list:
 
@@ -732,7 +749,12 @@ def competition_starts_sort(request, competition_id):
             name_dict = {'distance':set(), 'style':set(), 'age':set(), 'gender':set()}
             competitor_set = []
             for c in competitors:
-                competitor_set.append(Competitor.objects.get(pk=c['id']))
+                cc = Competitor.objects.get(pk=c['id'])
+                competitor_set.append(cc)
+                if cc.tour.id in total_competitors:
+                    total_competitors[cc.tour.id] += 1
+                else:
+                    total_competitors[cc.tour.id] = 1
 
             for c in competitor_set:
                 name_dict['distance'].add(c.tour.distance.name)
@@ -758,7 +780,10 @@ def competition_starts_sort(request, competition_id):
 
             i_starts += 1
 
-        #import ipdb; ipdb.set_trace()
+        valid_cdsg_ids = [cdsg.id,]
+        passed_starts = []
+        finished_tours_ids = []
+        passed_competitors = {}
 
         cdsgs = Cdsg.objects.filter(competition=competition)
         all_starts = Start.objects.filter(cdsg__in=cdsgs)
@@ -767,8 +792,36 @@ def competition_starts_sort(request, competition_id):
                 start.delete()
 
         for c in cdsgs:
-            if c.id != cdsg.id:
+            if c.id not in valid_cdsg_ids:
                 c.delete()
+
+        i_cdsg = 1
+
+        for s in Start.objects.filter(cdsg__in=cdsgs).order_by('num'):
+            for c in Competitor.objects.filter(start=s):
+                if c.tour.id in passed_competitors:
+                    passed_competitors[c.tour.id] += 1
+                else:
+                    passed_competitors[c.tour.id] = 1
+            for k,v in passed_competitors.items():
+                if v == total_competitors[k]:
+                    finished_tours_ids.append(k)
+
+            passed_starts.append(s)
+
+            if len(finished_tours_ids):
+                cdsg_new = Cdsg(competition=competition, number=i_cdsg)
+                cdsg_new.name = 'Группа стартов №' + str(i_cdsg)
+                cdsg_new.save()
+                for ps in passed_starts:
+                    ps.cdsg = cdsg_new
+                    ps.save()
+                finished_tours_ids = []
+                passed_starts = []
+                i_cdsg += 1
+
+        #import ipdb; ipdb.set_trace()
+        cdsg.delete()
 
         return HttpResponseRedirect('../../competition/starts/'+competition_id+'/')
 
@@ -795,13 +848,27 @@ def logout_user(request):
 def cdsg_print(request, cdsg_id):
 
     cdsg = Cdsg.objects.get(pk=cdsg_id)
-
     starts = Start.objects.filter(cdsg=cdsg)
+    competitors = Competitor.objects.filter(start__in=starts) #все участники стартов cdsg
+
+    prev_cdsgs = Cdsg.objects.filter(number__lt=cdsg.number)
+    prev_starts = Start.objects.filter(cdsg__in=prev_cdsgs)
+    prev_competitors = Competitor.objects.filter(start__in=prev_starts)
 
     tour_dict = defaultdict(list)
-    competitors = Competitor.objects.filter(start__in=starts)
-    for competitor in competitors:
-        tour_dict[competitor.tour.id].append(competitor)
+
+    tours = []
+    for c in competitors:
+        if c.tour not in tours:
+            tours.append(c.tour)
+
+    for tour in tours:
+        total = Competitor.objects.filter(tour=tour).count()
+        passed = competitors.filter(tour=tour).count() + prev_competitors.filter(tour=tour).count()
+        if total == passed:
+            tour_competitors = Competitor.objects.filter(tour=tour)
+            for competitor in tour_competitors:
+                tour_dict[competitor.tour.id].append(competitor)
 
     tour_dict = dict(tour_dict)
 
@@ -845,3 +912,4 @@ def final_print(request, competition_id):
     tour_list.sort(key=lambda tup: styles[tup[0].style.name])
 
     return render(request, 'pgups/final_print.html', { 'competition': competition, 'tour_dict':tour_dict, 'tour_list':tour_list}, )
+
