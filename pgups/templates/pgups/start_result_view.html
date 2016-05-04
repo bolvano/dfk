@@ -66,9 +66,9 @@
 			</tbody>
 		</table>
 
-		<a class="btn btn-default btn-lg pull-right" href="../../start_result/{{start_id}}/">Редактировать</a>
+		<a class="btn btn-default btn-lg pull-right" href="../../start_result/{{start_id}}/"><span class="glyphicon glyphicon-pencil"></span> Редактировать</a>
 		{% if last_in_cdsg %}
-		<br><br><br><a class="btn-results btn-lg pull-right btn btn-info" href="{% url 'cdsg_print' cdsg_id=cdsg_id %}" target="_blank">Печать результата</a>
+		<br><br><br><a class="btn-lg pull-right btn btn-info" href="{% url 'cdsg_print' cdsg_id=cdsg_id %}" target="_blank"><span class="glyphicon glyphicon-print"></span> Печать результата</a>
 		{% endif %}
 
 	</div>
