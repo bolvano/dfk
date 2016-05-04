@@ -83,7 +83,7 @@
 
 						<button type="submit" onclick="return confirm('Результаты будут удалены. Продолжить?')" class="generate-starts btn btn-lg btn-warning"> <span class="glyphicon glyphicon-refresh"></span> Перегенерировать старты</button>
 
-						<select class="pull-left lanes-select" name="lanes">
+						<select class="selectpicker pull-left lanes-select" name="lanes">
 							<option value="5">5 дорожек</option>
 							<option value="6">6 дорожек</option>
 						</select>
@@ -116,28 +116,32 @@
 	<div class="competition-menu">
 
 		<p>
-			<a class="btn btn-lg btn-primary" href="../../results/starts/{{competition.id}}/">Результаты по заплывам и дорожкам</a>
+			<a class="btn btn-lg btn-primary" href="../../results/starts/{{competition.id}}/"><span class="glyphicon glyphicon-list-alt"></span> Результаты по заплывам и дорожкам</a>
 		</p>
 
 		<p>
-			<a class="btn btn-lg btn-primary" href="../../results/tours/{{competition.id}}/">Результаты по турам</a>
+			<a class="btn btn-lg btn-primary" href="../../results/tours/{{competition.id}}/"><span class="glyphicon glyphicon-list-alt"></span> Результаты по турам</a>
 		</p>
 
 		<p>
-			<a class="btn btn-lg btn-primary" href="../../results/teams/{{competition.id}}/">Результаты по командам</a>
+			<a class="btn btn-lg btn-primary" href="../../results/teams/{{competition.id}}/"><span class="glyphicon glyphicon-list-alt"></span> Результаты по командам</a>
+		</p>
+
+
+
+		<p>
+			<a class="btn btn-lg btn-primary" href="{% url 'final_print' competition_id=competition.id %}" target="_blank"> <span class="glyphicon glyphicon-print"></span> Итоговые протоколы</a>
 		</p>
 
 		{% if user.is_authenticated %}
 				<form action="." method="POST" >{% csrf_token %}
 					<input type="hidden" name="competition_id" value="{{competition.id}}">
 					<input type="hidden" name="close" value="0">
-					<input type="submit" class="close-competition btn btn-lg btn-default" value="Редактировать результаты соревнований">
+					<button type="submit" class="close-competition btn btn-lg btn-default">
+						<span class="glyphicon glyphicon-wrench"></span> Редактировать результаты соревнований
+					</button>
 				</form>
 		{% endif %}
-
-		<p>
-			<a class="btn btn-lg btn-primary" href="{% url 'final_print' competition_id=competition.id %}" target="_blank">Итоговые протоколы</a>
-		</p>
 
 	</div>
 
@@ -145,4 +149,9 @@
 
 </div>
 
+{% endblock %}
+
+{% block additionaljs %}
+	<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css" rel="stylesheet"> <!-- Custom select styles -->
+	<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script> <!-- Custom select JS -->
 {% endblock %}
