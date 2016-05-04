@@ -104,7 +104,8 @@ def results_tours(request, competition_id):
         competitors = []
 
         for c in tour.competitor_set.all():
-            competitors.append(c)
+            if c.approved:
+                competitors.append(c)
 
         competitors.sort(key=lambda c: c.time)
         competitors_good = list(filter(lambda c: c.disqualification == 0, competitors))
@@ -123,7 +124,8 @@ def results_teams(request, competition_id):
     for tour in tours:
         competitors = []
         for c in tour.competitor_set.all():
-            competitors.append(c)
+            if c.approved:
+                competitors.append(c)
         competitors.sort(key=lambda c: c.time)
         competitors_good = list(filter(lambda c: c.time > 0, competitors))
         competitors_good = list(filter(lambda c: c.userrequest.team is not None, competitors_good))
@@ -649,10 +651,14 @@ def get_competition_starts(request, id):
             start_obj = {'id':start.id, 'competitors':[]}
             competitors = Competitor.objects.filter(start=start)
             for competitor in competitors:
+                if competitor.userrequest.team:
+                    team = competitor.userrequest.team.name
+                else:
+                    team = 'Инд.'
                 start_obj['competitors'].append({'id':competitor.id,
                                                  'last_name':competitor.person.last_name,
                                                  'first_name':competitor.person.first_name,
-                                                 'team':competitor.userrequest.team.name,
+                                                 'team':team,
                                                  'age':competitor.age.name,
                                                  'prior_time':competitor.prior_time,
                                                  'main_distance': competitor.main_distance,
@@ -811,7 +817,7 @@ def competition_starts_sort(request, competition_id):
 
             if len(finished_tours_ids):
                 cdsg_new = Cdsg(competition=competition, number=i_cdsg)
-                cdsg_new.name = 'Группа стартов №' + str(i_cdsg)
+                cdsg_new.name = 'Группа заплывов №' + str(i_cdsg)
                 cdsg_new.save()
                 for ps in passed_starts:
                     ps.cdsg = cdsg_new

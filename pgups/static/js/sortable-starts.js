@@ -197,11 +197,12 @@
             $http(req)
                 .then(function() {
 
-                    notie.alert(1, 'Заплывы сохранены! Вы будете перенаправлены на текущую сетку стартов.', 2);
+                    notie.alert(1, 'Данные сохранены! Вы будете перенаправлены на текущую сетку заплывов.', 2);
 
-                    /*$timeout(function() {
-                        $window.location.href = '/someURL/'; // insert url here
-                    }, 4000);*/
+
+                    $timeout(function() {
+                        $window.location.href = '/competition/starts/'+vm.data.competition_id+'/'; // insert url here
+                    }, 4000);
 
                 }, function(response) {
                     notie.alert(3, 'Произошла ошибка: ' + response.status + ' ' + response.statusText, 3);
