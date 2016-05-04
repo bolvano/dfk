@@ -16,7 +16,7 @@
 						<a class="decorated-link" href="{% url 'competition' competition_id=competition_id %}">
 							<h1><b>{$ sortCtrl.data.competition_name $}</b></h1>
 						</a>
-						<p class="lead">Форма создания заплывов</p>
+						<p class="lead">Ручное создание и сортировка заплывов</p>
 					</div>
 				</div>
 			</div>
@@ -24,10 +24,19 @@
 
 		<div class="container">
 
-			<!-- DEBUG -->
+			<!-- DEBUG
 			<input type="checkbox" ng-model="showDebugData"><span> DEBUG: показать данные</span>
-			<p ng-show="showDebugData">{$ sortCtrl.data.starts_list $}</p>
-			<!-- DEBUG -->
+			<p ng-show="showDebugData">{$ sortCtrl.data $}</p>
+			DEBUG -->
+
+			<br>
+
+			<span>Количество дорожек: &nbsp</span>
+			<select class="selectpicker" ng-model="sortCtrl.maxLength" title="">
+				<option value="" selected disabled></option>
+				<option value="5">5</option>
+				<option value="6">6</option>
+			</select>
 
 			<!-- Step 1 -->
 			<div ng-show="sortCtrl.stepCounter.step === 1" class="animation-show-hide">
@@ -39,7 +48,16 @@
 						<div class="connected-competitors sort-buffer" ui-sortable="sortCtrl.sortableStartOptions" ng-model="start.competitors">
 
 							<div class="single-competitor-sort" ng-repeat="competitor in start.competitors">
-								{$ competitor.last_name | ucf $} {$ competitor.first_name | ucf $} {$ competitor.age $} {$ competitor.team $} {$ competitor.prior_time $}
+
+								<div ng-class="{bold: competitor.main_distance}">
+									{$ competitor.last_name | cap $} {$ competitor.first_name | cap $} ({$ competitor.team $})
+								</div>
+
+								<div>
+									{$ competitor.distance $} {$ competitor.style $} {$ competitor.age $} {$ competitor.gender $}
+									<div class="pull-right">{$ competitor.prior_time $}</div>
+								</div>
+
 							</div>
 						</div>
 
@@ -55,7 +73,16 @@
 
 						<div class="connected-competitors competitor-list-sort" ui-sortable="sortCtrl.sortableStartOptions" ng-model="start.competitors">
 							<div class="single-competitor-sort" ng-repeat="competitor in start.competitors">
-								{$ competitor.last_name | ucf $} {$ competitor.first_name | ucf $} {$ competitor.age $} {$ competitor.team $} {$ competitor.prior_time $}
+
+								<div ng-class="{bold: competitor.main_distance}">
+									{$ competitor.last_name | cap $} {$ competitor.first_name | cap $} ({$ competitor.team $})
+								</div>
+
+								<div>
+									{$ competitor.distance $} {$ competitor.style $} {$ competitor.age $} {$ competitor.gender $}
+									<div class="pull-right">{$ competitor.prior_time $}</div>
+								</div>
+
 							</div>
 						</div>
 
@@ -90,7 +117,14 @@
 
 							<div ng-model="start.competitors">
 								<div class="single-competitor-sort" ng-repeat="competitor in start.competitors">
-									{$ competitor.last_name | ucf $} {$ competitor.first_name | ucf $} {$ competitor.age $} {$ competitor.team $} {$ competitor.prior_time $}
+									<div ng-class="{bold: competitor.main_distance}">
+										{$ competitor.last_name | cap $} {$ competitor.first_name | cap $} ({$ competitor.team $})
+									</div>
+
+									<div>
+										{$ competitor.distance $} {$ competitor.style $} {$ competitor.age $} {$ competitor.gender $}
+										<div class="pull-right">{$ competitor.prior_time $}</div>
+									</div>
 								</div>
 							</div>
 
@@ -102,10 +136,10 @@
 
 				<div class="row">
 					<div class="col-lg-3">
-						<button class="btn btn-lg btn-default button-margin" ng-click="sortCtrl.stepCounter.prev();">Вернуться к настройке заплывов</button>
+						<button class="btn btn-lg btn-default button-margin" ng-click="sortCtrl.stepCounter.prev();">Вернуться к распределению участников</button>
 					</div>
 					<div class="col-lg-3 col-lg-offset-6">
-						<button class="btn btn-lg btn-success button-margin" ng-click="sortCtrl.submitRequest();">Сохранить заплывы</button>
+						<button id="submit-request-button" class="btn btn-lg btn-success button-margin" ng-click="sortCtrl.validateStarts();">Сохранить заплывы</button>
 					</div>
 				</div>
 
@@ -128,6 +162,8 @@
 {% endblock %}
 
 {% block additionaljs %}
+	<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css" rel="stylesheet"> <!-- Custom select styles -->
+	<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script> <!-- Custom select JS -->
 	<script src="https://code.angularjs.org/1.4.9/angular-animate.min.js"></script> <!-- Angular animations -->
 	<script src="{% static 'js/sortable-starts.js' %}"></script> <!-- SortableStartsApp -->
 	<script src="{% static 'js/sortable.js' %}"></script> <!-- sortable directive -->

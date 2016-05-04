@@ -30,8 +30,18 @@
 					{{competitor_form.id}}
 
 					<tr>
-						<td class="column-name">{{competitor_form.instance.person.last_name|title}} {{competitor_form.instance.person.first_name|title}}</td>
-						<td class="column-tour padding-15">{{competitor_form.instance.tour.style.name}} {{competitor_form.instance.tour.distance.name}}</td>
+						<td class="column-name">
+							{% if competitor_form.instance.main_distance%}<span><b>{% endif %}
+							{{competitor_form.instance.person.last_name|title}} {{competitor_form.instance.person.first_name|title}}
+							{% if competitor_form.instance.main_distance%}</b></span>{% endif %}
+						</td>
+						<td class="column-tour padding-15">
+							{% if competitor_form.instance.main_distance%}<span><b>{% endif %}
+							{{competitor_form.instance.tour.style.name}}
+							{{competitor_form.instance.tour.distance.name}}
+							({{competitor_form.instance.prior_time}})
+							{% if competitor_form.instance.main_distance%}</b></span>{% endif %}
+						</td>
 
 						{% if user.is_authenticated %}
 						<td class="column-approved padding-15 text-center">{{competitor_form.approved}}</td>

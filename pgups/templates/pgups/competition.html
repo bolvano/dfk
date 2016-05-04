@@ -16,7 +16,7 @@
 				<li>
 					<a href="../../userrequest/{{userrequest.id}}/">{{userrequest.date|date:"d.m.Y"}}: 
 					{% if userrequest.team %}
-						{{userrequest.team}}
+						{{userrequest.team}} ({{userrequest.representative}})
 					{% else %}
 						индивидуальная заявка
 					{% endif %}
@@ -38,7 +38,7 @@
 		<hr> <!-- End of Teams -->
 
 		<!-- Tours -->
-		<h2>Туры</h2>
+		<h2>Дисциплины</h2>
 		<ul class="basic-list">
 			{% for tour in competition.tour_set.all %}
 			{% if tour.competitor_set.all|length > 0 %}
@@ -52,38 +52,60 @@
 
 		<div class="row">
 
-			<div class="col-lg-3">
-				<a class="btn btn-lg btn-success starts" href="../../competition/starts/{{competition.id}}/">
-					<span>Текущая сетка стартов</span>
+			<div class="col-lg-12">
+				<a class="btn btn-lg btn-success starts-btn" href="../../competition/starts/{{competition.id}}/">
+					<span class="glyphicon glyphicon-list-alt"></span> <span>Текущая сетка заплывов</span>
 				</a>
+
+				{% if user.is_authenticated %}
+				<a class="pull-right btn btn-lg btn-default" href="{% url 'starts_print' competition_id=competition.id %}" target="_blank">
+					<span class="glyphicon glyphicon-print"></span> <span>Стартовые протоколы</span>
+				</a>
+				{% endif %}
+
 			</div>
 
 			{% if user.is_authenticated %}
 
-				<div class="col-lg-3 col-lg-offset-6">
-					<form action="." method="POST" >{% csrf_token %}
-						<input type="hidden" name="competition_id" value="{{competition.id}}">
-						<input type="hidden" name="close" value="1">
-						<input type="submit" class="close-competition btn btn-lg btn-danger pull-right" value="Закрыть соревнования">
-					</form>
+				<div class="col-lg-12">
+					<a class="pull-left btn btn-lg btn-default" href="../../competition_starts_sort/{{competition.id}}/">
+						<span class="glyphicon glyphicon-wrench"></span> <span>Ручная настройка заплывов</span>
+					</a>
 				</div>
 
-				<div class="col-lg-12">
+				<div class="col-lg-12"><hr></div>
+
+				<div class="col-lg-6">
+
 					<form action="../../generate_starts/" method="POST" >{% csrf_token %}
+
 						<input type="hidden" name="competition_id" value="{{competition.id}}">
-						<select name="lanes">
+
+						<button type="submit" onclick="return confirm('Текущие результаты заплывов будут удалены и сетка будет сгенерирована заново. Продолжить?')" class="generate-starts btn btn-lg btn-warning"> <span class="glyphicon glyphicon-refresh"></span> Перегенерировать заплывы</button>
+
+						<select class="selectpicker pull-left lanes-select" name="lanes">
 							<option value="5">5 дорожек</option>
 							<option value="6">6 дорожек</option>
 						</select>
-						<input type="checkbox" name="ages"> С разбивкой по возрастам
-						<input type="submit" onclick="return confirm('Результаты будут удалены. Продолжить?')" class="generate-starts btn btn-lg btn-default" value="Перегенерировать старты">
+
+						<div class="pull-left ages-select">
+							<input type="checkbox" name="ages">
+							<span>С разбивкой по возрастам</span>
+						</div>
+
 					</form>
+
 				</div>
 
-
-				<a class="pull-right btn btn-md btn-default" href="{% url 'starts_print' competition_id=competition.id %}" target="_blank">Стартовые протоколы (печать)</a>
-
-				<a class="pull-right btn btn-md btn-default" href="../../competition_starts_sort/{{competition.id}}/">Ручная настройка стартов</a>
+				<div class="col-lg-6">
+						<form action="." method="POST" >{% csrf_token %}
+							<input type="hidden" name="competition_id" value="{{competition.id}}">
+							<input type="hidden" name="close" value="1">
+							<button type="submit" class="close-competition btn btn-lg btn-danger pull-right">
+								<span class="glyphicon glyphicon-off"></span> Закрыть соревнования
+							</button>
+						</form>
+				</div>
 
 			{% endif %}
 
@@ -94,28 +116,32 @@
 	<div class="competition-menu">
 
 		<p>
-			<a class="btn btn-lg btn-primary" href="../../results/starts/{{competition.id}}/">Результаты по заплывам и дорожкам</a>
+			<a class="btn btn-lg btn-primary" href="../../results/starts/{{competition.id}}/"><span class="glyphicon glyphicon-list-alt"></span> Результаты по заплывам и дорожкам</a>
 		</p>
 
 		<p>
-			<a class="btn btn-lg btn-primary" href="../../results/tours/{{competition.id}}/">Результаты по турам</a>
+			<a class="btn btn-lg btn-primary" href="../../results/tours/{{competition.id}}/"><span class="glyphicon glyphicon-list-alt"></span> Результаты по дисциплинам</a>
 		</p>
 
 		<p>
-			<a class="btn btn-lg btn-primary" href="../../results/teams/{{competition.id}}/">Результаты по командам</a>
+			<a class="btn btn-lg btn-primary" href="../../results/teams/{{competition.id}}/"><span class="glyphicon glyphicon-list-alt"></span> Результаты по командам</a>
+		</p>
+
+
+
+		<p>
+			<a class="btn btn-lg btn-primary" href="{% url 'final_print' competition_id=competition.id %}" target="_blank"> <span class="glyphicon glyphicon-print"></span> Итоговые протоколы</a>
 		</p>
 
 		{% if user.is_authenticated %}
 				<form action="." method="POST" >{% csrf_token %}
 					<input type="hidden" name="competition_id" value="{{competition.id}}">
 					<input type="hidden" name="close" value="0">
-					<input type="submit" class="close-competition btn btn-lg btn-default" value="Редактировать результаты соревнований">
+					<button type="submit" class="close-competition btn btn-lg btn-default">
+						<span class="glyphicon glyphicon-wrench"></span> Редактировать результаты соревнований
+					</button>
 				</form>
 		{% endif %}
-
-		<p>
-			<a class="btn btn-lg btn-primary" href="{% url 'final_print' competition_id=competition.id %}" target="_blank">Итоговые протоколы</a>
-		</p>
 
 	</div>
 
@@ -123,4 +149,9 @@
 
 </div>
 
+{% endblock %}
+
+{% block additionaljs %}
+	<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css" rel="stylesheet"> <!-- Custom select styles -->
+	<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script> <!-- Custom select JS -->
 {% endblock %}

@@ -32,9 +32,13 @@
 					<td class="competitor">
 						{% if competitor.main_distance%}<span><b>{% endif %}
 						{{competitor.person.last_name|title}} {{competitor.person.first_name|title}}
-						{% if competitor.main_distance%}<span><b>{% endif %}
+						{% if competitor.main_distance%}</b></span>{% endif %}
 					</td>
-					<td class="team">{{competitor.userrequest.team.name}}</td>
+					<td class="team">
+						{% if competitor.userrequest.team %}
+						{{competitor.userrequest.team.name}} ({{competitor.userrequest.representative}})
+						{% endif %}
+					</td>
 					<td class="time"> {{competitor.time|formatSeconds}}  {% if competitor.disqualification > 0 %} <b>
 
                         		{% if  competitor.disqualification == 1 %}

@@ -118,6 +118,7 @@ class Tour(models.Model):
     age = models.ForeignKey('Age')
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     finished = models.BooleanField()
+    out = models.BooleanField(default=False)
     
     def __str__(self):
         return self.style.name + ' ' + self.distance.name  + ' ' + self.age.name + ' ' + self.gender

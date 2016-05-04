@@ -10,12 +10,12 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" media="all" href="{% static 'css/print.css' %}">
-	<title> Результаты дисциплины: {{cdsg.name}} ({{cdsg.competition.name}})</title>
+	<title> {{cdsg.name}}, результаты ({{cdsg.competition.name}})</title>
 
 </head>
 
 <body>
-Результаты дисциплины: {{cdsg.name}} ({{cdsg.competition.name}})
+{{cdsg.name}}, результаты ({{cdsg.competition.name}})
 <br>
 <br>
 <div>

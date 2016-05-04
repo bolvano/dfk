@@ -67,19 +67,29 @@ body {
 .decorated-link {
   text-decoration: underline;
 }
+.bold {
+  font-weight: bold;
+}
 /* Competition page */
 /*==================*/
 .competition-menu {
   margin-bottom: 20px;
 }
 .generate-starts {
-  margin-bottom: 40px;
+  margin-bottom: 10px;
   float: left;
   clear: both;
 }
-.starts {
-  margin-bottom: 20px;
+.starts-btn {
+  margin-bottom: 10px;
   float: left;
+}
+.lanes-select {
+  margin-bottom: 40px;
+  clear: both;
+}
+.ages-select {
+  margin-left: 10px;
 }
 /* Forms       */
 /*=============*/
@@ -157,10 +167,11 @@ select.ng-invalid.ng-dirty {
 }
 .single-start-container {
   padding: 15px 0 15px;
+  overflow: hidden;
   border-bottom: 1px solid #979a9d;
 }
 .start-number {
-  margin-bottom: 10px;
+  margin-bottom: 30px;
   overflow: hidden;
 }
 .btn-results {

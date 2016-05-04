@@ -32,7 +32,7 @@
 
 				<tr><th colspan="4" class="cdsg_name">{{cdsg.name|capfirst}} </th></tr>
 					{% for start in cdsg.start_set.all %}
-                <tr><th colspan="4">Заплыв {{start.num}}</th></tr>
+                <tr><th colspan="4">Заплыв {{start.num}} ({{start.name}})</th></tr>
 
                     {% for competitor in start.competitor_set.all %}
 				<tr>

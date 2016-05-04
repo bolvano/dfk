@@ -5,12 +5,12 @@
     .module('sortableStartsApp', ['ui.sortable', 'ngAnimate'])
     .config(altTemplateTags)
     .controller('SortController', SortController)
-    .filter('ucf', capitalizeWord)
+    .filter('cap', capitalizeWord)
     .factory('getStarts', getStarts)
     .directive('fixOnScroll', fixOnScroll);
 
     altTemplateTags.$inject = ['$interpolateProvider'];
-    SortController.$inject = ['$scope', '$log', '$timeout', '$window', 'getStarts'];
+    SortController.$inject = ['$scope', '$log', '$timeout', '$window', '$http', 'getStarts'];
     getStarts.$inject = ['$http', '$window', '$log', '$location'];
     fixOnScroll.$inject = ['$window'];
 
@@ -73,7 +73,7 @@
         };
     }
 
-    function SortController($scope, $log, $timeout, $window, getStarts) {
+    function SortController($scope, $log, $timeout, $window, $http, getStarts) {
 
         var vm = this;
 
@@ -151,17 +151,63 @@
 
         function validateStarts() {
 
-            // TODO: check if any items left in buffer
-            // check every list for max-length (5 or 6?)
-            // check for duplicate competitors?
-            // call submitRequest if valid,
-            // display errors otherwise
+            var startList = vm.data.starts_list,
+                tooLongLists = [];
 
+            if (!vm.maxLength) {
+
+                notie.alert(3, 'Укажите количество дорожек!', 5);
+
+            } else {
+
+                for (var i = 1; i < startList.length; i++) {
+                    if (startList[i].competitors.length > vm.maxLength) {
+                        tooLongLists.push(i);
+                    }
+                }
+
+                if (startList[0].competitors.length > 0) {
+                    notie.alert(3, 'В буфере остались нераспределённые участники!', 5);
+                } else if (tooLongLists.length > 0) {
+                    var startsPlural = tooLongLists.length === 1 ? 'заплыве' : 'заплывах';
+                    notie.alert(3, 'В '+ startsPlural + ' № ' + tooLongLists.join(', ') + ' более ' + vm.maxLength + ' участников!', 5);
+                } else {
+                    submitRequest();
+                }
+            }
         }
 
         function submitRequest() {
 
-            $log.log('baka!');
+            vm.data.max_length = vm.maxLength;
+
+            // disabling button to prevent duplicate requests
+            angular.element('#submit-request-button').attr('disabled', true).html('Идет сохранение заплывов...');
+
+            var req = {
+                method: 'POST',
+                url: 'http://' + $window.location.host + '/competition_starts_sort/' + vm.data.competition_id + '/',
+                headers: {
+                    'X-CSRFToken' : $scope.csrf_token,
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                data: angular.toJson(vm.data)
+            };
+
+            $http(req)
+                .then(function() {
+
+                    notie.alert(1, 'Данные сохранены! Вы будете перенаправлены на текущую сетку заплывов.', 2);
+
+
+                    $timeout(function() {
+                        $window.location.href = '/competition/starts/'+vm.data.competition_id+'/'; // insert url here
+                    }, 4000);
+
+                }, function(response) {
+                    notie.alert(3, 'Произошла ошибка: ' + response.status + ' ' + response.statusText, 3);
+                    angular.element('#submit-request-button').attr('disabled', false).html('Сохранить заплывы');
+                });
 
         }
 

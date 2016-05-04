@@ -10,7 +10,7 @@
 
 					<h1>Техническая заявка на участие в соревнованиях по плаванию</h1><br>
 					<p class="lead">Пожалуйста, внимательно прочитайте правила и заполните заявку. <br>Укажите свои контактные данные, имена и фамилии участников, год рождения,
-				основную и при необходимости дополнительную дистанцию, а также предварительное время.</p>
+				основную и при необходимости дополнительную дисциплину, а также предварительное время.</p>
 					<p><i>Кнопка отправки становится активной, если заполнены все обязательные поля.</i></p>
 					<p>Если у вас возникли сложности с отправкой заявки, звоните:<br>
 						+7 (921) 953-23-45 Притула Елена Ивановна<br>
@@ -67,7 +67,7 @@
 
 					<!-- Representative -->
 					<div class="form-group">
-						<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="representative">Заявитель/Представитель команды:</label>
+						<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="representative">Тренер-представитель:</label>
 						<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
 							<input class="form-control" name="representative" ng-minlength="2" ng-model="reg.form.representative" type="text" required/>
 							<p class="error-block" ng-show="requestForm.representative.$dirty && requestForm.representative.$error.required">Введите имя заявителя</p>
@@ -172,7 +172,7 @@
 						<!-- Buttons -->
 						<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
 							<a id="remove-person-{$ person.personId $}" href="#" class="btn btn-danger btn-md btn-block" ng-click="reg.removePerson($index)">Удалить участника</a>
-							<a id="add-competitor-{$ person.personId $}" href="#" class="btn btn-success btn-md btn-block" ng-click="reg.addCompetitor($index)">Добавить заплыв</a>
+							<a id="add-competitor-{$ person.personId $}" href="#" class="btn btn-success btn-md btn-block" ng-click="reg.addCompetitor($index)">Добавить дисциплину</a>
 						</div>
 
 						<!-- Competitors -->
@@ -189,7 +189,7 @@
 										<!-- Tour -->
 										<div class="form-group row">
 
-											<label class="col-md-2 control-label text-left" for="tour">Тур:</label>
+											<label class="col-md-2 control-label text-left" for="tour">Дисц.:</label>
 
 											<div class="col-md-10">
 
@@ -197,7 +197,7 @@
 
 												</select>
 
-												<p class="error-block" ng-show="competitorForm.tour.$dirty && competitorForm.tour.$error.required">Выберите тур из списка</p>
+												<p class="error-block" ng-show="competitorForm.tour.$dirty && competitorForm.tour.$error.required">Выберите дисциплину</p>
 
 											</div>
 
@@ -246,7 +246,7 @@
 
 										<!-- Main distance -->
 										<div class="col-lg-10 col-lg-offset-2 col-md-10 col-sm-8 col-xs-12" ng-show="competitor.competitorId === 'competitor-0'">
-											<p class="note"><i><b>* основная дистанция</b></i></p>
+											<p class="note"><i><b>* основная дисциплина</b></i></p>
 										</div> <!-- End of Main distance -->
 
 									</div>
