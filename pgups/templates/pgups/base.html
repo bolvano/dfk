@@ -35,9 +35,9 @@
 				<div class="login pull-right">
 					<span>
 						{% if user.is_authenticated %}
-							Здравствуйте, {{user.username}} <a href="{% url 'logout' %}">Выйти</a>
+							Здравствуйте, {{user.username}} <a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> Выйти</a>
 						{% else %}
-							Вы не залогинены  <a href="{% url 'login' %}">Войти</a>
+							Вы не залогинены  <a href="{% url 'login' %}"> <span class="glyphicon glyphicon-log-in"></span> Войти</a>
 						{% endif %}
 					</span>
 				</div>
