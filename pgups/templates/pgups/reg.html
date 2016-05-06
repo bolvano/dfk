@@ -32,6 +32,11 @@
 
 			<div class="container">
 
+				<!-- DEBUG
+				<input type="checkbox" ng-model="showDebugData"><span> DEBUG: показать данные</span>
+				<p ng-show="showDebugData">{$ reg.form $}</p><br><br>
+				DEBUG -->
+
 				<!-- Well -->
 				<div class="well row">
 					<div class="col-md-7 col-xs-12">
@@ -245,8 +250,9 @@
 										</div> <!-- End of Prior time -->
 
 										<!-- Main distance -->
-										<div class="col-lg-10 col-lg-offset-2 col-md-10 col-sm-8 col-xs-12" ng-show="competitor.competitorId === 'competitor-0'">
-											<p class="note"><i><b>* основная дисциплина</b></i></p>
+										<div class="col-lg-10 col-lg-offset-2 col-md-10 col-sm-8 col-xs-12" ng-show="competitor.competitorId === 'competitor-0' || competitor.tour.out === true">
+											<p class="note" ng-hide="competitor.tour.out === true"><i><b>* основная дисциплина</b></i></p>
+											<p class="note" ng-show="competitor.tour.out === true"><i><b>* вне конкурса</b></i></p>
 										</div> <!-- End of Main distance -->
 
 									</div>
@@ -287,9 +293,6 @@
 							<button id="submit-request-button" type="submit" class="btn btn-success btn-xxl" ng-disabled="requestForm.$invalid || personsForm.$invalid" ng-click="reg.submitRequest()">Отправить заявку</button>
 						</div>
 					</div>
-
-					<!-- {$ reg.form $} -->
-
 				</div>
 			</div> <!-- End of jumbotron -->
 

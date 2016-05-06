@@ -42,7 +42,7 @@
         var personCounter = 1; // used for assigning ids to persons
         var year = new Date().getFullYear(); // current year
 
-        vm.indRequestOnePerson = indRequestOnePerson; 
+        vm.indRequestOnePerson = indRequestOnePerson;
         vm.persons = [{personId: 'person-0', competitors: [{competitorId: 'competitor-0'}] }];
         vm.form = { persons: vm.persons };
 
@@ -76,8 +76,10 @@
 
             if ( vm.form.competition.type.toLowerCase() === 'детские' ) {
                 vm.years = range.slice(-15);
-            } else {
+            } else if ( vm.form.competition.type.toLowerCase() === 'взрослые' ) {
                 vm.years = range.slice(0, -15);
+            } else {
+                vm.years = range;
             }
 
             vm.tours = vm.form.competition.tours;
@@ -120,7 +122,7 @@
                         angular.element(this).attr('disabled', true);
 
                 });
-            }); 
+            });
         }
 
         function basicAnimation(id) {
