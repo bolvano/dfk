@@ -594,7 +594,13 @@ def get_competitions(request):
         competition = {'name': c.name, 'id': c.id, 'type':c.typ}
         tour_objects = Tour.objects.filter(competition=c)
         for t in tour_objects:
-            tours.append({'id':t.id, 'age_id':t.age.id, 'min_age': t.age.min_age, 'max_age': t.age.max_age, 'gender':t.gender, 'name':t.__str__()})
+            tours.append({'id':t.id,
+                          'age_id':t.age.id,
+                          'min_age': t.age.min_age,
+                          'max_age': t.age.max_age,
+                          'gender':t.gender,
+                          'name':t.__str__(),
+                          'out':t.out})
         competition['tours'] = tours
         competition_list.append(competition)
     return HttpResponse(json.dumps(competition_list), content_type="application/json")
@@ -680,7 +686,12 @@ def create_competition(request):
         date_start = datetime.datetime.strptime(data['date_start'], "%Y-%m-%dT%H:%M:%S.%fZ")+datetime.timedelta(days=1)
         date_end = datetime.datetime.strptime(data['date_finish'], "%Y-%m-%dT%H:%M:%S.%fZ")+datetime.timedelta(days=1)
 
-        typ = 'Взрослые' if data['type'] == '1' else 'Детские'
+        if data['type'] == '1':
+            typ = 'Взрослые'
+        elif data['type'] == '0':
+            typ = 'Детские'
+        else:
+            typ = 'Смешанные'
 
 
         competition = Competition(name=data['name'], typ=typ, date_start=date_start, date_end=date_end, finished=False)
