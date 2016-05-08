@@ -7,6 +7,9 @@ urlpatterns = [
     url(r'^regrequest/$', views.reg_request, name='regrequest'),
     url(r'^competition/(?P<competition_id>\d+)/$', views.competition, name='competition'),
     url(r'^userrequest/(?P<userrequest_id>\d+)/$', views.userrequest, name='userrequest'),
+
+    #url(r'^userrequest_edit/(?P<userrequest_id>\d+)/$', views.userrequest_edit, name='userrequest_edit'),
+
     url(r'^person/(?P<person_id>\d+)/$', views.person, name='person'),
     url(r'^results/starts/(?P<competition_id>\d+)/$', views.results_starts),
     url(r'^results/tours/(?P<competition_id>\d+)/$', views.results_tours),
@@ -18,7 +21,7 @@ urlpatterns = [
     url(r'^competition/team/(?P<competition_id>\d+)/(?P<team_id>\d+)/$', views.competition_team),
 
     # ajax
-    url(r'^get_competitions/$', views.get_competitions),
+    url(r'^get_competitions/(?P<userrequest_id>\d+)?/?$', views.get_competitions),
     url(r'^get_teams/$', views.get_teams),
     url(r'^get_ages_distances_styles/$', views.get_ages_distances_styles),
     url(r'^get_competition_starts/(?P<id>\d+)/$', views.get_competition_starts),

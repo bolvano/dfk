@@ -64,7 +64,7 @@
 
             getData.then(function(response) {
                 var data = response;
-                vm.competitions = data[0].data;
+                vm.competitions = data[0].data['competition_list'];
                 vm.teams = data[1].data;
                 return data;
             });
