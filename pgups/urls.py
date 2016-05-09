@@ -4,7 +4,7 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^regrequest/$', views.reg_request, name='regrequest'),
+    url(r'^regrequest/(?P<userrequest_id>\d+)?/?$', views.reg_request, name='regrequest'),
     url(r'^competition/(?P<competition_id>\d+)/$', views.competition, name='competition'),
     url(r'^userrequest/(?P<userrequest_id>\d+)/$', views.userrequest, name='userrequest'),
 

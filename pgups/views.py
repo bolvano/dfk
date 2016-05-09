@@ -326,7 +326,9 @@ def reg_request(request, userrequest_id=None):
     else:
         pass
 
-    return render(request, 'pgups/reg.html', {} )
+    data = {}
+
+    return render(request, 'pgups/reg.html', data)
 
 
 def generate_tours(request, competition_id, kids):

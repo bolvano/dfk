@@ -8,7 +8,7 @@
     .factory('getData', getData);
 
     altTemplateTags.$inject = ['$interpolateProvider'];
-    getData.$inject = ['$q', '$window', '$http', '$log'];
+    getData.$inject = ['$q', '$window', '$http', '$log', '$location'];
     RegFormController.$inject = ['$scope', '$http', '$timeout', '$window', '$log', 'getData'];
 
     function altTemplateTags($interpolateProvider) {
@@ -16,9 +16,19 @@
         $interpolateProvider.endSymbol('$}');
     }
 
-    function getData($q, $window, $http, $log) {
+    function getData($q, $window, $http, $log, $location) {
+
+        var urlArr = $location.absUrl().split('/'),
+        userrequest_id = urlArr[urlArr.length - 2];
 
         var url1 = 'http://' + $window.location.host + '/get_competitions/';
+
+        if(!isNaN(+userrequest_id)) {
+            url1 = url1 + userrequest_id+'/';
+        }
+
+        //console.log(url1);
+
         var url2 = 'http://' + $window.location.host + '/get_teams/';
 
         var competitions = $http({method: 'GET', url: url1, cache: 'true'});
