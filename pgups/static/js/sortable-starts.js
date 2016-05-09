@@ -6,6 +6,7 @@
     .config(altTemplateTags)
     .controller('SortController', SortController)
     .filter('cap', capitalizeWord)
+    .filter('time', formatTime)
     .factory('getStarts', getStarts)
     .directive('fixOnScroll', fixOnScroll);
 
@@ -17,6 +18,15 @@
     function capitalizeWord() {
         return function(word) {
             return word.substring(0,1).toUpperCase() + word.slice(1);
+        };
+    }
+
+    function formatTime() {
+        return function(seconds) {
+            var min = Math.floor(seconds / 60);
+            var sec = seconds % 60;
+            var zero = sec < 10 ? '0' : '';
+            return  min + ':' + zero + sec.toFixed(2);
         };
     }
 

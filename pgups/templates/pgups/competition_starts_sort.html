@@ -55,7 +55,7 @@
 
 								<div>
 									{$ competitor.distance $} {$ competitor.style $} {$ competitor.age $} {$ competitor.gender $}
-									<div class="pull-right">{$ competitor.prior_time $}</div>
+									<div class="pull-right">{$ competitor.prior_time | time $}</div>
 								</div>
 
 							</div>
@@ -80,7 +80,7 @@
 
 								<div>
 									{$ competitor.distance $} {$ competitor.style $} {$ competitor.age $} {$ competitor.gender $}
-									<div class="pull-right">{$ competitor.prior_time $}</div>
+									<div class="pull-right">{$ competitor.prior_time | time $}</div>
 								</div>
 
 							</div>
@@ -91,11 +91,11 @@
 				</div>
 
 				<div class="row">
-					<div class="col-lg-3">
-						<button id="add-start-button" class="btn btn-lg btn-default button-margin" ng-click="sortCtrl.addStart()">Добавить заплыв</button>
+					<div class="col-lg-3 col-md-3">
+						<button id="add-start-button" class="btn btn-lg btn-default button-margin" ng-click="sortCtrl.addStart()"><span class="glyphicon glyphicon-plus"></span> Добавить заплыв</button>
 					</div>
-					<div class="col-lg-3 col-lg-offset-6">
-						<button class="btn btn-lg btn-success button-margin" ng-click="sortCtrl.stepCounter.next()">Перейти к сортировке заплывов</button>
+					<div class="col-lg-3 col-md-4 col-lg-offset-6 col-md-offset-5">
+						<button class="btn btn-lg btn-default button-margin" ng-click="sortCtrl.stepCounter.next()">Перейти к сортировке заплывов <span class="glyphicon glyphicon-chevron-right"></span></button>
 					</div>
 				</div>
 
@@ -123,7 +123,7 @@
 
 									<div>
 										{$ competitor.distance $} {$ competitor.style $} {$ competitor.age $} {$ competitor.gender $}
-										<div class="pull-right">{$ competitor.prior_time $}</div>
+										<div class="pull-right">{$ competitor.prior_time | time $}</div>
 									</div>
 								</div>
 							</div>
@@ -135,11 +135,11 @@
 				</div>
 
 				<div class="row">
-					<div class="col-lg-3">
-						<button class="btn btn-lg btn-default button-margin" ng-click="sortCtrl.stepCounter.prev();">Вернуться к распределению участников</button>
+					<div class="col-lg-3 col-md-3">
+						<button class="btn btn-lg btn-default button-margin" ng-click="sortCtrl.stepCounter.prev();"><span class="glyphicon glyphicon-chevron-left"></span> Вернуться к распределению участников</button>
 					</div>
-					<div class="col-lg-3 col-lg-offset-6">
-						<button id="submit-request-button" class="btn btn-lg btn-success button-margin" ng-click="sortCtrl.validateStarts();">Сохранить заплывы</button>
+					<div class="col-lg-3 col-md-4 col-lg-offset-6 col-md-offset-5">
+						<button id="submit-request-button" class="btn btn-lg btn-success button-margin" ng-click="sortCtrl.validateStarts();">Сохранить заплывы <span class="glyphicon glyphicon-ok"></span></button>
 					</div>
 				</div>
 

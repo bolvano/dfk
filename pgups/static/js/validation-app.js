@@ -8,7 +8,7 @@
     .factory('getData', getData);
 
     altTemplateTags.$inject = ['$interpolateProvider'];
-    getData.$inject = ['$q', '$window', '$http', '$log'];
+    getData.$inject = ['$q', '$window', '$http', '$log', '$location'];
     RegFormController.$inject = ['$scope', '$http', '$timeout', '$window', '$log', 'getData'];
 
     function altTemplateTags($interpolateProvider) {
@@ -16,10 +16,17 @@
         $interpolateProvider.endSymbol('$}');
     }
 
-    function getData($q, $window, $http, $log) {
+    function getData($q, $window, $http, $log, $location) {
+
+        var urlArr = $location.absUrl().split('/'),
+        userrequest_id = urlArr[urlArr.length - 2];
 
         var url1 = 'http://' + $window.location.host + '/get_competitions/';
         var url2 = 'http://' + $window.location.host + '/get_teams/';
+
+        if(!isNaN(+userrequest_id)) {
+            url1 = url1 + userrequest_id + '/';
+        }
 
         var competitions = $http({method: 'GET', url: url1, cache: 'true'});
         var teams = $http({method: 'GET', url: url2, cache: 'true'});
@@ -42,7 +49,7 @@
         var personCounter = 1; // used for assigning ids to persons
         var year = new Date().getFullYear(); // current year
 
-        vm.indRequestOnePerson = indRequestOnePerson; 
+        vm.indRequestOnePerson = indRequestOnePerson;
         vm.persons = [{personId: 'person-0', competitors: [{competitorId: 'competitor-0'}] }];
         vm.form = { persons: vm.persons };
 
@@ -64,10 +71,48 @@
 
             getData.then(function(response) {
                 var data = response;
-                vm.competitions = data[0].data;
+
+                vm.competitions = data[0].data.competition_list;
                 vm.teams = data[1].data;
+
+                var source_data = data[0].data.source_data;
+
+                if (source_data.hasOwnProperty('competition_id')) {
+
+                    vm.form = source_data;
+
+                    var competitions = data[0].data.competition_list;
+                    var competition_id = data[0].data.source_data.competition_id;
+
+                    var teams = data[1].data;
+                    var team_id = data[0].data.source_data.team_id;
+
+                    for (var i = 0; i < competitions.length; i++) {
+                        if (competitions[i].id === competition_id) {
+                            vm.form.competition = competitions[i];
+                        }
+                    }
+
+                    disableSelect('#competition-select');
+
+                    for (var j = 0; j < teams.length; j++) {
+                        if (teams[j].id === team_id) {
+                            vm.form.team = teams[j];
+                        }
+                    }
+
+                    filterCompetition();
+
+                    vm.persons = source_data.persons;
+
+                }
+
                 return data;
             });
+        }
+
+        function disableSelect(id) {
+            angular.element(id).prop('disabled', 'disabled');
         }
 
         function filterCompetition() {
@@ -76,8 +121,10 @@
 
             if ( vm.form.competition.type.toLowerCase() === 'детские' ) {
                 vm.years = range.slice(-15);
-            } else {
+            } else if ( vm.form.competition.type.toLowerCase() === 'взрослые' ) {
                 vm.years = range.slice(0, -15);
+            } else {
+                vm.years = range;
             }
 
             vm.tours = vm.form.competition.tours;
@@ -90,7 +137,7 @@
             var range = [];
 
             for (var i = oldest; i <= (year - youngest); i++) {
-                range.push(i);
+                range.push('' + i);
             }
 
             return range;
@@ -120,7 +167,7 @@
                         angular.element(this).attr('disabled', true);
 
                 });
-            }); 
+            });
         }
 
         function basicAnimation(id) {

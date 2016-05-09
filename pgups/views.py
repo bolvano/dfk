@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 from django.shortcuts import render, get_object_or_404, render_to_response,redirect
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
@@ -193,7 +193,10 @@ def competition_team(request, competition_id, team_id):
 def userrequest(request, userrequest_id):
     userrequest = get_object_or_404(Userrequest, pk=userrequest_id)
     competitors = userrequest.competitor_set.all()
-    CompetitorFormSet = modelformset_factory(Competitor, fields=('approved',), extra=0, widgets={'approved': forms.CheckboxInput()})
+    CompetitorFormSet = modelformset_factory(Competitor,
+                                             fields=('approved',),
+                                             extra=0,
+                                             widgets={'approved': forms.CheckboxInput(),})
 
     if request.method == "POST":
         competitor_formset = CompetitorFormSet(request.POST)
@@ -212,7 +215,7 @@ def start_result(request, start_id):
     competitors = Competitor.objects.filter(start=start)
     competition = start.cdsg.competition
     cdsgs = Cdsg.objects.filter(competition=competition)
-    
+
     try:
         next_start = Start.objects.get(cdsg__in=cdsgs, num=start.num+1)
         next_start_id = next_start.id
@@ -278,7 +281,7 @@ def start_result_view(request, start_id):
                                                             'competition_id':competition.id} )
 
 
-def reg_request(request):
+def reg_request(request, userrequest_id=None):
     if request.method == "POST":
 
         body_unicode = request.body.decode('utf-8')
@@ -297,16 +300,46 @@ def reg_request(request):
         else:
             team = None
 
-        userrequest = Userrequest(competition=competition, team=team, representative=representative, phone=phone, email=email, ip=ip)
+        if data['userrequest_id']:
+            userrequest = Userrequest.objects.get(pk=data['userrequest_id'])
+            userrequest.team = team
+            userrequest.representative = representative
+            userrequest.phone = phone
+            userrequest.email = email
+        else:
+            userrequest = Userrequest(competition=competition,
+                                      team=team,
+                                      representative=representative,
+                                      phone=phone,
+                                      email=email,
+                                      ip=ip)
         userrequest.save()
+
+        actual_person_ids = []
 
         for person in data['persons']:
             first_name = person['first_name']
             last_name = person['last_name']
             birth_year = person['birth_year']
             gender = person['gender']
-            new_person = Person(first_name=first_name.lower(), last_name=last_name.lower(), birth_year=birth_year, gender=gender, userrequest=userrequest)
+
+            if 'id' in person:
+                new_person = Person.objects.get(pk=person['id'])
+            else:
+                new_person = Person()
+                new_person.userrequest = userrequest
+
+            new_person.first_name = first_name.lower()
+            new_person.last_name = last_name.lower()
+            new_person.birth_year = birth_year
+            new_person.gender = gender
+
             new_person.save()
+
+
+            actual_person_ids.append(new_person.id)
+            actual_competitor_ids = []
+
             main_distance = True
             for competitor in person['competitors']:
                 tour = Tour.objects.get(pk=competitor['tour']['id'])
@@ -317,12 +350,36 @@ def reg_request(request):
                     prior_time = 0
                 if 'prior_time_minutes' in competitor and competitor['prior_time_minutes']:
                     prior_time += int(competitor['prior_time_minutes'])*60
-                new_competitor = Competitor(person=new_person, userrequest=userrequest, tour=tour, age=age, prior_time=prior_time, main_distance=main_distance, time=0)
+
+                if 'id' in competitor:
+                    new_competitor = Competitor.objects.get(pk=competitor['id'])
+                else:
+                    new_competitor = Competitor()
+
+                new_competitor.person=new_person
+                new_competitor.userrequest=userrequest
+                new_competitor.tour=tour
+                new_competitor.age=age
+                new_competitor.prior_time=prior_time
+                new_competitor.main_distance=main_distance
+                new_competitor.time=0
                 new_competitor.save()
+
+                actual_competitor_ids.append(new_competitor.id)
+
                 main_distance = False
+            for c in Competitor.objects.filter(person=new_person, userrequest=userrequest):
+                if c.id not in actual_competitor_ids:
+                    c.delete()
+        for p in Person.objects.filter(userrequest=userrequest):
+            if p.id not in actual_person_ids:
+                p.delete()
     else:
         pass
-    return render(request, 'pgups/reg.html', {}, )
+
+    data = {}
+
+    return render(request, 'pgups/reg.html', data)
 
 
 def generate_tours(request, competition_id, kids):
@@ -356,7 +413,7 @@ def competition_starts(request, competition_id):
 
     return render(request, 'pgups/competition_starts.html', {'cdsg_list': cdsg_list,
                                                              'competition_id':competition_id,
-                                                             'competition': competition, 
+                                                             'competition': competition,
                                                             },)
 
 def generate_starts(request):
@@ -552,14 +609,14 @@ def generate_starts(request):
 
                                     starts2.append(start)
                                     i_starts += 1
-                
-    
+
+
     return HttpResponseRedirect('../../competition/starts/'+competition_id+'/')
 
 
 def tour(request, id):
 
-    res = []    
+    res = []
 
     tour = Tour.objects.get(pk=id)
 
@@ -581,12 +638,12 @@ def tour(request, id):
             pass
 
     res = sorted(res, key=lambda x: x[1])
-            
+
     return render(request, 'pgups/tour.html', {'competition_id':competition_id, 'competition_name':competition_name, 'res': res, 'tour_name': tour_name},)
 
 
 # ajax-контроллер
-def get_competitions(request):
+def get_competitions(request, userrequest_id=None):
     competition_list = []
     competitions = Competition.objects.filter(finished=False)
     for c in competitions:
@@ -594,10 +651,74 @@ def get_competitions(request):
         competition = {'name': c.name, 'id': c.id, 'type':c.typ}
         tour_objects = Tour.objects.filter(competition=c)
         for t in tour_objects:
-            tours.append({'id':t.id, 'age_id':t.age.id, 'min_age': t.age.min_age, 'max_age': t.age.max_age, 'gender':t.gender, 'name':t.__str__()})
+            tours.append({'id':t.id,
+                          'age_id':t.age.id,
+                          'min_age': t.age.min_age,
+                          'max_age': t.age.max_age,
+                          'gender':t.gender,
+                          'name':t.__str__(),
+                          'out':t.out})
         competition['tours'] = tours
         competition_list.append(competition)
-    return HttpResponse(json.dumps(competition_list), content_type="application/json")
+        source_data = {}
+
+    if userrequest_id:
+        userrequest = Userrequest.objects.get(pk=userrequest_id)
+        source_data['userrequest_id'] = userrequest.id
+        source_data['competition_id'] = userrequest.competition.id
+        if userrequest.team:
+            source_data['team_id'] = userrequest.team.id
+        source_data['representative'] = userrequest.representative
+        source_data['phone'] = userrequest.phone
+        source_data['email'] = userrequest.email
+        source_data['ip'] = userrequest.ip
+        source_data['date'] = str(userrequest.date)
+
+        source_data['persons'] = []
+        competitors = Competitor.objects.filter(userrequest=userrequest)
+        persons = []
+        for competitor in competitors:
+            if competitor.person not in persons:
+                persons.append(competitor.person)
+        person_i = 0
+        for person in persons:
+            person_obj = {"personId": "person-"+str(person_i),
+                          "id": person.id,
+                          "last_name" :person.last_name,
+                          "first_name" :person.first_name,
+                          "birth_year" :person.birth_year,
+                          "gender": person.gender }
+            person_i += 1
+            person_obj["competitors"] = []
+            competitor_i = 0
+
+            for competitor in Competitor.objects.filter(person=person, userrequest=userrequest).order_by('-main_distance'):
+
+                prior_time = competitor.prior_time
+                prior_time_minutes = 0
+                if prior_time > 60:
+                    prior_time_minutes, prior_time = divmod(prior_time, 60)
+
+                competitor_obj = {"competitorId": "competitor-"+str(competitor_i),
+                                  "id": competitor.id,
+                                  "tour": {"id": competitor.tour.id,
+                                           "name": competitor.tour.__str__(),
+                                           "age_id": competitor.tour.age.id,
+                                           "out": competitor.tour.out}}
+                if prior_time:
+                    competitor_obj['prior_time'] = prior_time
+
+                if prior_time_minutes:
+                    competitor_obj['prior_time_minutes'] = prior_time_minutes
+
+                competitor_i += 1
+
+                person_obj["competitors"].append(competitor_obj)
+            source_data['persons'].append(person_obj)
+
+    return HttpResponse(json.dumps({"competition_list": competition_list,
+                                    "source_data": source_data}),
+                        content_type="application/json")
 
 def get_teams(request):
     team_list = []
@@ -680,7 +801,12 @@ def create_competition(request):
         date_start = datetime.datetime.strptime(data['date_start'], "%Y-%m-%dT%H:%M:%S.%fZ")+datetime.timedelta(days=1)
         date_end = datetime.datetime.strptime(data['date_finish'], "%Y-%m-%dT%H:%M:%S.%fZ")+datetime.timedelta(days=1)
 
-        typ = 'Взрослые' if data['type'] == '1' else 'Детские'
+        if data['type'] == '1':
+            typ = 'взрослые'
+        elif data['type'] == '0':
+            typ = 'детские'
+        else:
+            typ = 'смешанные'
 
 
         competition = Competition(name=data['name'], typ=typ, date_start=date_start, date_end=date_end, finished=False)
