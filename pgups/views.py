@@ -639,12 +639,21 @@ def get_competitions(request, userrequest_id=None):
             person_i += 1
             person_obj["competitors"] = []
             competitor_i = 0
+
             for competitor in Competitor.objects.filter(person=person, userrequest=userrequest).order_by('-main_distance'):
+
+                prior_time = competitor.prior_time
+                prior_time_minutes = 0
+                if prior_time > 60:
+                    prior_time_minutes, prior_time = divmod(prior_time, 60)
+
                 competitor_obj = {"competitorId": "competitor-"+str(competitor_i),
-                                  "prior_time": competitor.prior_time,
+                                  "prior_time": prior_time,
                                   "tour": {"id": competitor.tour.id,
                                            "name": competitor.tour.__str__(),
                                            "out": competitor.tour.out}}
+                if prior_time_minutes:
+                    competitor_obj['prior_time_minutes'] = prior_time_minutes
                 competitor_i += 1
 
                 person_obj["competitors"].append(competitor_obj)
