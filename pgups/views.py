@@ -300,16 +300,46 @@ def reg_request(request, userrequest_id=None):
         else:
             team = None
 
-        userrequest = Userrequest(competition=competition, team=team, representative=representative, phone=phone, email=email, ip=ip)
+        if data['userrequest_id']:
+            userrequest = Userrequest.objects.get(pk=data['userrequest_id'])
+            userrequest.team = team
+            userrequest.representative = representative
+            userrequest.phone = phone
+            userrequest.email = email
+        else:
+            userrequest = Userrequest(competition=competition,
+                                      team=team,
+                                      representative=representative,
+                                      phone=phone,
+                                      email=email,
+                                      ip=ip)
         userrequest.save()
+
+        actual_person_ids = []
 
         for person in data['persons']:
             first_name = person['first_name']
             last_name = person['last_name']
             birth_year = person['birth_year']
             gender = person['gender']
-            new_person = Person(first_name=first_name.lower(), last_name=last_name.lower(), birth_year=birth_year, gender=gender, userrequest=userrequest)
+
+            if 'id' in person:
+                new_person = Person.objects.get(pk=person['id'])
+            else:
+                new_person = Person()
+                new_person.userrequest = userrequest
+
+            new_person.first_name = first_name.lower()
+            new_person.last_name = last_name.lower()
+            new_person.birth_year = birth_year
+            new_person.gender = gender
+
             new_person.save()
+
+
+            actual_person_ids.append(new_person.id)
+            actual_competitor_ids = []
+
             main_distance = True
             for competitor in person['competitors']:
                 tour = Tour.objects.get(pk=competitor['tour']['id'])
@@ -320,9 +350,30 @@ def reg_request(request, userrequest_id=None):
                     prior_time = 0
                 if 'prior_time_minutes' in competitor and competitor['prior_time_minutes']:
                     prior_time += int(competitor['prior_time_minutes'])*60
-                new_competitor = Competitor(person=new_person, userrequest=userrequest, tour=tour, age=age, prior_time=prior_time, main_distance=main_distance, time=0)
+
+                if 'id' in competitor:
+                    new_competitor = Competitor.objects.get(pk=competitor['id'])
+                else:
+                    new_competitor = Competitor()
+
+                new_competitor.person=new_person
+                new_competitor.userrequest=userrequest
+                new_competitor.tour=tour
+                new_competitor.age=age
+                new_competitor.prior_time=prior_time
+                new_competitor.main_distance=main_distance
+                new_competitor.time=0
                 new_competitor.save()
+
+                actual_competitor_ids.append(new_competitor.id)
+
                 main_distance = False
+            for c in Competitor.objects.filter(person=new_person, userrequest=userrequest):
+                if c.id not in actual_competitor_ids:
+                    c.delete()
+        for p in Person.objects.filter(userrequest=userrequest):
+            if p.id not in actual_person_ids:
+                p.delete()
     else:
         pass
 
@@ -632,6 +683,7 @@ def get_competitions(request, userrequest_id=None):
         person_i = 0
         for person in persons:
             person_obj = {"personId": "person-"+str(person_i),
+                          "id": person.id,
                           "last_name" :person.last_name,
                           "first_name" :person.first_name,
                           "birth_year" :person.birth_year,
@@ -648,12 +700,17 @@ def get_competitions(request, userrequest_id=None):
                     prior_time_minutes, prior_time = divmod(prior_time, 60)
 
                 competitor_obj = {"competitorId": "competitor-"+str(competitor_i),
-                                  "prior_time": prior_time,
+                                  "id": competitor.id,
                                   "tour": {"id": competitor.tour.id,
                                            "name": competitor.tour.__str__(),
+                                           "age_id": competitor.tour.age.id,
                                            "out": competitor.tour.out}}
+                if prior_time:
+                    competitor_obj['prior_time'] = prior_time
+
                 if prior_time_minutes:
                     competitor_obj['prior_time_minutes'] = prior_time_minutes
+
                 competitor_i += 1
 
                 person_obj["competitors"].append(competitor_obj)

@@ -85,7 +85,7 @@
                     var competition_id = data[0].data.source_data.competition_id;
 
                     var teams = data[1].data;
-                    var team_id = data[0].data.source_data.competition_id;
+                    var team_id = data[0].data.source_data.team_id;
 
                     for (var i = 0; i < competitions.length; i++) {
                         if (competitions[i].id === competition_id) {
