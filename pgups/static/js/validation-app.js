@@ -70,40 +70,55 @@
         function activate() {
 
             getData.then(function(response) {
+
                 var data = response;
 
                 vm.competitions = data[0].data.competition_list;
                 vm.teams = data[1].data;
 
-                var source_data = data[0].data.source_data;
+                var sourceData = data[0].data.source_data;
 
-                if (source_data.hasOwnProperty('competition_id')) {
+                if (sourceData.hasOwnProperty('competition_id')) {
 
-                    vm.form = source_data;
+                    vm.form = sourceData;
 
                     var competitions = data[0].data.competition_list;
-                    var competition_id = data[0].data.source_data.competition_id;
+                    var competitionId = data[0].data.source_data.competition_id;
 
                     var teams = data[1].data;
-                    var team_id = data[0].data.source_data.team_id;
+                    var teamId = data[0].data.source_data.team_id;
 
+                    // set competition
                     for (var i = 0; i < competitions.length; i++) {
-                        if (competitions[i].id === competition_id) {
+                        if (competitions[i].id === competitionId) {
                             vm.form.competition = competitions[i];
                         }
                     }
 
-                    disableSelect('#competition-select');
-
+                    // set team
                     for (var j = 0; j < teams.length; j++) {
-                        if (teams[j].id === team_id) {
+                        if (teams[j].id === teamId) {
                             vm.form.team = teams[j];
                         }
                     }
 
+                    disableElement('#competition-select');
+
                     filterCompetition();
 
-                    vm.persons = source_data.persons;
+                    vm.persons = sourceData.persons;
+
+                    // timeout waiting for DOM to load
+                    $timeout(function() {
+                        for (var k = 0; k < vm.persons.length; k++) {
+
+                            tourDisable(k);
+
+                            if ( vm.persons[k].competitors.length === maxCompetitorsNum ) {
+                                angular.element( '#add-competitor-' + vm.persons[k].personId ).addClass('disabled');
+                            }
+                        }
+                    });
 
                 }
 
@@ -111,7 +126,7 @@
             });
         }
 
-        function disableSelect(id) {
+        function disableElement(id) {
             angular.element(id).prop('disabled', 'disabled');
         }
 
@@ -214,12 +229,10 @@
                 angular.element( '#add-competitor-' + vm.persons[idx].personId ).addClass('disabled');
             }
 
-            basicAnimation( '#add-competitor-' + vm.persons[idx].personId );
-
             // delayed call, waiting for DOM to update
             $timeout(function() {
                 tourDisable(idx);
-            }, 500);
+            });
         }
 
         function removeCompetitor(personIdx, idx) {
@@ -229,12 +242,10 @@
             // enable add-competitor button
             angular.element( '#add-competitor-' + vm.persons[personIdx].personId ).removeClass('disabled');
 
-            basicAnimation( '#add-competitor-' + vm.persons[personIdx].personId );
-
             // delayed call, waiting for DOM to update
             $timeout(function() {
                 tourDisable(personIdx);
-            }, 500);
+            });
         }
 
         function submitRequest() {
