@@ -53,7 +53,7 @@
 					<div class="form-group">
 						<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="competition">Соревнования:</label>
 						<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
-							<select class="form-control" name="competition" ng-model="reg.form.competition" ng-selected="reg.form.competition == competition.id" ng-options="competition.name for competition in reg.competitions track by competition.id" ng-change="reg.filterCompetition()" required>
+							<select id="competition-select" class="form-control" name="competition" ng-model="reg.form.competition" ng-selected="reg.form.competition == competition.id" ng-options="competition.name for competition in reg.competitions track by competition.id" ng-change="reg.filterCompetition()" required>
 								<option value="" disabled selected>Выберите соревнование из списка:</option>
 							</select>
 							<p class="error-block" ng-show="requestForm.competition.$dirty && requestForm.competition.$invalid">Выберите соревнование</p>

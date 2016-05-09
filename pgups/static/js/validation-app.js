@@ -22,14 +22,11 @@
         userrequest_id = urlArr[urlArr.length - 2];
 
         var url1 = 'http://' + $window.location.host + '/get_competitions/';
+        var url2 = 'http://' + $window.location.host + '/get_teams/';
 
         if(!isNaN(+userrequest_id)) {
-            url1 = url1 + userrequest_id+'/';
+            url1 = url1 + userrequest_id + '/';
         }
-
-        //console.log(url1);
-
-        var url2 = 'http://' + $window.location.host + '/get_teams/';
 
         var competitions = $http({method: 'GET', url: url1, cache: 'true'});
         var teams = $http({method: 'GET', url: url2, cache: 'true'});
@@ -74,10 +71,48 @@
 
             getData.then(function(response) {
                 var data = response;
-                vm.competitions = data[0].data['competition_list'];
+
+                vm.competitions = data[0].data.competition_list;
                 vm.teams = data[1].data;
+
+                var source_data = data[0].data.source_data;
+
+                if (source_data.hasOwnProperty('competition_id')) {
+
+                    vm.form = source_data;
+
+                    var competitions = data[0].data.competition_list;
+                    var competition_id = data[0].data.source_data.competition_id;
+
+                    var teams = data[1].data;
+                    var team_id = data[0].data.source_data.competition_id;
+
+                    for (var i = 0; i < competitions.length; i++) {
+                        if (competitions[i].id === competition_id) {
+                            vm.form.competition = competitions[i];
+                        }
+                    }
+
+                    disableSelect('#competition-select');
+
+                    for (var j = 0; j < teams.length; j++) {
+                        if (teams[j].id === team_id) {
+                            vm.form.team = teams[j];
+                        }
+                    }
+
+                    filterCompetition();
+
+                    vm.persons = source_data.persons;
+
+                }
+
                 return data;
             });
+        }
+
+        function disableSelect(id) {
+            angular.element(id).prop('disabled', 'disabled');
         }
 
         function filterCompetition() {
@@ -102,7 +137,7 @@
             var range = [];
 
             for (var i = oldest; i <= (year - youngest); i++) {
-                range.push(i);
+                range.push('' + i);
             }
 
             return range;

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 from django.shortcuts import render, get_object_or_404, render_to_response,redirect
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
@@ -215,7 +215,7 @@ def start_result(request, start_id):
     competitors = Competitor.objects.filter(start=start)
     competition = start.cdsg.competition
     cdsgs = Cdsg.objects.filter(competition=competition)
-    
+
     try:
         next_start = Start.objects.get(cdsg__in=cdsgs, num=start.num+1)
         next_start_id = next_start.id
@@ -362,7 +362,7 @@ def competition_starts(request, competition_id):
 
     return render(request, 'pgups/competition_starts.html', {'cdsg_list': cdsg_list,
                                                              'competition_id':competition_id,
-                                                             'competition': competition, 
+                                                             'competition': competition,
                                                             },)
 
 def generate_starts(request):
@@ -558,14 +558,14 @@ def generate_starts(request):
 
                                     starts2.append(start)
                                     i_starts += 1
-                
-    
+
+
     return HttpResponseRedirect('../../competition/starts/'+competition_id+'/')
 
 
 def tour(request, id):
 
-    res = []    
+    res = []
 
     tour = Tour.objects.get(pk=id)
 
@@ -587,7 +587,7 @@ def tour(request, id):
             pass
 
     res = sorted(res, key=lambda x: x[1])
-            
+
     return render(request, 'pgups/tour.html', {'competition_id':competition_id, 'competition_name':competition_name, 'res': res, 'tour_name': tour_name},)
 
 
@@ -639,7 +639,7 @@ def get_competitions(request, userrequest_id=None):
             person_i += 1
             person_obj["competitors"] = []
             competitor_i = 0
-            for competitor in Competitor.objects.filter(person=person, userrequest=userrequest).order_by('main_distance'):
+            for competitor in Competitor.objects.filter(person=person, userrequest=userrequest).order_by('-main_distance'):
                 competitor_obj = {"competitorId": "competitor-"+str(competitor_i),
                                   "prior_time": competitor.prior_time,
                                   "tour": {"id": competitor.tour.id,
