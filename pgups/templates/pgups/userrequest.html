@@ -19,7 +19,7 @@
 
 		<h2><b>
 			{% if userrequest.team %}
-			Заявка команды "{{userrequest.team}}", {{userrequest.representative}} 
+			Заявка команды "{{userrequest.team}}", {{userrequest.representative}}
 			{% else %}
 			Индивидуальная заявка
 			{% endif %}
@@ -68,9 +68,10 @@
 				</tbody>
 			</table>
 			{% if user.is_authenticated %}
-				<a href="{% url 'regrequest' userrequest_id=userrequest.id %}/" class="btn btn-lg btn-default pull-left" >Редактировать заявку<span class="glyphicon glyphicon-pencil"></span></a>
+			<div class="userrequest-button-wrapper">
+				<a href="{% url 'regrequest' userrequest_id=userrequest.id %}/" class="btn btn-lg btn-default pull-left"><span class="glyphicon glyphicon-pencil"></span> Редактировать заявку</a>
 				<button class="btn btn-lg btn-success pull-right" type="submit">Сохранить изменения <span class="glyphicon glyphicon-ok"></span></button>
-
+			</div>
 		</form>
 			{% endif %}
 </div>
