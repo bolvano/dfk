@@ -939,6 +939,7 @@ def competition_starts_sort(request, competition_id):
             for k,v in passed_competitors.items():
                 if v == total_competitors[k]:
                     finished_tours_ids.append(k)
+                    passed_competitors[k] = 0
 
             passed_starts.append(s)
 
