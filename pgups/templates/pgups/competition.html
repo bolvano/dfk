@@ -14,13 +14,13 @@
 		<ul class="basic-list">
 			{% for userrequest in competition.userrequest_set.all %}
 				<li>
-					<a href="../../userrequest/{{userrequest.id}}/">{{userrequest.date|date:"d.m.Y"}}: 
+					<a href="../../userrequest/{{userrequest.id}}/">{{userrequest.date|date:"d.m.Y"}}:
 					{% if userrequest.team %}
 						{{userrequest.team}} ({{userrequest.representative}})
 					{% else %}
 						индивидуальная заявка
 					{% endif %}
-					</a> {% if user.is_authenticated %} (Подтверждено {{userrequest.approved_competitors|length}}/{{userrequest.competitor_set.all|length}} ) <a href="{% url 'regrequest' userrequest_id=userrequest.id %}/">Редактировать</a> {% endif %}
+					</a> {% if user.is_authenticated %} (подтверждено: {{userrequest.approved_competitors|length}} из {{userrequest.competitor_set.all|length}}){% endif %}
 				</li>
 			{% endfor %}
 		</ul>

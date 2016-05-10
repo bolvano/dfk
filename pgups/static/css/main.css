@@ -131,7 +131,7 @@ select.ng-invalid.ng-dirty {
 .remove-competitor-btn {
   padding: 5px 8px 3px;
 }
-/* zeroing margin because 
+/* zeroing margin because
    top button is hidden */
 #add-competitor-person-0 {
   margin-top: 0;
@@ -367,6 +367,10 @@ select.ng-invalid.ng-dirty {
   border: 2px dashed #979a9d;
   border-radius: 10px;
   opacity: 0.8;
+}
+.userrequest-button-wrapper {
+  margin-bottom: 40px;
+  overflow: hidden;
 }
 @-webkit-keyframes greenish {
   0% {
