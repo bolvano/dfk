@@ -5,11 +5,12 @@
     .module('validationApp', [])
     .config(altTemplateTags)
     .controller('RegFormController', RegFormController)
-    .factory('getData', getData);
+    .factory('getData', getData)
+    .filter('cap', capitalizeWord);
 
     altTemplateTags.$inject = ['$interpolateProvider'];
     getData.$inject = ['$q', '$window', '$http', '$log', '$location'];
-    RegFormController.$inject = ['$scope', '$http', '$timeout', '$window', '$log', 'getData'];
+    RegFormController.$inject = ['$scope', '$http', '$timeout', '$window', '$log', 'getData', 'capFilter'];
 
     function altTemplateTags($interpolateProvider) {
         $interpolateProvider.startSymbol('{$');
@@ -38,7 +39,13 @@
                  });
     }
 
-    function RegFormController($scope, $http, $timeout, $window, $log, getData) {
+    function capitalizeWord() {
+        return function(word) {
+            return word.substring(0,1).toUpperCase() + word.slice(1);
+        };
+    }
+
+    function RegFormController($scope, $http, $timeout, $window, $log, getData, capFilter) {
 
         var vm = this;
 
@@ -72,62 +79,65 @@
             getData.then(function(response) {
 
                 var data = response;
+                var sourceData = data[0].data.source_data;
 
                 vm.competitions = data[0].data.competition_list;
                 vm.teams = data[1].data;
 
-                var sourceData = data[0].data.source_data;
-
                 if (sourceData.hasOwnProperty('competition_id')) {
-
-                    vm.form = sourceData;
-
-                    var competitions = data[0].data.competition_list;
-                    var competitionId = data[0].data.source_data.competition_id;
-
-                    var teams = data[1].data;
-                    var teamId = data[0].data.source_data.team_id;
-
-                    // set competition
-                    for (var i = 0; i < competitions.length; i++) {
-                        if (competitions[i].id === competitionId) {
-                            vm.form.competition = competitions[i];
-                        }
-                    }
-
-                    // set team
-                    for (var j = 0; j < teams.length; j++) {
-                        if (teams[j].id === teamId) {
-                            vm.form.team = teams[j];
-                        }
-                    }
-
-                    disableElement('#competition-select');
-
-                    filterCompetition();
-
-                    vm.persons = sourceData.persons;
-
-                    // timeout waiting for DOM to load
-                    $timeout(function() {
-                        for (var k = 0; k < vm.persons.length; k++) {
-
-                            tourDisable(k);
-
-                            if ( vm.persons[k].competitors.length === maxCompetitorsNum ) {
-                                angular.element( '#add-competitor-' + vm.persons[k].personId ).addClass('disabled');
-                            }
-                        }
-                    });
-
+                    editUserRequest(sourceData, data);
                 }
 
                 return data;
             });
         }
 
-        function disableElement(id) {
-            angular.element(id).prop('disabled', 'disabled');
+        function editUserRequest(sourceData, data) {
+            vm.form = sourceData;
+
+            var competitions = data[0].data.competition_list;
+            var competitionId = data[0].data.source_data.competition_id;
+
+            var teams = data[1].data;
+            var teamId = data[0].data.source_data.team_id;
+
+            // set competition
+            for (var i = 0; i < competitions.length; i++) {
+                if (competitions[i].id === competitionId) {
+                    vm.form.competition = competitions[i];
+                }
+            }
+
+            // set team
+            for (var j = 0; j < teams.length; j++) {
+                if (teams[j].id === teamId) {
+                    vm.form.team = teams[j];
+                }
+            }
+
+            disableElement('#competition-select');
+            filterCompetition();
+
+            vm.persons = sourceData.persons;
+
+            // timeout waiting for DOM to load
+            $timeout(function() {
+                for (var k = 0; k < vm.persons.length; k++) {
+
+                    vm.persons[k].first_name = capFilter(vm.persons[k].first_name);
+                    vm.persons[k].last_name = capFilter(vm.persons[k].last_name);
+
+                    tourDisable(k);
+
+                    if (vm.persons[k].competitors.length === maxCompetitorsNum) {
+                        angular.element( '#add-competitor-' + vm.persons[k].personId ).addClass('disabled');
+                    }
+                }
+            });
+        }
+
+        function disableElement(selector) {
+            angular.element(selector).prop('disabled', 'disabled');
         }
 
         function filterCompetition() {
@@ -186,7 +196,6 @@
         }
 
         function basicAnimation(id) {
-
             angular.element('html, body').animate({
                 scrollTop: angular.element(id).offset().top
             });
@@ -194,7 +203,6 @@
 
         // remove all but one persons if team changes to none
         function clearPersons() {
-
             if ( vm.indRequestOnePerson && vm.form.team === null && vm.persons.length > 1 ) {
                 for ( var i = vm.persons.length - 1; i >= 1; i-- ) {
                     vm.persons.splice(i, 1);
@@ -203,7 +211,6 @@
         }
 
         function addPerson() {
-
             vm.persons.push({ 'personId':'person-' + personCounter,
                               'competitors': [{ competitorId: 'competitor-0'}]
                             });
@@ -213,14 +220,12 @@
         }
 
         function removePerson(idx) {
-
             vm.persons.splice(idx, 1);
 
             basicAnimation( '#remove-person-' + vm.persons[idx-1].personId );
         }
 
         function addCompetitor(idx) {
-
             var newCompetitor = vm.persons[idx].competitors.length;
             vm.persons[idx].competitors.push({ 'competitorId':'competitor-' + newCompetitor });
 
@@ -236,7 +241,6 @@
         }
 
         function removeCompetitor(personIdx, idx) {
-
             vm.persons[personIdx].competitors.splice(idx, 1);
 
             // enable add-competitor button
