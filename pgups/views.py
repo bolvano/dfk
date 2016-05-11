@@ -624,7 +624,7 @@ def tour(request, id):
     competition_name = tour.competition.name
 
     tour_name = tour.distance.name + ' ' + tour.style.name + ' ' + tour.age.name + ' ' + tour.gender
-    competitors = Competitor.objects.filter(tour=tour)
+    competitors = Competitor.objects.filter(tour=tour, approved=True)
     for competitor in competitors:
         try:
             tag1 = ''
@@ -983,11 +983,11 @@ def cdsg_print(request, cdsg_id):
 
     cdsg = Cdsg.objects.get(pk=cdsg_id)
     starts = Start.objects.filter(cdsg=cdsg)
-    competitors = Competitor.objects.filter(start__in=starts) #все участники стартов cdsg
+    competitors = Competitor.objects.filter(start__in=starts, approved=True) #все участники стартов cdsg filter(approved=True)
 
     prev_cdsgs = Cdsg.objects.filter(number__lt=cdsg.number)
     prev_starts = Start.objects.filter(cdsg__in=prev_cdsgs)
-    prev_competitors = Competitor.objects.filter(start__in=prev_starts)
+    prev_competitors = Competitor.objects.filter(start__in=prev_starts, approved=True)
 
     tour_dict = defaultdict(list)
 
@@ -997,10 +997,10 @@ def cdsg_print(request, cdsg_id):
             tours.append(c.tour)
 
     for tour in tours:
-        total = Competitor.objects.filter(tour=tour).count()
+        total = Competitor.objects.filter(tour=tour, approved=True).count()
         passed = competitors.filter(tour=tour).count() + prev_competitors.filter(tour=tour).count()
         if total == passed:
-            tour_competitors = Competitor.objects.filter(tour=tour)
+            tour_competitors = Competitor.objects.filter(tour=tour, approved=True)
             for competitor in tour_competitors:
                 tour_dict[competitor.tour.id].append(competitor)
 
