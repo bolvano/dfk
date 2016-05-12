@@ -175,8 +175,12 @@ def attribute_lanes(competitor_set, num_of_lanes):
 
 def competition_team(request, competition_id, team_id):
     competition = Competition.objects.get(pk=competition_id)
-    team = Team.objects.get(pk=team_id)
-    userrequests = Userrequest.objects.filter(competition=competition, team=team)
+    if team_id == '0':
+        team = ''
+        userrequests = Userrequest.objects.filter(competition=competition, team=None)
+    else:
+        team = Team.objects.get(pk=team_id)
+        userrequests = Userrequest.objects.filter(competition=competition, team=team)
     competitors = Competitor.objects.filter(userrequest__in=userrequests)
     CompetitorFormSet = modelformset_factory(Competitor, fields=('approved',), extra=0, widgets={'approved': forms.CheckboxInput()})
     if request.method == "POST":
