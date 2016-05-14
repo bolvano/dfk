@@ -24,11 +24,13 @@
 				<col class="col1">
 				<col class="col2">
 				<col class="col3">
+				<col class="col4">
 
-				<tr><th colspan="4" class="cdsg_name">{{tuple.0.style|capfirst}}, {{tuple.0.distance|capfirst}}, {{tuple.0.gender|capfirst}}, {{tuple.0.age|capfirst}} </th></tr>
+				<tr><th colspan="5" class="cdsg_name">{{tuple.0.style|capfirst}}, {{tuple.0.distance|capfirst}}, {{tuple.0.gender|capfirst}}, {{tuple.0.age|capfirst}} </th></tr>
 					{% for competitor in tuple.1 %}
 				<tr>
                     <td class="position">{{ forloop.counter }}</td>
+                    <td class="result">{% if competitor.result %} {{competitor.result}} {% endif %}</td>
 					<td class="competitor">
 						{% if competitor.main_distance%}<span><b>{% endif %}
 						{{competitor.person.last_name|title}} {{competitor.person.first_name|title}}

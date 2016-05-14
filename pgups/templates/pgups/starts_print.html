@@ -11,27 +11,27 @@
 	<link rel="stylesheet" type="text/css" media="all" href="{% static 'css/print.css' %}">
 	<title> Стартовые протоколы</title>
 </head>
-
-<h2>Лично-командное первенство по плаванию посвящённое 30-летию Дома Физической Культуры ФГБОУ ВО ПГУПС Императора Александра I, среди детей 6-17 лет (бассейн 25 метров)</h2>
+<body>
+<h2>{{competition.name}}</h2>
 
 Утверждаю<br>
 Директор Дома физической культуры Н.С. Рогалев<br>
-24 апреля 2016
+{{competition.date_start}}
 <br>
 <hr>
 <h3>Стартовые протоколы</h3>
 <div>
 	{% for cdsg in cdsg_list %}
-		<div class="div-table">
+
+
+					{% for start in cdsg.start_set.all %}
+    		<div class="div-table">
 			<table>
 
                 <col class="col0">
-				<col class="col1">
 				<col class="col2">
 				<col class="col3">
-
-				<tr><th colspan="4" class="cdsg_name">{{cdsg.name|capfirst}} </th></tr>
-					{% for start in cdsg.start_set.all %}
+				<col class="col4">
                 <tr><th colspan="4">Заплыв {{start.num}} ({{start.name}})</th></tr>
 
                     {% for competitor in start.competitor_set.all %}
@@ -43,18 +43,16 @@
 						{% if competitor.main_distance%}<span><b>{% endif %}
 					</td>
 					<td class="team">{{competitor.userrequest.team.name}}</td>
-					<td class="time"> {{competitor.age.name}}</td>
+					<td class="time">"{{competitor.age.name}}" ({{competitor.person.birth_year}} г.р.)</td>
 				</tr>
 					{% endfor %}
+            </table>
+		    </div>
                     {% endfor %}
-			</table>
-		</div>
+
 
 	{% endfor %}
-	</div>
-
-
-<body>
+</div>
 
 </body>
 </html>

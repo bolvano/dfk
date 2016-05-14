@@ -16,11 +16,11 @@
 
 			<table class="table table-striped table-hover table-bordered">
 				<tbody>
-				{% for k,v in result.items %}
+				{% for res in result_list %}
 					{{result_form.id}}
 					<tr>
-						<td class="column-name-wide">{{k}}</td>
-						<td class="column-result-wide">{{v}}</td>
+						<td class="column-name-wide">{{res.0}}</td>
+						<td class="column-result-wide">{{res.1}}</td>
 					</tr>
 				{% endfor %}
 				</tbody>
