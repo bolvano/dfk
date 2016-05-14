@@ -819,7 +819,7 @@ def get_competition_starts(request, id):
     return HttpResponse(json.dumps({'competition_id':competition.id, 'competition_name':competition.name,'starts_list':starts_list}), content_type="application/json")
 
 # форма создания соревнований
-def create_competition(request):
+def create_competition(request, competition_id=None):
     if request.method == "POST":
 
         body_unicode = request.body.decode('utf-8')
