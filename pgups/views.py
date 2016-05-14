@@ -73,11 +73,40 @@ def competition(request, competition_id):
 
     if request.method == "POST":
         #import ipdb; ipdb.set_trace()
+
+        points = {1:30, 2:25, 3:20, 4:15, 5:10}
+
         close = request.POST.get("close", '0')
         if close == '1':
             competition.finished=True
+            tours = Tour.objects.filter(competition=competition)
+            for tour in tours:
+                competitors = Competitor.objects.filter(tour=tour,
+                                                        approved=True,
+                                                        main_distance=True,
+                                                        disqualification=0,
+                                                        time__gt=0).order_by('time')
+                competitors = list(competitors)
+                for i in range(1,6):
+                    if competitors:
+                        c = competitors.pop(0)
+                        if i in points:
+                            c.points = points[i]
+                        if i <= 3:
+                            c.result = i
+                        c.save()
+
+                    else:
+                        break
         else:
             competition.finished=False
+            tours = Tour.objects.filter(competition=competition)
+            for tour in tours:
+                competitors = Competitor.objects.filter(tour=tour)
+                for c in competitors:
+                    c.result = 0
+                    c.points = 0
+                    c.save()
         competition.save()
 
     return render(request, 'pgups/competition.html', {'competition': competition, 'teams':teams},)
@@ -121,33 +150,26 @@ def results_teams(request, competition_id):
     competition = Competition.objects.get(pk=competition_id)
     tours = Tour.objects.filter(competition=competition)
     result = {}
+    result_list = []
     for tour in tours:
-        competitors = []
-        for c in tour.competitor_set.all():
-            if c.approved:
-                competitors.append(c)
-        competitors.sort(key=lambda c: c.time)
-        competitors_good = list(filter(lambda c: c.time > 0, competitors))
-        competitors_good = list(filter(lambda c: c.userrequest.team is not None, competitors_good))
-        if len(competitors_good)>0:
-            if competitors_good[0].userrequest.team.name in result:
-                result[competitors_good[0].userrequest.team.name] += 30
-            else:
-                result[competitors_good[0].userrequest.team.name] = 30
-
-            if len(competitors_good)>1:
-                if competitors_good[1].userrequest.team.name in result:
-                    result[competitors_good[1].userrequest.team.name] += 20
+        competitors = Competitor.objects.filter(tour=tour,
+                                                approved=True,
+                                                main_distance=True,
+                                                disqualification=0,
+                                                time__gt=0).order_by('time')
+        for competitor in competitors:
+            if competitor.userrequest.team:
+                if competitor.userrequest.team.name in result:
+                    result[competitor.userrequest.team.name] += competitor.points
                 else:
-                    result[competitors_good[1].userrequest.team.name] = 20
+                    result[competitor.userrequest.team.name] = competitor.points
 
-                if len(competitors_good)>2:
-                    if competitors_good[2].userrequest.team.name in result:
-                        result[competitors_good[2].userrequest.team.name] += 10
-                    else:
-                        result[competitors_good[2].userrequest.team.name] = 10
+    for k,v in result.items():
+        result_list.append((k,v))
 
-    return render(request, 'pgups/results_teams.html', {'result': result, 'competition': competition},)
+    result_list.sort(key=lambda c: c[1], reverse=True)
+
+    return render(request, 'pgups/results_teams.html', {'result_list': result_list, 'competition': competition},)
 
 
 # Получает IP пользователя

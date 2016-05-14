@@ -45,15 +45,19 @@
 	}
 
 	.col1 {
-		width: 39%;
+	    width: 3%;
 	}
 
 	.col2 {
-		width: 19%;
+		width: 38%;
 	}
 
 	.col3 {
-		width: 39%;
+		width: 18%;
+	}
+
+	.col4 {
+		width: 38%;
 	}
 
 }
