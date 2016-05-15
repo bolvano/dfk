@@ -41,23 +41,22 @@
 	}
 
 	.col0 {
-	    width: 3%;
+	    width: 6%;
 	}
 
 	.col1 {
-	    width: 3%;
+	    width: 6%;
 	}
 
 	.col2 {
-		width: 38%;
+		width: 46%;
 	}
 
 	.col3 {
-		width: 18%;
+		width: 22%;
 	}
 
 	.col4 {
-		width: 38%;
+		width: 20%;
 	}
-
 }
