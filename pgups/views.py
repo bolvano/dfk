@@ -196,6 +196,7 @@ def attribute_lanes(competitor_set, num_of_lanes):
     return return_set
 
 def competition_team(request, competition_id, team_id):
+    persons = []
     competition = Competition.objects.get(pk=competition_id)
     if team_id == '0':
         team = ''
@@ -204,6 +205,9 @@ def competition_team(request, competition_id, team_id):
         team = Team.objects.get(pk=team_id)
         userrequests = Userrequest.objects.filter(competition=competition, team=team)
     competitors = Competitor.objects.filter(userrequest__in=userrequests)
+    for c in competitors:
+        if c.person not in persons:
+            persons.append(c.person)
     CompetitorFormSet = modelformset_factory(Competitor, fields=('approved',), extra=0, widgets={'approved': forms.CheckboxInput()})
     if request.method == "POST":
         competitor_formset = CompetitorFormSet(request.POST)
@@ -214,11 +218,20 @@ def competition_team(request, competition_id, team_id):
     else:
         competitor_formset = CompetitorFormSet(queryset=competitors.order_by('person__last_name'))
 
-    return render(request, 'pgups/competition_team.html', {'competitor_formset': competitor_formset, 'team':team, 'competition':competition},)
+    if persons:
+        persons.sort(key=lambda c: c.last_name)
+    return render(request, 'pgups/competition_team.html', {'competitor_formset': competitor_formset,
+                                                           'team':team,
+                                                           'competition':competition,
+                                                           'persons': persons},)
 
 def userrequest(request, userrequest_id):
+    persons = []
     userrequest = get_object_or_404(Userrequest, pk=userrequest_id)
     competitors = userrequest.competitor_set.all()
+    for c in competitors:
+        if c.person not in persons:
+            persons.append(c.person)
     CompetitorFormSet = modelformset_factory(Competitor,
                                              fields=('approved',),
                                              extra=0,
@@ -233,7 +246,12 @@ def userrequest(request, userrequest_id):
     else:
         competitor_formset = CompetitorFormSet(queryset=competitors.order_by('person__last_name'))
 
-    return render(request, 'pgups/userrequest.html', {'userrequest': userrequest, 'competitor_formset': competitor_formset},)
+    if persons:
+        persons.sort(key=lambda c: c.last_name)
+
+    return render(request, 'pgups/userrequest.html', {'userrequest': userrequest,
+                                                      'competitor_formset': competitor_formset,
+                                                      'persons':persons},)
 
 def start_result(request, start_id):
 
