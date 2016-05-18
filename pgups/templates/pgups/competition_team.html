@@ -19,7 +19,9 @@
 		<h2><b>{% if team != '' %}Команда {{team.name}}{% else %} Вне команд {% endif %}</b></h2>
 	</div> <!-- End of Heading -->
 
-		{% if user.is_authenticated %}<form role="form" method="POST">{% csrf_token %}{% endif %}
+    {% if user.is_authenticated %}
+
+		<form role="form" method="POST">{% csrf_token %}
 
 		{{ competitor_formset.management_form }}
 
@@ -35,6 +37,7 @@
 							{{competitor_form.instance.person.last_name|title}} {{competitor_form.instance.person.first_name|title}}
 							{% if competitor_form.instance.main_distance%}</b></span>{% endif %}
 							({{competitor_form.instance.userrequest.representative}},
+
                             <a class="decorated-link" href="{% url 'userrequest' userrequest_id=competitor_form.instance.userrequest.id %}">
                                 <b>заявка</b>
                             </a>)
@@ -47,19 +50,34 @@
 							{% if competitor_form.instance.main_distance%}</b></span>{% endif %}
 						</td>
 
-						{% if user.is_authenticated %}
+
 						<td class="column-approved padding-15 text-center">{{competitor_form.approved}}</td>
-						{% endif %}
+
 					</tr>
 				{% endfor %}
 		</tbody>
 	</table>
 
-				{% if user.is_authenticated %}
+
 				<button class="btn btn-lg btn-success pull-right" type="submit">Сохранить изменения <span class="glyphicon glyphicon-ok"></span></button>
 
 		</form>
-			{% endif %}
+
+    {% else %}
+	<table class="table table-striped table-hover table-bordered">
+		<tbody>
+        {% for person in persons %}
+            <tr>
+				<td class="column-name">
+
+                    {{person.last_name|title}} {{person.first_name|title}}
+                </td>
+            </tr>
+        {% endfor %}
+		</tbody>
+	</table>
+    {% endif %}
+
 
 </div>
 

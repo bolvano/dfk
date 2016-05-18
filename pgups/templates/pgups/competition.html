@@ -39,7 +39,7 @@
 				</li>
 		</ul>
 		<hr> <!-- End of Teams -->
-
+		{% if user.is_authenticated %}
 		<!-- Tours -->
 		<h2>Дисциплины</h2>
 		<ul class="basic-list">
@@ -52,15 +52,19 @@
 			{% endfor %}
 		</ul>
 		<hr> <!-- End of Tours -->
+		{% endif %}
 
 		<div class="row">
 
 			<div class="col-lg-12 col-md-12 col-sm-12">
+
+				{% if user.is_authenticated %}
+
 				<a class="btn btn-lg btn-success starts-btn" href="../../competition/starts/{{competition.id}}/">
 					<span class="glyphicon glyphicon-list-alt"></span> <span>Текущая сетка заплывов</span>
 				</a>
 
-				{% if user.is_authenticated %}
+
 				<a class="pull-right btn btn-lg btn-default" href="{% url 'starts_print' competition_id=competition.id %}" target="_blank">
 					<span class="glyphicon glyphicon-print"></span> <span>Стартовые протоколы</span>
 				</a>
