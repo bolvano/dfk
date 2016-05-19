@@ -344,7 +344,7 @@ def reg_request(request, userrequest_id=None):
         else:
             team = None
 
-        if data['userrequest_id']:
+        if 'userrequest_id' in data:
             userrequest = Userrequest.objects.get(pk=data['userrequest_id'])
             userrequest.team = team
             userrequest.representative = representative
