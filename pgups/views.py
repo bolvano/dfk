@@ -878,7 +878,62 @@ def create_competition(request, competition_id=None):
                 new_tour_f.age = age
                 new_tour_f.save()
 
-    return render(request, 'pgups/competition_create.html', {}, )
+    else:
+        data = {}
+        if competition_id:
+            competition = Competition.objects.get(pk=competition_id)
+            #{$ creation.data $}<br>{$ creation.fetchedData $}<br>{$ creation.tours $}
+            '''{"name":"НАЗВАНИЕ","type":"0","date_finish":"2016-03-03T21:00:00.000Z","date_start":"2016-03-02T21:00:00.000Z"}
+[{"id":0,"age":6,"name":"6 лет, 50 метров, брасс","distance":1,"style":2,"selected":true},{"id":1,"age":6,"name":"6 лет, 50 метров, баттерфляй","distance":1,"style":4,"selected":true},{"id":2,"age":6,"name":"6 лет, 100 метров, брасс","distance":2,"style":2,"selected":true},{"id":3,"age":6,"name":"6 лет, 100 метров, баттерфляй","distance":2,"style":4,"selected":true},{"id":4,"age":7,"name":"7-8 лет, 50 метров, брасс","distance":1,"style":2,"selected":true},{"id":5,"age":7,"name":"7-8 лет, 50 метров, баттерфляй","distance":1,"style":4,"selected":true},{"id":6,"age":7,"name":"7-8 лет, 100 метров, брасс","distance":2,"style":2,"selected":true},{"id":7,"age":7,"name":"7-8 лет, 100 метров, баттерфляй","distance":2,"style":4,"selected":true}]'''
+            data['data'] = {}
+            data['fetchedData'] = {}
+            data['tours'] = []
+
+            data['data']['name'] = competition.name
+            data['data']['type'] = competition.typ
+            data['data']['date_start'] = competition.date_start.isoformat() + 'Z'
+            data['data']['date_finish'] = competition.date_end.isoformat() + 'Z'
+
+            tours = Tour.objects.filter(competition=competition)
+
+            distances = list(Distance.objects.all())
+            competition_distances = list(Distance.objects.distinct().filter(tour__in=tours))
+            data['fetchedData']['distances'] = []
+            for distance in distances:
+                obj = {'name':distance.name,'id': distance.id}
+                if distance in competition_distances:
+                    obj['selected'] = True
+                data['fetchedData']['distances'].append(obj)
+
+            styles = list(Style.objects.all())
+            competition_styles = list(Style.objects.distinct().filter(tour__in=tours))
+            data['fetchedData']['styles'] = []
+            for style in styles:
+                obj = {'name':style.name,'id': style.id}
+                if style in competition_styles:
+                    obj['selected'] = True
+                data['fetchedData']['styles'].append(obj)
+
+            ages = list(Age.objects.all())
+            competition_ages = list(Age.objects.distinct().filter(tour__in=tours))
+            data['fetchedData']['ages'] = []
+            for age in ages:
+                obj = {'name':age.name,'id': age.id, 'kids': age.kids}
+                if age in competition_ages:
+                    obj['selected'] = True
+                data['fetchedData']['ages'].append(obj)
+
+            for tour in tours:
+                data['tours'].append({'id': tour.id,
+                                      'age': tour.age.id,
+                                      'name': tour.__str__(),
+                                      'distance': tour.distance.id,
+                                      'style': tour.style.id,
+                                      'selected': True})
+                
+            return HttpResponse(json.dumps(data), content_type="application/json")
+
+    return render(request, 'pgups/competition_create.html', data, )
 
 
 def competition_starts_sort(request, competition_id):
