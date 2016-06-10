@@ -4,37 +4,23 @@
 
 	{% if user.is_authenticated %}
 
-	<!-- Jumbotron -->
-	<div class="jumbotron">
+	<!-- createCompetitionApp -->
+	<div ng-app="createCompetitionApp" ng-controller="CreationFormController as creation">
+
+		<input type="hidden" name="csrf_token" ng-init="csrf_token='{{csrf_token}}'" ng-model="csrf_token">
+
+		<!-- Container -->
 		<div class="container">
-			<div class="row">
-				<div class="col-md-11">
-
-					<h1>Регистрация соревнований</h1><br>
-					<p class="lead">Заполните форму, выбрав необходимые настройки.</p>
-
-				</div>
-			</div>
-		</div>
-	</div> <!-- End of Jumbotron -->
-
-	<div ng-app="createCompetitionApp" ng-controller="CreationFormController as creation"> <!-- createCompetitionApp -->
-
-
-
-	<input type="hidden" name="csrf_token" ng-init="csrf_token='{{csrf_token}}'" ng-model="csrf_token">
-
-		<form name="creationForm" class="form-horizontal" role="form" novalidate> <!-- creationForm -->
-
-			<div class="container">
 
 			<!-- DEBUG -->
 			<input type="checkbox" ng-model="showDebugData"><span> DEBUG: показать данные</span>
-			<p ng-show="showDebugData">{$ creation.data $}<br>{$ creation.fetchedData $}<br>{$ creation.tours $}</p>
+			<p ng-show="showDebugData">{$ creation.data $}</p>
 			<!-- DEBUG -->
 
+			<form name="creationForm" class="form-horizontal" role="form" novalidate> <!-- creationForm -->
+
 				<!-- Step 1 -->
-				<div ng-show="creation.step === 1" class="animation-show-hide">
+				<div ng-show="creation.stepCounter.step === 1" class="animation-show-hide">
 
 					<!-- Heading -->
 					<div class="heading">
@@ -61,7 +47,7 @@
 									<option value="1">взрослые</option>
 									<option value="2">смешанные</option>
 								</select>
-								<p class="error-block" ng-show="creationForm.type.$dirty && requestForm.representative.$error.required">Выберите тип</p>
+								<p class="error-block" ng-show="creationForm.type.$dirty && creationForm.type.$error.required">Выберите тип</p>
 							</div>
 						</div> <!-- End of Type -->
 
@@ -89,7 +75,7 @@
 
 					<div class="button-wrapper row">
 
-						<button class="btn btn-lg btn-default pull-right col-lg-2" ng-click="creation.nextStep()" ng-disabled="creationForm.$invalid">
+						<button class="btn btn-lg btn-default pull-right col-lg-2" ng-click="creation.edit ? creation.stepCounter.skipNext() : creation.stepCounter.next()" ng-disabled="creationForm.$invalid">
 							Продолжить <span class="glyphicon glyphicon-chevron-right"></span>
 						</button>
 
@@ -97,150 +83,241 @@
 
 				</div> <!-- End of Step 1 -->
 
-				<!-- Step 2 -->
-				<div ng-show="creation.step === 2" class="animation-show-hide">
+			</form> <!-- End of creationForm -->
 
-					<!-- Heading -->
-					<div class="heading">
-						<h2>Выберите возрастные группы, стили и дистанции</h2>
-					</div> <!-- End of Heading -->
+			<!-- Step 2 -->
+			<div ng-show="creation.stepCounter.step === 2" class="animation-show-hide">
 
-					<div class="row"> <!-- Row -->
+				<!-- Heading -->
+				<div class="heading">
+					<h2>Выберите возрастные группы, стили и дистанции</h2>
+				</div> <!-- End of Heading -->
 
-						<!-- Age groups -->
-						<div class="col-lg-4 col-md-4">
+				<div class="row"> <!-- Row -->
 
-							<h3>Возрастные группы</h3>
+					<!-- Age groups -->
+					<div class="col-lg-4 col-md-4">
 
-							<div class="checkbox" ng-repeat="group in creation.fetchedData.ages">
-								<label>
-									<input type="checkbox" value="{$ group.id $}" ng-model="group.selected" ng-disabled="creation.data.type == group.kids"> {$ group.name $}
-								</label>
-							</div>
+						<h3>Возрастные группы</h3>
 
-						</div> <!-- End of Age groups -->
+						<div class="checkbox" ng-repeat="group in creation.fetchedData.ages">
+							<label>
+								<input type="checkbox" value="{$ group.id $}" ng-model="group.selected" ng-disabled="creation.data.type == group.kids"> {$ group.name $}
+							</label>
+						</div>
 
-						<!-- Styles -->
-						<div class="col-lg-4 col-md-4">
+					</div> <!-- End of Age groups -->
 
-							<h3>Стили</h3>
+					<!-- Styles -->
+					<div class="col-lg-4 col-md-4">
 
-							<div class="checkbox" ng-repeat="style in creation.fetchedData.styles | orderBy: 'name'">
-								<label>
-									<input type="checkbox" value="{$ style.id $}" ng-model="style.selected"> {$ style.name $}
-								</label>
-							</div>
+						<h3>Стили</h3>
 
-						</div> <!-- End of Styles -->
+						<div class="checkbox" ng-repeat="style in creation.fetchedData.styles | orderBy: 'name'">
+							<label>
+								<input type="checkbox" value="{$ style.id $}" ng-model="style.selected"> {$ style.name $}
+							</label>
+						</div>
 
-						<!-- Distances -->
-						<div class="col-lg-4 col-md-4">
+					</div> <!-- End of Styles -->
 
-							<h3>Дистанции</h3>
+					<!-- Distances -->
+					<div class="col-lg-4 col-md-4">
 
-							<div class="checkbox" ng-repeat="distance in creation.fetchedData.distances">
-								<label>
-									<input type="checkbox" value="{$ distance.id $}" ng-model="distance.selected"> {$ distance.name $}
-								</label>
-							</div>
+						<h3>Дистанции</h3>
 
-						</div> <!-- End of Distances -->
+						<div class="checkbox" ng-repeat="distance in creation.fetchedData.distances">
+							<label>
+								<input type="checkbox" value="{$ distance.id $}" ng-model="distance.selected"> {$ distance.name $}
+							</label>
+						</div>
 
-					</div> <!-- End of row -->
+					</div> <!-- End of Distances -->
 
-					<div class="button-wrapper row">
+				</div> <!-- End of row -->
 
-						<button class="btn btn-lg btn-default pull-left col-lg-2" ng-click="creation.prevStep()">
-							<span class="glyphicon glyphicon-chevron-left"></span> Вернуться
-						</button>
+				<div class="button-wrapper row">
 
-						<button class="btn btn-lg btn-default pull-right col-lg-2" ng-click="creation.nextStep(); creation.generateTours(); creation.checkIfAllSelected()" ng-disabled="creation.selected(creation.fetchedData.ages).length < 1 || creation.selected(creation.fetchedData.styles).length < 1 || creation.selected(creation.fetchedData.distances).length < 1">
-							Продолжить <span class="glyphicon glyphicon-chevron-right"></span>
-						</button>
+					<button class="btn btn-lg btn-default pull-left col-lg-2" ng-click="creation.stepCounter.prev()">
+						<span class="glyphicon glyphicon-chevron-left"></span> Вернуться
+					</button>
 
-					</div>
+					<button class="btn btn-lg btn-default pull-right col-lg-2" ng-click="creation.stepCounter.next(); creation.generateTours(); creation.checkIfAllSelected()" ng-disabled="creation.selected(creation.fetchedData.ages).length < 1 || creation.selected(creation.fetchedData.styles).length < 1 || creation.selected(creation.fetchedData.distances).length < 1">
+						Продолжить <span class="glyphicon glyphicon-chevron-right"></span>
+					</button>
 
-				</div> <!-- End of Step 2 -->
+				</div>
 
-				<!-- Step 3 -->
-				<div ng-show="creation.step === 3" class="animation-show-hide">
+			</div> <!-- End of Step 2 -->
 
-					<!-- Heading -->
-					<div class="heading">
-						<h2>Выберите дисциплины</h2>
-					</div> <!-- End of Heading -->
+			<!-- Step 3 -->
+			<div ng-show="creation.stepCounter.step === 3" class="animation-show-hide">
 
+				<!-- Heading -->
+				<div class="heading">
+					<h2>
+						<span ng-hide="creation.edit">Выберите дисциплины</span>
+						<span ng-show="creation.edit">Редактирование дисциплин</span>
+					</h2>
+				</div> <!-- End of Heading -->
+
+				<!-- Creation -->
+				<div ng-hide="creation.edit">
 					<div class="checkbox">
 						<label>
 							<input type="checkbox" ng-model="creation.selectedAll" ng-click="creation.selectAll()"> <b>Выбрать все</b>
 						</label>
 					</div>
-
 					<br>
-
 					<div class="checkbox tour-{$ tour.age $}" ng-repeat="tour in creation.tours">
 						<label>
-							<input type="checkbox" value="{$ tour.id $}" ng-model="tour.selected" ng-click="creation.checkIfAllSelected()"> {$ tour.name $}
+							<input type="checkbox" value="{$ tour.id $}" ng-model="tour.selected"> {$ tour.name $}
 						</label>
 					</div>
+				</div> <!-- End of Creation -->
 
-					<div class="button-wrapper row">
+				<!-- Edit -->
+				<div ng-show="creation.edit">
 
-						<button class="btn btn-lg btn-default pull-left col-lg-2" ng-click="creation.prevStep()">
-							<span class="glyphicon glyphicon-chevron-left"></span> Вернуться
-						</button>
+					<!-- All tours -->
+					<ul class="basic-list">
+						<li ng-repeat="tour in creation.tours | orderBy: 'min_age'">
+							<a href="#" class="btn btn-danger btn-sm" ng-click="creation.removeTour(tour.name)" ng-show="tour.new"><span class="glyphicon glyphicon-remove"></span></a>
+							{$ tour.name $}
+							<span class="text-primary" ng-show="tour.new">(добавлена<span ng-show="tour.out">, вне конкурса</span>)</span>
+						</li>
+					</ul> <!-- End of All tours -->
 
-						<button class="btn btn-lg btn-default pull-right col-lg-3" ng-click="creation.nextStep(); creation.groupTours(creation.selected(creation.tours))" ng-disabled="creation.selected(creation.tours) < 1">
-							Продолжить <span class="glyphicon glyphicon-chevron-right"></span>
-						</button>
-
-					</div>
-
-				</div> <!-- End of Step 3 -->
-
-				<!-- Step 4 -->
-				<div ng-show="creation.step === 4" class="animation-show-hide">
-
-					<!-- Heading -->
-					<div class="heading">
-
-						<h2>
-							{$ creation.data.name $}<br>
-							({$ creation.data.date_start | date:'dd.MM.yyyy' $} &ndash; {$ creation.data.date_finish | date:'dd.MM.yyyy' $})
-						</h2>
-
-						<h3>
-							<span ng-if="creation.data.type === '0'">Детские соревнования</span>
-							<span ng-if="creation.data.type === '1'">Взрослые соревнования</span>
-						</h3>
-
-					</div> <!-- End of Heading -->
-
-					<h3 class="small-heading">Список дисциплин:</h3>
-
-					<div>
+					<!-- Existing -->
+					<div ng-show="creation.existingTours.length" class="text-danger">
+						<hr>
+						<p>Следующие дисциплины уже есть в этих соревнованиях и не могут быть добавлены:<p>
 						<ul class="basic-list">
-							<li class="tour-{$ tour.age $}" ng-repeat="tour in creation.selected(creation.tours)">{$ tour.name $}
+							<li class="text-danger" ng-repeat="tour in creation.existingTours"> {$ tour.name $}</li>
 						</ul>
+					</div> <!-- End of Existing -->
+
+					<!-- Add tours form -->
+					<div class="row">
+						<div class="add-tour-form well col-lg-6 col-md-8 col-sm-10 col-xs-12">
+							<!-- Form -->
+							<form name="addTourForm" novalidate>
+
+								<div class="form-group row">
+									<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="style">Стиль:</label>
+									<div class="col-lg-8 col-md-8 col-sm-7 col-xs-12">
+										<select class="form-control" name="style" ng-model="creation.newTour.style" ng-options="style as style.name for style in creation.data.styles" required/>
+											<option value="" disabled selected>Выберите стиль:</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="distance">Дистанция:</label>
+									<div class="col-lg-8 col-md-8 col-sm-7 col-xs-12">
+										<select class="form-control" name="distance" ng-model="creation.newTour.distance" ng-options="distance as distance.name for distance in creation.data.distances" required/>
+											<option value="" disabled selected>Выберите дистанцию:</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<span class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="competition"><strong>Пол:</strong></span>
+									<div class="col-lg-8 col-md-8 col-sm-7 col-xs-12">
+										<div class="checkbox-inline" ng-repeat="gender in creation.genders">
+											<label>
+												<input type="checkbox" value="{$ gender.name $}" ng-model="gender.selected"> {$ gender.name $}
+											</label>
+										</div>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<span class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="competition"><strong>Возрастные группы:</strong></span>
+									<div class="col-lg-8 col-md-8 col-sm-7 col-xs-12">
+										<div class="checkbox no-margin-top" ng-repeat="group in creation.fetchedData.ages">
+											<label>
+												<input type="checkbox" value="{$ group.id $}" ng-model="group.selected" ng-disabled="creation.disableAge(group.kids);"> {$ group.name $}
+											</label>
+										</div>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<span class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left text-info" for="competition"><strong>Вне конкурса:</strong></span>
+									<div class="col-lg-8 col-md-8 col-sm-7 col-xs-12">
+										<label>
+											<input type="checkbox" ng-model="creation.newTour.out">
+										</label>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-lg-3 col-lg-offset-9 col-md-3 col-md-offset-9 col-sm-3 col-sm-offset-9 col-xs-4 col-xs-offset-8">
+										<button class="btn btn-lg btn-default" ng-click="creation.addTours(); creation.clearSelection(creation.data.ages); creation.clearSelection(creation.genders);" ng-disabled="addTourForm.$invalid || creation.selected(creation.genders).length === 0 || creation.selected(creation.data.ages).length === 0;">Добавить</button>
+									</div>
+								</div>
+
+							</form> <!-- End of Form -->
+						</div>
 					</div>
+				</div>
 
-					<div class="button-wrapper row">
+				<div class="button-wrapper row">
+					<button class="btn btn-lg btn-default pull-left col-lg-2" ng-click="creation.edit ? creation.stepCounter.skipPrev() : creation.stepCounter.prev()">
+						<span class="glyphicon glyphicon-chevron-left"></span> Вернуться
+					</button>
+					<button class="btn btn-lg btn-default pull-right col-lg-3" ng-click="creation.stepCounter.next(); creation.groupTours(creation.selected(creation.tours))" ng-disabled="creation.edit ? false : (creation.selected(creation.tours).length === 0);">
+						Продолжить <span class="glyphicon glyphicon-chevron-right"></span>
+					</button>
+				</div>
 
-						<button class="btn btn-lg btn-default pull-left col-lg-2" ng-click="creation.prevStep()">
-							<span class="glyphicon glyphicon-chevron-left"></span> Вернуться
-						</button>
+			</div> <!-- End of Step 3 -->
 
-						<button id="create-competition-button" class="btn btn-lg btn-success pull-right col-lg-3" ng-click="creation.submitForm()">
-							Создать соревнования <span class="glyphicon glyphicon-ok"></span>
-						</button>
+			<!-- Step 4 -->
+			<div ng-show="creation.stepCounter.step === 4" class="animation-show-hide">
 
-					</div>
+				<!-- Heading -->
+				<div class="heading">
 
-				</div> <!-- End of Step 3 -->
+					<h2>
+						{$ creation.data.name $}<br>
+						({$ creation.data.date_start | date:'dd.MM.yyyy' $} &ndash; {$ creation.data.date_finish | date:'dd.MM.yyyy' $})
+					</h2>
 
-			</div> <!-- End of container -->
+					<h3>
+						<span ng-if="creation.data.type === '0'">Детские соревнования</span>
+						<span ng-if="creation.data.type === '1'">Взрослые соревнования</span>
+						<span ng-if="creation.data.type === '2'">Смешанные соревнования</span>
+					</h3>
 
-		</form> <!-- End of creationForm -->
+				</div> <!-- End of Heading -->
+
+				<h3 class="small-heading">Список дисциплин:</h3>
+
+				<div>
+					<ul class="basic-list">
+						<li class="tour-{$ tour.age $}" ng-repeat="tour in creation.getFinalList(creation.edit) | orderBy: 'min_age'">{$ tour.name $} <span class="text-primary" ng-show="tour.new">(добавлена<span ng-show="tour.out">, вне конкурса</span>)</span>
+					</ul>
+				</div>
+
+				<div class="button-wrapper row">
+
+					<button class="btn btn-lg btn-default pull-left col-lg-2" ng-click="creation.stepCounter.prev()">
+						<span class="glyphicon glyphicon-chevron-left"></span> Вернуться
+					</button>
+
+					<button id="create-competition-button" class="btn btn-lg btn-success pull-right col-lg-3" ng-click="creation.submitForm()">
+						<span ng-hide="creation.edit">Создать соревнования</span>
+						<span ng-show="creation.edit">Сохранить изменения</span>
+						 <span class="glyphicon glyphicon-ok"></span>
+					</button>
+
+				</div>
+
+			</div> <!-- End of Step 4 -->
+
+		</div> <!-- End of container -->
 
 	</div> <!-- End of createCompetitionApp -->
 

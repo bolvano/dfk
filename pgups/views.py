@@ -854,7 +854,14 @@ def get_ages_distances_styles(request, competition_id=None):
         data['tours'] = []
 
         data['data']['name'] = competition.name
-        data['data']['type'] = competition.typ
+
+        if competition.typ.lower() == 'взрослые':
+            data['data']['type'] = '1'
+        elif competition.typ.lower() == 'детские':
+            data['data']['type'] = '0'
+        else:
+            data['data']['type'] = '2'
+
         data['data']['date_start'] = competition.date_start.isoformat()
         data['data']['date_finish'] = competition.date_end.isoformat()
 
@@ -865,8 +872,6 @@ def get_ages_distances_styles(request, competition_id=None):
         data['fetchedData']['distances'] = []
         for distance in distances:
             obj = {'name':distance.name,'id': distance.id}
-            if distance in competition_distances:
-                obj['selected'] = True
             data['fetchedData']['distances'].append(obj)
 
         styles = list(Style.objects.all())
@@ -874,17 +879,13 @@ def get_ages_distances_styles(request, competition_id=None):
         data['fetchedData']['styles'] = []
         for style in styles:
             obj = {'name':style.name,'id': style.id}
-            if style in competition_styles:
-                obj['selected'] = True
             data['fetchedData']['styles'].append(obj)
 
         ages = list(Age.objects.all())
         competition_ages = list(Age.objects.distinct().filter(tour__in=tours))
         data['fetchedData']['ages'] = []
         for age in ages:
-            obj = {'name':age.name,'id': age.id, 'kids': age.kids}
-            if age in competition_ages:
-                obj['selected'] = True
+            obj = {'name':age.name,'id': age.id, 'kids': age.kids, 'min_age': age.min_age, 'max_age':  age.max_age}
             data['fetchedData']['ages'].append(obj)
 
         for tour in tours:
@@ -893,7 +894,10 @@ def get_ages_distances_styles(request, competition_id=None):
                                   'name': tour.__str__(),
                                   'distance': tour.distance.id,
                                   'style': tour.style.id,
-                                  'selected': True})
+                                  'gender': tour.gender,
+                                  'min_age': tour.age.min_age,
+                                  'max_age': tour.age.max_age,
+            })
 
         return HttpResponse(json.dumps({'ages': data['fetchedData']['ages'],
                                         'styles': data['fetchedData']['styles'],
@@ -929,6 +933,29 @@ def get_ages_distances_styles(request, competition_id=None):
 def get_competition_starts(request, id):
     starts_list = []
     competition = Competition.objects.get(pk=id)
+    userrequests = Userrequest.objects.filter(competition=competition)
+    no_start_competitors = Competitor.objects.filter(userrequest__in=userrequests, approved=True, start__isnull=True)
+    to_buffer = []
+    for c in no_start_competitors:
+        if c.userrequest.team:
+            team = c.userrequest.team.name
+        else:
+            team = 'Инд.'
+        to_buffer.append({'id':c.id,
+                         'last_name':c.person.last_name,
+                         'first_name':c.person.first_name,
+                         'team':team,
+                         'age':c.age.name,
+                         'prior_time':c.prior_time,
+                         'main_distance': c.main_distance,
+                         'person_id': c.person.id,
+                         'style': c.tour.style.name,
+                         'distance': c.tour.distance.name,
+                         'gender': c.tour.gender
+                         })
+    buffer = {'role': 'buffer', 'competitors': to_buffer}
+    starts_list.append(buffer)
+
     cdsg_list = Cdsg.objects.filter(competition=competition)
     for cdsg in cdsg_list:
         starts = Start.objects.filter(cdsg=cdsg)

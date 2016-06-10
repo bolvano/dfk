@@ -36,6 +36,10 @@
     }
 
     function getStarts($http, $window, $log, $location) {
+        
+        var urlArr = $location.absUrl().split('/'),
+        userrequest_id = urlArr[urlArr.length - 2];
+
         var starts = {
             async: function() {
 
@@ -125,7 +129,7 @@
                 vm.data = response;
 
                 //adding an empty list to act as a buffer
-                vm.data.starts_list.unshift({ role: 'buffer', competitors: []});
+                //vm.data.starts_list.unshift({ role: 'buffer', competitors: []});
 
                 return data;
             });

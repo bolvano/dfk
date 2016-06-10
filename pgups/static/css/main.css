@@ -388,3 +388,13 @@ select.ng-invalid.ng-dirty {
     background-color: #fff;
   }
 }
+.mb-20 {
+  margin-bottom: 20px !important;
+}
+.add-tour-form {
+  margin-top: 40px;
+  padding: 30px;
+}
+.no-margin-top {
+  margin-top: 0px !important;
+}
