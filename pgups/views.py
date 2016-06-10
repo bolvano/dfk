@@ -854,7 +854,14 @@ def get_ages_distances_styles(request, competition_id=None):
         data['tours'] = []
 
         data['data']['name'] = competition.name
-        data['data']['type'] = competition.typ
+
+        if competition.typ.lower() == 'взрослые':
+            data['data']['type'] = '1'
+        elif competition.typ.lower() == 'детские':
+            data['data']['type'] = '0'
+        else:
+            data['data']['type'] = '2'
+
         data['data']['date_start'] = competition.date_start.isoformat()
         data['data']['date_finish'] = competition.date_end.isoformat()
 
