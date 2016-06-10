@@ -125,7 +125,7 @@
                 vm.data = response;
 
                 //adding an empty list to act as a buffer
-                vm.data.starts_list.unshift({ role: 'buffer', competitors: []});
+                //vm.data.starts_list.unshift({ role: 'buffer', competitors: []});
 
                 return data;
             });

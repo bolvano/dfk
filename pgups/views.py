@@ -929,6 +929,29 @@ def get_ages_distances_styles(request, competition_id=None):
 def get_competition_starts(request, id):
     starts_list = []
     competition = Competition.objects.get(pk=id)
+    userrequests = Userrequest.objects.filter(competition=competition)
+    no_start_competitors = Competitor.objects.filter(userrequest__in=userrequests, approved=True, start__isnull=True)
+    to_buffer = []
+    for c in no_start_competitors:
+        if c.userrequest.team:
+            team = c.userrequest.team.name
+        else:
+            team = 'Инд.'
+        to_buffer.append({'id':c.id,
+                         'last_name':c.person.last_name,
+                         'first_name':c.person.first_name,
+                         'team':team,
+                         'age':c.age.name,
+                         'prior_time':c.prior_time,
+                         'main_distance': c.main_distance,
+                         'person_id': c.person.id,
+                         'style': c.tour.style.name,
+                         'distance': c.tour.distance.name,
+                         'gender': c.tour.gender
+                         })
+    buffer = {'role': 'buffer', 'competitors': to_buffer}
+    starts_list.append(buffer)
+
     cdsg_list = Cdsg.objects.filter(competition=competition)
     for cdsg in cdsg_list:
         starts = Start.objects.filter(cdsg=cdsg)
