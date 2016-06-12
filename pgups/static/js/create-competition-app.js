@@ -111,6 +111,9 @@ function CreationFormController($scope, $http, $timeout, $window, $log, filterFi
             if (vm.data.name) {
                 vm.edit = true;
                 vm.tours = vm.data.tours;
+                $timeout(function() {
+                    groupTours(vm.data.ages, 2);
+                });
             }
 
             return data;
@@ -194,9 +197,9 @@ function CreationFormController($scope, $http, $timeout, $window, $log, filterFi
         }
     }
 
-    function groupTours(arr) {
+    function groupTours(arr, num) {
         for ( var i = 0; i < arr.length; i++ ) {
-            angular.element( '.tour-' + arr[i].id + ':last').addClass('mb-20');
+            angular.element( '.tour-' + arr[i].id + '-' + num + ':last').addClass('mb-20');
         }
     }
 
@@ -229,7 +232,7 @@ function CreationFormController($scope, $http, $timeout, $window, $log, filterFi
         }
 
         $timeout(function() {
-            groupTours(ages);
+            groupTours(ages, 1);
         });
     }
 

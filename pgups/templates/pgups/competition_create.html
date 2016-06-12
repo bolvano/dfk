@@ -169,7 +169,7 @@
 						</label>
 					</div>
 					<br>
-					<div class="checkbox tour-{$ tour.age $}" ng-repeat="tour in creation.tours">
+					<div class="checkbox tour-{$ tour.age $}-1" ng-repeat="tour in creation.tours">
 						<label>
 							<input type="checkbox" value="{$ tour.id $}" ng-model="tour.selected"> {$ tour.name $}
 						</label>
@@ -181,7 +181,7 @@
 
 					<!-- All tours -->
 					<ul class="basic-list">
-						<li ng-repeat="tour in creation.tours | orderBy: 'min_age'">
+						<li class="tour-{$ tour.age $}-2" ng-repeat="tour in creation.tours | orderBy: 'min_age'">
 							<a href="#" class="btn btn-danger btn-sm" ng-click="creation.removeTour(tour.name)" ng-show="tour.new"><span class="glyphicon glyphicon-remove"></span></a>
 							{$ tour.name $}
 							<span class="text-primary" ng-show="tour.new">(добавлена<span ng-show="tour.out">, вне конкурса</span>)</span>
@@ -267,7 +267,7 @@
 					<button class="btn btn-lg btn-default pull-left col-lg-2" ng-click="creation.edit ? creation.stepCounter.skipPrev() : creation.stepCounter.prev()">
 						<span class="glyphicon glyphicon-chevron-left"></span> Вернуться
 					</button>
-					<button class="btn btn-lg btn-default pull-right col-lg-3" ng-click="creation.stepCounter.next(); creation.groupTours(creation.selected(creation.tours))" ng-disabled="creation.edit ? false : (creation.selected(creation.tours).length === 0);">
+					<button class="btn btn-lg btn-default pull-right col-lg-3" ng-click="creation.stepCounter.next(); creation.groupTours(creation.data.ages, 3);" ng-disabled="creation.edit ? false : (creation.selected(creation.tours).length === 0);">
 						Продолжить <span class="glyphicon glyphicon-chevron-right"></span>
 					</button>
 				</div>
@@ -297,7 +297,7 @@
 
 				<div>
 					<ul class="basic-list">
-						<li class="tour-{$ tour.age $}" ng-repeat="tour in creation.getFinalList(creation.edit) | orderBy: 'min_age'">{$ tour.name $} <span class="text-primary" ng-show="tour.new">(добавлена<span ng-show="tour.out">, вне конкурса</span>)</span>
+						<li class="tour-{$ tour.age $}-3" ng-repeat="tour in creation.getFinalList(creation.edit) | orderBy: 'min_age'">{$ tour.name $} <span class="text-primary" ng-show="tour.new">(добавлена<span ng-show="tour.out">, вне конкурса</span>)</span>
 					</ul>
 				</div>
 
