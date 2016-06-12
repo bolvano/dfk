@@ -872,8 +872,6 @@ def get_ages_distances_styles(request, competition_id=None):
         data['fetchedData']['distances'] = []
         for distance in distances:
             obj = {'name':distance.name,'id': distance.id}
-            if distance in competition_distances:
-                obj['selected'] = True
             data['fetchedData']['distances'].append(obj)
 
         styles = list(Style.objects.all())
@@ -881,8 +879,6 @@ def get_ages_distances_styles(request, competition_id=None):
         data['fetchedData']['styles'] = []
         for style in styles:
             obj = {'name':style.name,'id': style.id}
-            if style in competition_styles:
-                obj['selected'] = True
             data['fetchedData']['styles'].append(obj)
 
         ages = list(Age.objects.all())
@@ -890,8 +886,6 @@ def get_ages_distances_styles(request, competition_id=None):
         data['fetchedData']['ages'] = []
         for age in ages:
             obj = {'name':age.name,'id': age.id, 'kids': age.kids}
-            if age in competition_ages:
-                obj['selected'] = True
             data['fetchedData']['ages'].append(obj)
 
         for tour in tours:
@@ -900,7 +894,10 @@ def get_ages_distances_styles(request, competition_id=None):
                                   'name': tour.__str__(),
                                   'distance': tour.distance.id,
                                   'style': tour.style.id,
-                                  'selected': True})
+                                  'gender': tour.gender,
+                                  'min_age': tour.age.min_age,
+                                  'max_age': tour.age.max_age,
+            })
 
         return HttpResponse(json.dumps({'ages': data['fetchedData']['ages'],
                                         'styles': data['fetchedData']['styles'],
