@@ -885,7 +885,7 @@ def get_ages_distances_styles(request, competition_id=None):
         competition_ages = list(Age.objects.distinct().filter(tour__in=tours))
         data['fetchedData']['ages'] = []
         for age in ages:
-            obj = {'name':age.name,'id': age.id, 'kids': age.kids}
+            obj = {'name':age.name,'id': age.id, 'kids': age.kids, 'min_age': age.min_age, 'max_age':  age.max_age}
             data['fetchedData']['ages'].append(obj)
 
         for tour in tours:
