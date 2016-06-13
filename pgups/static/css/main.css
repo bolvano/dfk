@@ -401,3 +401,6 @@ select.ng-invalid.ng-dirty {
 .no-margin-top {
   margin-top: 0px !important;
 }
+.margin-10 {
+  margin-bottom: 10px;
+}
