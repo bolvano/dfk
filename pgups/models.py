@@ -121,7 +121,8 @@ class Tour(models.Model):
     out = models.BooleanField(default=False)
     
     def __str__(self):
-        return self.style.name + ' ' + self.distance.name  + ' ' + self.age.name + ' ' + self.gender
+        out = ' (вне конкурса)' if self.out else ''
+        return self.style.name + ' ' + self.distance.name  + ' ' + self.age.name + ' ' + self.gender + out
 
 
 #Участники

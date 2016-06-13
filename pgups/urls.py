@@ -32,6 +32,7 @@ urlpatterns = [
 
     # competition create
     url(r'^competition_create/(?P<competition_id>\d+)?/?$', views.create_competition, name="competitioncreate"),
+    url(r'^competition_edit/(?P<competition_id>\d+)?/?$', views.create_competition, name="competitionedit"),
 
     # sortable starts
     url(r'^competition_starts_sort/(?P<competition_id>\d+)/$', views.competition_starts_sort,

@@ -268,7 +268,7 @@ function CreationFormController($scope, $http, $timeout, $window, $log, filterFi
 
     function submitForm() {
 
-        if (!edit) {
+        if (!vm.edit) {
             vm.data.tours = selected(vm.tours);
         }
 

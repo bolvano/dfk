@@ -882,7 +882,7 @@ def get_ages_distances_styles(request, competition_id=None):
             obj = {'name':style.name,'id': style.id}
             data['fetchedData']['styles'].append(obj)
 
-        ages = list(Age.objects.all())
+        ages = list(Age.objects.all().order_by('min_age'))
         competition_ages = list(Age.objects.distinct().filter(tour__in=tours))
         data['fetchedData']['ages'] = []
         for age in ages:
@@ -906,6 +906,7 @@ def get_ages_distances_styles(request, competition_id=None):
                                         'styles': data['fetchedData']['styles'],
                                         'distances': data['fetchedData']['distances'],
                                         'tours': data['tours'],
+                                        'id': data['data']['id'],
                                         'name': data['data']['name'],
                                         'type': data['data']['type'],
                                         'date_start': data['data']['date_start'],
@@ -913,7 +914,7 @@ def get_ages_distances_styles(request, competition_id=None):
                                         }), content_type="application/json")
 
     age_list = []
-    ages = Age.objects.all()
+    ages = Age.objects.all().order_by('min_age')
     for a in ages:
         age = {'id': a.id, 'name': a.name, 'kids': a.kids}
         age_list.append(age)
@@ -1002,7 +1003,7 @@ def create_competition(request, competition_id=None):
         else:
             typ = 'смешанные'
 
-        import ipdb; ipdb.set_trace()
+        #import ipdb; ipdb.set_trace()
 
         if 'id' in data:
             date_start = datetime.datetime.strptime(data['date_start'], "%Y-%m-%dT%H:%M:%S.%fZ")
