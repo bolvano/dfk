@@ -181,10 +181,11 @@
 
 					<!-- All tours -->
 					<ul class="basic-list">
-						<li class="tour-{$ tour.age $}-2" ng-repeat="tour in creation.tours | orderBy: 'min_age'">
-							<a href="#" class="btn btn-danger btn-sm" ng-click="creation.removeTour(tour.name)" ng-show="tour.new"><span class="glyphicon glyphicon-remove"></span></a>
+						<li class="tour-{$ tour.age $}-2 list-margin" ng-repeat="tour in creation.tours | orderBy: 'min_age'">
 							{$ tour.name $}
+							<span class="text-muted" ng-show="tour.num_of_competitors > -1">(участников: {$ tour.num_of_competitors $})</span>
 							<span class="text-primary" ng-show="tour.new">(добавлена<span ng-show="tour.out">, вне конкурса</span>)</span>
+							  <a href="#" ng-click="creation.removeTour(tour.name)" ng-show="tour.new || !tour.num_of_competitors"><span class="glyphicon glyphicon-remove"></span></a>
 						</li>
 					</ul> <!-- End of All tours -->
 

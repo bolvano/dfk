@@ -175,6 +175,10 @@ function CreationFormController($scope, $http, $timeout, $window, $log, filterFi
         }
 
         vm.newTour.out = false;
+
+        $timeout(function() {
+            groupTours(vm.data.ages, 2);
+        });
     }
 
     function disableAge(type) {
@@ -189,15 +193,22 @@ function CreationFormController($scope, $http, $timeout, $window, $log, filterFi
     }
 
     function removeTour(name) {
-        for (var i = 0; i < vm.data.tours.length; i++) {
-            if (vm.data.tours[i].name === name) {
-                vm.data.tours.splice(i, 1);
-                return;
+        if (confirm('Удалить дисциплину ' + '"'+ name +'"?')) {
+            for (var i = 0; i < vm.data.tours.length; i++) {
+                if (vm.data.tours[i].name === name) {
+                    vm.data.tours.splice(i, 1);
+                    return;
+                }
             }
         }
     }
 
     function groupTours(arr, num) {
+        // removing class from every element in collection
+        for ( var i = 0; i < arr.length; i++ ) {
+            angular.element( '.tour-' + arr[i].id + '-' + num).removeClass('mb-20');
+        }
+        // adding class to last element in collection
         for ( var i = 0; i < arr.length; i++ ) {
             angular.element( '.tour-' + arr[i].id + '-' + num + ':last').addClass('mb-20');
         }
@@ -257,7 +268,9 @@ function CreationFormController($scope, $http, $timeout, $window, $log, filterFi
 
     function submitForm() {
 
-        vm.data.tours = selected(vm.tours);
+        if (!edit) {
+            vm.data.tours = selected(vm.tours);
+        }
 
         // disable button to prevent multiple requests
         angular.element('#create-competition-button').attr('disabled', true).html('Создаются соревнования...');
