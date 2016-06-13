@@ -853,6 +853,7 @@ def get_ages_distances_styles(request, competition_id=None):
         data['fetchedData'] = {}
         data['tours'] = []
 
+        data['data']['id'] = competition_id
         data['data']['name'] = competition.name
 
         if competition.typ.lower() == 'взрослые':
@@ -994,11 +995,6 @@ def create_competition(request, competition_id=None):
         body_unicode = request.body.decode('utf-8')
         data = json.loads(body_unicode)
 
-        date_start = datetime.datetime.strptime(data['date_start'], "%Y-%m-%dT%H:%M:%S.%fZ")+\
-                     datetime.timedelta(days=1)
-        date_end = datetime.datetime.strptime(data['date_finish'], "%Y-%m-%dT%H:%M:%S.%fZ")+\
-                   datetime.timedelta(days=1)
-
         if data['type'] == '1':
             typ = 'взрослые'
         elif data['type'] == '0':
@@ -1006,7 +1002,11 @@ def create_competition(request, competition_id=None):
         else:
             typ = 'смешанные'
 
+        import ipdb; ipdb.set_trace()
+
         if 'id' in data:
+            date_start = datetime.datetime.strptime(data['date_start'], "%Y-%m-%dT%H:%M:%S.%fZ")
+            date_end = datetime.datetime.strptime(data['date_finish'], "%Y-%m-%dT%H:%M:%S.%fZ")
             new_competition = False
             competition = Competition.objects.get(pk=data['id'])
             competition.name = data['name']
@@ -1016,6 +1016,10 @@ def create_competition(request, competition_id=None):
             competition.finished = False
 
         else:
+            date_start = datetime.datetime.strptime(data['date_start'], "%Y-%m-%dT%H:%M:%S.%fZ")+\
+                         datetime.timedelta(days=1)
+            date_end = datetime.datetime.strptime(data['date_finish'], "%Y-%m-%dT%H:%M:%S.%fZ")+\
+                       datetime.timedelta(days=1)
             new_competition = True
             competition = Competition(name=data['name'],
                                       typ=typ,
