@@ -45,6 +45,9 @@ body {
 .basic-list-larger {
   font-size: 1.2rem;
 }
+li.list-margin {
+  margin-bottom: .5em;
+}
 .no-padding {
   padding: 0;
 }
@@ -387,4 +390,17 @@ select.ng-invalid.ng-dirty {
   100% {
     background-color: #fff;
   }
+}
+.mb-20 {
+  margin-bottom: 2em !important;
+}
+.add-tour-form {
+  margin-top: 40px;
+  padding: 30px;
+}
+.no-margin-top {
+  margin-top: 0px !important;
+}
+.margin-10 {
+  margin-bottom: 10px;
 }

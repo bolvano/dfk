@@ -23,7 +23,7 @@ urlpatterns = [
     # ajax
     url(r'^get_competitions/(?P<userrequest_id>\d+)?/?$', views.get_competitions),
     url(r'^get_teams/$', views.get_teams),
-    url(r'^get_ages_distances_styles/$', views.get_ages_distances_styles),
+    url(r'^get_ages_distances_styles/(?P<competition_id>\d+)?/?$', views.get_ages_distances_styles),
     url(r'^get_competition_starts/(?P<id>\d+)/$', views.get_competition_starts),
 
     # starts and tours
@@ -32,6 +32,7 @@ urlpatterns = [
 
     # competition create
     url(r'^competition_create/(?P<competition_id>\d+)?/?$', views.create_competition, name="competitioncreate"),
+    url(r'^competition_edit/(?P<competition_id>\d+)?/?$', views.create_competition, name="competitionedit"),
 
     # sortable starts
     url(r'^competition_starts_sort/(?P<competition_id>\d+)/$', views.competition_starts_sort,
