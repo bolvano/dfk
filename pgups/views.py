@@ -889,6 +889,7 @@ def get_ages_distances_styles(request, competition_id=None):
             data['fetchedData']['ages'].append(obj)
 
         for tour in tours:
+            num_of_competitors = len(Competitor.objects.filter(tour=tour))
             data['tours'].append({'id': tour.id,
                                   'age': tour.age.id,
                                   'name': tour.__str__(),
@@ -897,6 +898,7 @@ def get_ages_distances_styles(request, competition_id=None):
                                   'gender': tour.gender,
                                   'min_age': tour.age.min_age,
                                   'max_age': tour.age.max_age,
+                                  'num_of_competitors': num_of_competitors
             })
 
         return HttpResponse(json.dumps({'ages': data['fetchedData']['ages'],
