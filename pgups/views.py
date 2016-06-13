@@ -1006,35 +1006,79 @@ def create_competition(request, competition_id=None):
         else:
             typ = 'смешанные'
 
+        if 'id' in data:
+            new_competition = False
+            competition = Competition.objects.get(pk=data['id'])
+            competition.name = data['name']
+            competition.typ = typ
+            competition.date_start = date_start
+            competition.date_end = date_end
+            competition.finished = False
 
-        competition = Competition(name=data['name'],
-                                  typ=typ,
-                                  date_start=date_start,
-                                  date_end=date_end,
-                                  finished=False)
+        else:
+            new_competition = True
+            competition = Competition(name=data['name'],
+                                      typ=typ,
+                                      date_start=date_start,
+                                      date_end=date_end,
+                                      finished=False)
         competition.save()
 
-        if 'tours' in data:
-            for tour in data['tours']:
+        if new_competition:
+            if 'tours' in data:
+                for tour in data['tours']:
+                    style = Style.objects.get(pk=tour['style'])
+                    age = Age.objects.get(pk=tour['age'])
+                    distance = Distance.objects.get(pk=tour['distance'])
 
-                style = Style.objects.get(pk=tour['style'])
-                age = Age.objects.get(pk=tour['age'])
-                distance = Distance.objects.get(pk=tour['distance'])
+                    new_tour_m = Tour(competition=competition, finished=False)
+                    new_tour_m.gender = 'М'
+                    new_tour_m.style = style
+                    new_tour_m.distance = distance
+                    new_tour_m.age = age
+                    new_tour_m.save()
 
-                new_tour_m = Tour(competition=competition, finished=False)
-                new_tour_m.gender = 'М'
-                new_tour_m.style = style
-                new_tour_m.distance = distance
-                new_tour_m.age = age
-                new_tour_m.save()
+                    new_tour_f = Tour(competition=competition, finished=False)
+                    new_tour_f.gender = 'Ж'
+                    new_tour_f.style = style
+                    new_tour_f.distance = distance
+                    new_tour_f.age = age
+                    new_tour_f.save()
+        else:
+            got_out_of_order_tours = False
+            existing_tours = Tour.objects.filter(competition=competition)
+            if 'tours' in data:
+                form_tours = data['tours']
 
-                new_tour_f = Tour(competition=competition, finished=False)
-                new_tour_f.gender = 'Ж'
-                new_tour_f.style = style
-                new_tour_f.distance = distance
-                new_tour_f.age = age
-                new_tour_f.save()
+                #deleteng non-present in form
+                for tour in existing_tours:
+                    if tour.id not in [t['id'] for t in form_tours if 'id' in t]:
+                        tour.delete()
 
+                #adding new ones
+                for tour in form_tours:
+                    if 'new' in tour:
+                        style = Style.objects.get(pk=tour['style'])
+                        age = Age.objects.get(pk=tour['age'])
+                        distance = Distance.objects.get(pk=tour['distance'])
+
+                        new_tour = Tour(competition=competition, finished=False)
+                        new_tour.gender = tour['gender']
+                        new_tour.style = style
+                        new_tour.distance = distance
+                        new_tour.age = age
+
+                        if 'out' in tour:
+                            new_tour.out = True
+                            got_out_of_order_tours = True
+
+                        new_tour.save()
+            else:
+                for tour in existing_tours:
+                    tour.delete()
+            if got_out_of_order_tours:
+                competition.typ = 'смешанные'
+                competition.save()
     else:
         data = {}
 
