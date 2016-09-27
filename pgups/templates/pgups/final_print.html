@@ -17,52 +17,114 @@
 <br>
 <br>
 <div>
-	{% for tuple in tour_list %}
-		<div class="div-table">
-			<table>
-                <col class="col0">
-				<col class="col1">
-				<col class="col2">
-				<col class="col3">
-				<col class="col4">
 
-				<tr><th colspan="5" class="cdsg_name">{{tuple.0.style|capfirst}}, {{tuple.0.distance|capfirst}}, {{tuple.0.gender|capfirst}}, {{tuple.0.age|capfirst}} </th></tr>
-					{% for competitor in tuple.1 %}
-				<tr>
-                    <td class="position">{{ forloop.counter }}</td>
-                    <td class="result">{% if competitor.result %} {{competitor.result}} {% endif %}
-					{% if not competitor.main_distance %} в/к {% endif %}</td>
-					<td class="competitor">
-						{% if competitor.main_distance%}<span><b>{% endif %}
-						{{competitor.person.last_name|title}} {{competitor.person.first_name|title}}
-						{% if competitor.main_distance%}</b></span>{% endif %}
-					</td>
-					<td class="team">
-						{% if competitor.userrequest.team %}
-						{{competitor.userrequest.team.name}} ({{competitor.userrequest.representative}})
-						{% endif %}
-					</td>
-					<td class="time"> {{competitor.time|formatSeconds}}  {% if competitor.disqualification > 0 %} <b>
+	{% for t in res %}
 
-                        		{% if  competitor.disqualification == 1 %}
-									{% if competitor.person.gender == 'Ж'%} Не вышла {% else %} Не вышел {% endif %}
-								{% endif %}
-								{% if  competitor.disqualification == 2 %}
-									Фальстарт
-								{% endif %}
-								{% if  competitor.disqualification == 3 %}
-									Нарушение правил поворота
-								{% endif %}
-								{% if  competitor.disqualification == 4 %}
-									Нарушение правил прохождения дистанции
-								{% endif %}
+	<h2>{{t.0.name}}</h2>
+
+        {% if not t.2 %}
+
+		{% for tuple in t.1 %}
+
+			<div class="div-table">
+				<table>
+					<col class="col0">
+					<col class="col1">
+					<col class="col2">
+					<col class="col3">
+					<col class="col4">
+
+					<tr><th colspan="5" class="cdsg_name">{{tuple.0.style|capfirst}}, {{tuple.0.distance|capfirst}}, {{tuple.0.gender|capfirst}}, {{tuple.0.age|capfirst}} </th></tr>
+						{% for competitor in tuple.1 %}
+					<tr>
+						<td class="position">{{ forloop.counter }}</td>
+						<td class="result">{% if competitor.result %} {{competitor.result}} {% endif %}
+						{% if not competitor.main_distance %} в/к {% endif %}</td>
+						<td class="competitor">
+							{% if competitor.main_distance%}<span><b>{% endif %}
+							{{competitor.person.last_name|title}} {{competitor.person.first_name|title}}
+							{% if competitor.main_distance%}</b></span>{% endif %}
+						</td>
+						<td class="team">
+							{% if competitor.userrequest.team %}
+							{{competitor.userrequest.team.name}} ({{competitor.userrequest.representative}})
+							{% endif %}
+						</td>
+						<td class="time"> {{competitor.time|formatSeconds}}  {% if competitor.disqualification > 0 %} <b>
+
+									{% if  competitor.disqualification == 1 %}
+										{% if competitor.person.gender == 'Ж'%} Не вышла {% else %} Не вышел {% endif %}
+									{% endif %}
+									{% if  competitor.disqualification == 2 %}
+										Фальстарт
+									{% endif %}
+									{% if  competitor.disqualification == 3 %}
+										Нарушение правил поворота
+									{% endif %}
+									{% if  competitor.disqualification == 4 %}
+										Нарушение правил прохождения дистанции
+									{% endif %}
 
 
-                    </b> {% endif %}</td>
-				</tr>
-					{% endfor %}
-			</table>
-		</div>
+						</b> {% endif %}</td>
+					</tr>
+						{% endfor %}
+				</table>
+			</div>
+
+		{% endfor %}
+
+        {% endif %}
+
+        {% if t.2 %}
+
+			<div class="div-table">
+				<table>
+					<col class="col0">
+					<col class="col1">
+					<col class="col2">
+					<col class="col3">
+					<col class="col4">
+
+					<tr><th colspan="5" class="cdsg_name">Вне конкурса</th></tr>
+						{% for competitor in t.2 %}
+					<tr>
+						<td class="position">{{ forloop.counter }}</td>
+						<td class="result">{% if competitor.result %} {{competitor.result}} {% endif %}
+						{% if not competitor.main_distance %} в/к {% endif %}</td>
+						<td class="competitor">
+							{% if competitor.main_distance%}<span><b>{% endif %}
+							{{competitor.person.last_name|title}} {{competitor.person.first_name|title}}
+							{% if competitor.main_distance%}</b></span>{% endif %}
+						</td>
+						<td class="team">
+							{% if competitor.userrequest.team %}
+							{{competitor.userrequest.team.name}} ({{competitor.userrequest.representative}})
+							{% endif %}
+						</td>
+						<td class="time"> {{competitor.time|formatSeconds}}  {% if competitor.disqualification > 0 %} <b>
+
+									{% if  competitor.disqualification == 1 %}
+										{% if competitor.person.gender == 'Ж'%} Не вышла {% else %} Не вышел {% endif %}
+									{% endif %}
+									{% if  competitor.disqualification == 2 %}
+										Фальстарт
+									{% endif %}
+									{% if  competitor.disqualification == 3 %}
+										Нарушение правил поворота
+									{% endif %}
+									{% if  competitor.disqualification == 4 %}
+										Нарушение правил прохождения дистанции
+									{% endif %}
+
+
+						</b> {% endif %}</td>
+					</tr>
+						{% endfor %}
+				</table>
+			</div>
+
+        {% endif %}
 
 	{% endfor %}
 	</div>
