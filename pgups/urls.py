@@ -43,7 +43,5 @@ urlpatterns = [
 
     url(r'^starts_print/(?P<competition_id>\d+)/$', views.starts_print, name="starts_print"),
     url(r'^cdsg_print/(?P<cdsg_id>\d+)/$', views.cdsg_print, name="cdsg_print"),
-    url(r'^final_print/(?P<competition_id>\d+)/$', views.final_print, name="final_print"),
-
-
+    url(r'^final_print/(?P<competition_id>\d+)/(?P<as_csv>(0|1))?/?$', views.final_print, name="final_print"),
 ]

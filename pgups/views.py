@@ -7,6 +7,8 @@ from django.forms import modelformset_factory
 
 import datetime
 import json
+import csv
+import decimal
 
 from .models import Userrequest, Person, Competition, Team, Competitor, Tour, Age, Distance, Style, Start, Cdsg
 
@@ -1278,7 +1280,10 @@ def starts_print(request, competition_id):
                                                              'competition': competition,
                                                             },)
 
-def final_print(request, competition_id):
+
+def final_print(request, competition_id, as_csv=0):
+
+    #import ipdb; ipdb.set_trace();
 
     cdsg_dict = defaultdict(list)
 
@@ -1330,7 +1335,87 @@ def final_print(request, competition_id):
         else:
             res.append((cdsg, tour_list))
 
-    res.sort(key=lambda e: styles[ e[1][0][1][0].tour.style.name ] if len(e)==2 else styles[e[2][0].tour.style.name] )
-
-    return render(request, 'pgups/final_print.html', {'competition': competition,
+    res.sort(key=lambda e: styles[e[1][0][1][0].tour.style.name ] if len(e)==2 else styles[e[2][0].tour.style.name])
+    if as_csv != '1':
+        return render(request, 'pgups/final_print.html', {'competition': competition,
                                                       'res': res}, )
+    else:
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="final.csv"'
+        writer = csv.writer(response, delimiter=";")
+        writer.writerow(['Результаты соревнований: ' + competition.name])
+        for t in res:
+            writer.writerow([t[0].name])
+            if len(t) < 3:
+                for tuple in t[1]:
+                    writer.writerow([tuple[0].style.name + ' '
+                                     + tuple[0].distance.name + ' '
+                                     + tuple[0].gender + ' '
+                                     + tuple[0].age.name])
+                    i=1
+                    for competitor in tuple[1]:
+                        if competitor.result:
+                            r = competitor.result
+                        elif not competitor.main_distance:
+                            r = 'в/к'
+                        else:
+                            r = ''
+
+                        if competitor.userrequest.team:
+                            t = competitor.userrequest.team.name + ' (' + competitor.userrequest.representative + ')'
+                        else:
+                            t = ''
+
+                        if competitor.disqualification > 0:
+                            if competitor.disqualification == 1:
+                                if competitor.person.gender == 'Ж':
+                                    d = ' (Не вышла)'
+                                else:
+                                    d = ' (Не вышел)'
+                            elif competitor.disqualification == 2:
+                                d = ' (Фальстарт'
+                            elif competitor.disqualification == 3:
+                                d = ' (Нарушение правил поворота)'
+                            elif competitor.disqualification == 4:
+                                d = ' (Нарушение правил прохождения дистанции)'
+                        else:
+                            d = ''
+
+                        writer.writerow([str(i),
+                                         str(r),
+                                         competitor.person.last_name+' '+competitor.person.first_name,
+                                         t,
+                                         str(datetime.timedelta(microseconds=int(competitor.time*decimal.Decimal(10**6)))) + d,
+                                         ])
+                        i += 1
+            else:
+                writer.writerow(['Вне конкурса'])
+                for competitor in t[2]:
+                    if competitor.userrequest.team:
+                        t = competitor.userrequest.team.name + ' (' + competitor.userrequest.representative + ')'
+                    else:
+                        t = ''
+
+                    if competitor.disqualification > 0:
+                        if competitor.disqualification == 1:
+                            if competitor.person.gender == 'Ж':
+                                d = ' (Не вышла)'
+                            else:
+                                d = ' (Не вышел)'
+                        elif competitor.disqualification == 2:
+                            d = ' (Фальстарт)'
+                        elif competitor.disqualification == 3:
+                            d = ' (Нарушение правил поворота)'
+                        elif competitor.disqualification == 4:
+                            d = ' (Нарушение правил прохождения дистанции)'
+                    else:
+                        d = ''
+
+                    writer.writerow(['',
+                                     '',
+                                     competitor.person.last_name + ' ' + competitor.person.first_name,
+                                     t,
+                                     str(datetime.timedelta(microseconds=int(competitor.time * decimal.Decimal(10 ** 6)))) + d,
+                                     ])
+
+        return response

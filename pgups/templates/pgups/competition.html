@@ -140,10 +140,12 @@
 			<a class="btn btn-lg btn-primary" href="../../results/teams/{{competition.id}}/"><span class="glyphicon glyphicon-list-alt"></span> Результаты по командам</a>
 		</p>
 
-
-
 		<p>
 			<a class="btn btn-lg btn-primary" href="{% url 'final_print' competition_id=competition.id %}" target="_blank"> <span class="glyphicon glyphicon-print"></span> Итоговые протоколы</a>
+		</p>
+
+		<p>
+			<a class="btn btn-lg btn-primary" href="../../final_print/{{competition.id}}/1/"> <span class="glyphicon glyphicon-print"></span> Итоговые протоколы (csv)</a>
 		</p>
 
 		{% if user.is_authenticated %}
