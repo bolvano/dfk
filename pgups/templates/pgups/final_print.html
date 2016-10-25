@@ -17,13 +17,13 @@
 <body>
 <div id="results_div">
 <table>
-	<tr><td>
+	<tr><td colspan="5">
         <h2>Результаты соревнований: {{competition.name}}</h2>
 	</td></tr>
 
 	{% for t in res %}
 
-	<tr><td><h2>{{t.0.name}}</h2></td></tr>
+	<tr><td colspan="5"><h2>{{t.0.name}}</h2></td></tr>
 
         {% if not t.2 %}
 
