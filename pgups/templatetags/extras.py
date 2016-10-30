@@ -7,4 +7,7 @@ register = template.Library()
 def formatSeconds(s):
     mins = math.floor(s / 60)
     secs = s - (mins * 60)
-    return "%d:%05.2f" % (mins, secs)
+    if mins:
+        return "%d:%05.2f" % (mins, secs)
+    else:
+        return "%05.2f" % secs

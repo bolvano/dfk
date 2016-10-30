@@ -745,7 +745,10 @@ def tour(request, id):
                               + competitor.person.first_name.title() \
                               + ' ('+competitor.userrequest.team.name+')'
             m, s = divmod(competitor.prior_time, 60)
-            formatted_prior =  "%d:%0.2f" % (m, s)
+            if m:
+                formatted_prior =  "%d:%0.2f" % (m, s)
+            else:
+                formatted_prior = "%0.2f" % s
             res.append((competitor_data, formatted_prior))
         except:
             pass
@@ -1255,13 +1258,6 @@ def cdsg_print(request, cdsg_id):
             tours.append(c.tour)
 
     for tour in tours:
-        total = Competitor.objects.filter(tour=tour, approved=True).count()
-        passed = competitors.filter(tour=tour).count() + prev_competitors.filter(tour=tour).count()
-        if total == passed:
-            tour_competitors = Competitor.objects.filter(tour=tour, approved=True)
-            for competitor in tour_competitors:
-                tour_dict[competitor.tour.id].append(competitor)
-
         #places
         main_competitors = Competitor.objects.filter(tour=tour,
                                                 approved=True,
@@ -1274,6 +1270,13 @@ def cdsg_print(request, cdsg_id):
                 c = main_competitors.pop(0)
                 c.result = i
                 c.save()
+
+        total = Competitor.objects.filter(tour=tour, approved=True).count()
+        passed = competitors.filter(tour=tour).count() + prev_competitors.filter(tour=tour).count()
+        if total == passed:
+            tour_competitors = Competitor.objects.filter(tour=tour, approved=True)
+            for competitor in tour_competitors:
+                tour_dict[competitor.tour.id].append(competitor)
 
     tour_dict = dict(tour_dict)
 
