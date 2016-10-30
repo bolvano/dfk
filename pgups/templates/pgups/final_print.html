@@ -41,11 +41,12 @@
 					<tr>
 						<td class="position">{{ forloop.counter }}</td>
 						<td class="result">{% if competitor.result %} {{competitor.result}} {% endif %}
-						{% if not competitor.main_distance %} в/к {% endif %}</td>
+						{% if not competitor.main_distance %} в/з {% endif %}</td>
 						<td class="competitor">
 							{% if competitor.main_distance%}<span><b>{% endif %}
 							{{competitor.person.last_name|title}} {{competitor.person.first_name|title}}
 							{% if competitor.main_distance%}</b></span>{% endif %}
+							 ({{competitor.person.birth_year}} г.р.)
 						</td>
 						<td class="team">
 							{% if competitor.userrequest.team %}
@@ -90,12 +91,10 @@
 						{% for competitor in t.2 %}
 					<tr>
 						<td class="position">{{ forloop.counter }}</td>
-						<td class="result">{% if competitor.result %} {{competitor.result}} {% endif %}
-						{% if not competitor.main_distance %} в/к {% endif %}</td>
+						<td class="result"></td>
 						<td class="competitor">
-							{% if competitor.main_distance%}<span><b>{% endif %}
 							{{competitor.person.last_name|title}} {{competitor.person.first_name|title}}
-							{% if competitor.main_distance%}</b></span>{% endif %}
+                             ({{competitor.person.birth_year}} г.р.)
 						</td>
 						<td class="team">
 							{% if competitor.userrequest.team %}

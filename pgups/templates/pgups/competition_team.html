@@ -1,5 +1,6 @@
 {% extends 'pgups/base.html' %}
 {% load staticfiles %}
+{% load extras %}
 {% block content %}
 
 <!-- Notie messages -->
@@ -35,7 +36,8 @@
 						<td class="column-name">
 							{% if competitor_form.instance.main_distance%}<span><b>{% endif %}
 							{{competitor_form.instance.person.last_name|title}} {{competitor_form.instance.person.first_name|title}}
-							{% if competitor_form.instance.main_distance%}</b></span>{% endif %}
+							{% if competitor_form.instance.main_distance%}</b></span>{% endif %}/
+                            {{competitor_form.instance.age.name}} {{competitor_form.instance.person.gender}} /
 							({{competitor_form.instance.userrequest.representative}},
 
                             <a class="decorated-link" href="{% url 'userrequest' userrequest_id=competitor_form.instance.userrequest.id %}">
@@ -46,7 +48,7 @@
 							{% if competitor_form.instance.main_distance%}<span><b>{% endif %}
 							{{competitor_form.instance.tour.style.name}}
 							{{competitor_form.instance.tour.distance.name}}
-							({{competitor_form.instance.prior_time}})
+							({{competitor_form.instance.prior_time|formatSeconds}})
 							{% if competitor_form.instance.main_distance%}</b></span>{% endif %}
 						</td>
 
