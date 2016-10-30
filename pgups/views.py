@@ -537,9 +537,8 @@ def generate_starts(request):
         for distance in distances:
             for style in styles:
                 if age_diff:
-                    for age in ages:
-                        for gender in genders:
-
+                    for gender in genders:
+                        for age in ages:
                             starts = []
                             tours = Tour.objects.filter(competition=competition,
                                                         distance=distance,
@@ -1262,6 +1261,19 @@ def cdsg_print(request, cdsg_id):
             tour_competitors = Competitor.objects.filter(tour=tour, approved=True)
             for competitor in tour_competitors:
                 tour_dict[competitor.tour.id].append(competitor)
+
+        #places
+        main_competitors = Competitor.objects.filter(tour=tour,
+                                                approved=True,
+                                                main_distance=True,
+                                                disqualification=0,
+                                                time__gt=0).order_by('time')
+        main_competitors = list(main_competitors)
+        for i in range(1, 4):
+            if main_competitors:
+                c = main_competitors.pop(0)
+                c.result = i
+                c.save()
 
     tour_dict = dict(tour_dict)
 
