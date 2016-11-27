@@ -87,7 +87,7 @@
 					<col class="col3">
 					<col class="col4">
 
-					<tr><th colspan="5" class="cdsg_name">Вне конкурса</th></tr>
+					<tr><th colspan="5" class="cdsg_name">Вне конкурса: {{t.0.name}}</th></tr>
 						{% for competitor in t.2 %}
 					<tr>
 						<td class="position">{{ forloop.counter }}</td>
@@ -136,7 +136,6 @@ $("a").on("click", function () {
     var d = new Date().toISOString().slice(0, 19).replace(/-/g, "");
     $(this).attr("href", "data:application/vnd.ms-excel,"+document.getElementById('results_div').innerHTML.replace(/ /g, '%20')).attr("download", "final-" + d + ".xls");
 });
-
 </script>
 
 

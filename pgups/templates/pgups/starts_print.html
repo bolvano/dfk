@@ -12,6 +12,7 @@
 	<title> Стартовые протоколы</title>
 </head>
 <body>
+<div id="results_div">
 <h2>{{competition.name}}</h2>
 
 Утверждаю<br>
@@ -40,7 +41,8 @@
 					<td class="competitor">
 						{% if competitor.main_distance%}<span><b>{% endif %}
 						{{competitor.person.last_name|title}} {{competitor.person.first_name|title}}
-						{% if competitor.main_distance%}<span><b>{% endif %}
+						{% if competitor.tour.out %} (вне конкурса) {% endif %}
+						{% if competitor.main_distance%}</span></b>{% endif %}
 					</td>
 					<td class="team">{{competitor.userrequest.team.name}}</td>
 					<td class="time">"{{competitor.age.name}}" ({{competitor.person.birth_year}} г.р.)</td>
@@ -53,6 +55,17 @@
 
 	{% endfor %}
 </div>
+
+</div>
+
+<a id="link" href="#">Скачать</a>
+
+<script>
+$("a").on("click", function () {
+    var d = new Date().toISOString().slice(0, 19).replace(/-/g, "");
+    $(this).attr("href", "data:application/vnd.ms-excel,"+document.getElementById('results_div').innerHTML.replace(/ /g, '%20')).attr("download", "final-" + d + ".xls");
+});
+</script>
 
 </body>
 </html>

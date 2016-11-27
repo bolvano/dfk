@@ -35,7 +35,8 @@
 					<tr>
 						<td class="column-name">
 							{% if competitor_form.instance.main_distance%}<span><b>{% endif %}
-							{{competitor_form.instance.person.last_name|title}} {{competitor_form.instance.person.first_name|title}}
+							{{competitor_form.instance.person.last_name|title}} {{competitor_form.instance.person.first_name|title}},
+							{{competitor_form.instance.person.birth_year}} г.р.
 							{% if competitor_form.instance.main_distance%}</b></span>{% endif %}/
                             {{competitor_form.instance.age.name}} {{competitor_form.instance.person.gender}} /
 							({{competitor_form.instance.userrequest.representative}},
@@ -71,8 +72,7 @@
         {% for person in persons %}
             <tr>
 				<td class="column-name">
-
-                    {{person.last_name|title}} {{person.first_name|title}}
+                    {{person.last_name|title}} {{person.first_name|title}}, {{person.birth_year}} г.р.
                 </td>
             </tr>
         {% endfor %}
