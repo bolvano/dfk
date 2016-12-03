@@ -4,21 +4,14 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
 from django import forms
 from django.forms import modelformset_factory
-
-import datetime
-import json
-import csv
-import decimal
+from django.forms.widgets import TextInput
+from django.contrib.auth import authenticate, login, logout
 
 from .models import Userrequest, Person, Competition, Team, Competitor, Tour, Age, Distance, Style, Start, Cdsg
 
-from django.forms.widgets import TextInput
-
-from django.contrib.auth import authenticate, login, logout
-
+import datetime
+import json
 from collections import defaultdict
-
-from django.db.models import Count
 
 
 class NumberInput(TextInput):
