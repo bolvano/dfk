@@ -92,7 +92,8 @@
 						<input type="hidden" name="competition_id" value="{{competition.id}}">
 
 						<button type="submit"
-								onclick="return confirm('Текущие результаты заплывов будут удалены и сетка будет сгенерирована заново. Продолжить?')"
+								onclick="return confirm('Текущие результаты заплывов будут удалены
+								и сетка будет сгенерирована заново. Продолжить?')"
 								class="generate-starts btn btn-lg btn-warning"> <span
 								class="glyphicon glyphicon-refresh"></span> Перегенерировать заплывы</button>
 
@@ -174,8 +175,6 @@
 {% endblock %}
 
 {% block additionaljs %}
-	<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css"
-		  rel="stylesheet"> <!-- Custom select styles -->
-	<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script> <!--
-	 Custom select JS -->
+	<link href="{% static 'libs/css/bootstrap-select.min.css' %}" rel="stylesheet"> <!-- Custom select styles -->
+	<script src="{% static 'libs/js/bootstrap-select.min.js' %}"></script> <!-- Custom select JS -->
 {% endblock %}

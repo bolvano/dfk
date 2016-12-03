@@ -46,7 +46,7 @@ body {
   font-size: 1.2rem;
 }
 li.list-margin {
-  margin-bottom: .5em;
+  margin-bottom: 0.5em;
 }
 .no-padding {
   padding: 0;
@@ -243,10 +243,8 @@ select.ng-invalid.ng-dirty {
 .column-time-animation {
   -webkit-animation-name: greenish;
   -webkit-animation-duration: 3s;
-  -webkit-animation-name: greenish;
-          animation-name: greenish;
-  -webkit-animation-duration: 3s;
-          animation-duration: 3s;
+  animation-name: greenish;
+  animation-duration: 3s;
 }
 .column-name-wide {
   padding: 10px !important;
@@ -294,6 +292,19 @@ select.ng-invalid.ng-dirty {
   padding-top: 50px;
   overflow: hidden;
   border-top: 1px solid #979a9d;
+}
+.mb-20 {
+  margin-bottom: 2em !important;
+}
+.add-tour-form {
+  margin-top: 40px;
+  padding: 30px;
+}
+.no-margin-top {
+  margin-top: 0 !important;
+}
+.margin-10 {
+  margin-bottom: 10px;
 }
 /* Login form */
 /*============*/
@@ -390,17 +401,4 @@ select.ng-invalid.ng-dirty {
   100% {
     background-color: #fff;
   }
-}
-.mb-20 {
-  margin-bottom: 2em !important;
-}
-.add-tour-form {
-  margin-top: 40px;
-  padding: 30px;
-}
-.no-margin-top {
-  margin-top: 0px !important;
-}
-.margin-10 {
-  margin-bottom: 10px;
 }

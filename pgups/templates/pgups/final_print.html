@@ -9,8 +9,8 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" media="all" href="{% static 'css/print.css' %}">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> <!-- jQuery core -->
-	<script src="{% static 'js/jquery-ui.min.js' %}"></script> <!-- jQueryUI -->
+	<script src="{% static 'libs/js/jquery.min.js' %}"></script> <!-- jQuery core -->
+	<script src="{% static 'libs/js/jquery-ui.min.js' %}"></script> <!-- jQueryUI -->
 	<title> Итоговые протоколы {{competition.name}}</title>
 
 </head>
@@ -18,14 +18,14 @@
 <div id="results_div">
 <table>
 	<tr><td colspan="5">
-        <h2>Результаты соревнований: {{competition.name}}</h2>
+				<h2>Результаты соревнований: {{competition.name}}</h2>
 	</td></tr>
 
 	{% for t in res %}
 
 	<tr><td colspan="5"><h2>{{t.0.name}}</h2></td></tr>
 
-        {% if not t.2 %}
+				{% if not t.2 %}
 
 		{% for tuple in t.1 %}
 
@@ -77,9 +77,9 @@
 
 		{% endfor %}
 
-        {% endif %}
+				{% endif %}
 
-        {% if t.2 %}
+				{% if t.2 %}
 
 				<table>
 					<col class="col0">
@@ -95,7 +95,7 @@
 						<td class="result"></td>
 						<td class="competitor">
 							{{competitor.person.last_name|title}} {{competitor.person.first_name|title}}
-                             ({{competitor.person.birth_year}} г.р.)
+														 ({{competitor.person.birth_year}} г.р.)
 						</td>
 						<td class="team">
 							{% if competitor.userrequest.team %}
@@ -122,7 +122,7 @@
 						{% endfor %}
 				</table>
 
-        {% endif %}
+				{% endif %}
 	{% endfor %}
 
 	</table>
@@ -134,9 +134,9 @@
 
 <script>
 $("a").on("click", function () {
-    var d = new Date().toISOString().slice(0, 19).replace(/-/g, "");
-    $(this).attr("href", "data:application/vnd.ms-excel,"+document.getElementById('results_div').innerHTML.replace(/
-    /g, '%20')).attr("download", "final-" + d + ".xls");
+		var d = new Date().toISOString().slice(0, 19).replace(/-/g, "");
+		$(this).attr("href", "data:application/vnd.ms-excel,"+document.getElementById('results_div')
+		.innerHTML.replace(/ /g, '%20')).attr("download", "final-" + d + ".xls");
 });
 </script>
 

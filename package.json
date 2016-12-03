@@ -1,0 +1,35 @@
+{
+  "name": "dfk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "",
+  "dependencies": {
+    "angular": "^1.4.9",
+    "angular-animate": "^1.4.9",
+    "angular-ui-sortable": "^0.15.1",
+    "bootstrap": "^3.3.7",
+    "bootstrap-select": "^1.12.1",
+    "jquery": "^3.1.1",
+    "jquery-ui-dist": "^1.12.1",
+    "notie": "^3.9.4"
+  },
+  "devDependencies": {
+    "autoprefixer-stylus": "^0.11.0",
+    "gulp": "^3.9.1",
+    "gulp-stylint": "^4.0.0",
+    "gulp-stylus": "^2.6.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bolvano/dfk.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bolvano/dfk/issues"
+  },
+  "homepage": "https://github.com/bolvano/dfk#readme"
+}
