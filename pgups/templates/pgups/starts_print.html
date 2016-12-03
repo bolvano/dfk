@@ -64,7 +64,8 @@
 <script>
 $("a").on("click", function () {
 		var d = new Date().toISOString().slice(0, 19).replace(/-/g, "");
-		$(this).attr("href", "data:application/vnd.ms-excel,"+document.getElementById('results_div').innerHTML.replace(/ /g, '%20')).attr("download", "starts-" + d + ".xls");
+		$(this).attr("href", "data:application/vnd.ms-excel,"+document.getElementById('results_div')
+		.innerHTML.replace(/ /g, '%20')).attr("download", "starts-" + d + ".xls");
 });
 </script>
 

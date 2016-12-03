@@ -43,7 +43,8 @@ class Person(models.Model):
     userrequest = models.ForeignKey('Userrequest')
     
     def __str__(self):
-        return self.last_name.title() + ' ' + self.first_name.title() + ' (' + str(self.birth_year) + '/' + self.gender +')'
+        return self.last_name.title() + ' ' + self.first_name.title() + ' (' + str(self.birth_year) + '/' + \
+               self.gender +')'
 
 
 #Возрастные группы
@@ -150,7 +151,8 @@ class Competitor(models.Model):
             team = self.userrequest.team.name
         else:
             team = 'Инд.'
-        return self.person.last_name.title() + ' ' + self.person.first_name.title() + ' ('+ team +')' +': ' + self.tour.age.name + ' ' + self.tour.style.name + ' (' + str(self.prior_time) + ')'
+        return self.person.last_name.title() + ' ' + self.person.first_name.title() + ' ('+ team +')' +': ' + \
+               self.tour.age.name + ' ' + self.tour.style.name + ' (' + str(self.prior_time) + ')'
 
     class Meta:
         ordering = ['lane']
@@ -175,3 +177,102 @@ class Start(models.Model):
     
     def __str__(self):
         return self.name + ' #' + str(self.num)
+
+########################################
+# Эстафеты #
+########################################
+
+
+# Дистанции
+class DistanceRelay(models.Model):
+    """Distance  model"""
+    name = models.CharField(max_length=255)
+    meters = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return self.name
+
+
+class TourRelay(models.Model):
+    """TourRelay  model"""
+
+    GENDER_CHOICES = (('М', 'М'), ('Ж', 'Ж'), ('С', 'С'))
+
+    competition = models.ForeignKey('Competition')
+    style = models.ForeignKey('Style')
+    distance = models.ForeignKey('DistanceRelay')
+    age = models.ForeignKey('Age')
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    finished = models.BooleanField()
+    out = models.BooleanField(default=False)
+
+    def __str__(self):
+        out = ' (вне конкурса)' if self.out else ''
+        return self.style.name + ' ' + self.distance.name + ' ' + self.age.name + ' ' + self.gender + out
+
+
+# CDSG
+class CdsgRelay(models.Model):
+    competition = models.ForeignKey('Competition')
+    name = models.CharField(max_length=255, null=True, blank=True, default='foo')
+    number = models.PositiveSmallIntegerField(default=1)
+
+    def __str__(self):
+        return self.name + ' #' + str(self.number)
+
+
+# Старты
+class StartRelay(models.Model):
+    """Start  model"""
+
+    name = models.CharField(max_length=255, null=True, blank=True, default='foo')
+    cdsg = models.ForeignKey('CdsgRelay')
+    num = models.PositiveSmallIntegerField(default=1)  # num in cdsg
+
+    def __str__(self):
+        return self.name + ' #' + str(self.num)
+
+
+#Участники
+class TeamRelay(models.Model):
+
+    """ ~ Competitor  model"""
+    userrequest = models.ForeignKey('Userrequest')
+    age = models.ForeignKey('Age')
+    approved = models.BooleanField(default=False)
+    tour = models.ForeignKey('TourRelay')
+
+    time = models.DecimalField(max_digits=7, decimal_places=2, null=True)
+    result = models.PositiveSmallIntegerField(null=True)
+    points = models.PositiveSmallIntegerField(null=True)
+    disqualification = models.PositiveSmallIntegerField(default=0)
+    lane = models.PositiveIntegerField(null=True)
+
+    def __str__(self):
+        if self.userrequest.team:
+            team = self.userrequest.team.name
+        else:
+            team = 'Инд.'
+
+        return  team + ': ' + self.tour.age.name + ' ' + self.tour.style.name
+
+    class Meta:
+        ordering = ['lane']
+
+
+class CompetitorRelay(models.Model):
+
+    teamRelay = models.ForeignKey('TeamRelay')
+    person = models.ForeignKey('Person')
+    order = models.PositiveSmallIntegerField(default=1)  # order in relay
+    start = models.ForeignKey('StartRelay', null=True)
+    time = models.DecimalField(max_digits=7, decimal_places=2, null=True)
+    points = models.PositiveSmallIntegerField(null=True)
+
+    def __str__(self):
+        if self.teamRelay.userrequest.team:
+            team = self.teamRelay.userrequest.team.name
+        else:
+            team = 'Инд.'
+        return self.person.last_name.title() + ' ' + self.person.first_name.title() + ' ('+ team +')' +': ' + \
+               self.teamRelay.tour.age.name + ' ' + self.teamRelay.tour.style.name
