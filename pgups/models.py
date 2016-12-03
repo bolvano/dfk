@@ -92,16 +92,7 @@ class Userrequest(models.Model):
     
     def __str__(self):
         team = '('+self.team.name+')' if self.team else '(Инд.)'
-        return self.competition.name + ' ' + team  
-
-    def get_client_ip(request):                                     
-        # Получает IP пользователя
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-        if x_forwarded_for:
-            ip = x_forwarded_for.split(',')[0]
-        else:
-            ip = request.META.get('REMOTE_ADDR')
-        return ip
+        return self.competition.name + ' ' + team
 
     def approved_competitors(self):
         return self.competitor_set.filter(approved=True)
