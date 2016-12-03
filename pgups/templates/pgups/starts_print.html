@@ -9,6 +9,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" media="all" href="{% static 'css/print.css' %}">
+	<script src="{% static 'libs/js/jquery.min.js' %}"></script> <!-- jQuery core -->
 	<title> Стартовые протоколы</title>
 </head>
 <body>
@@ -26,18 +27,18 @@
 
 
 					{% for start in cdsg.start_set.all %}
-    		<div class="div-table">
+				<div class="div-table">
 			<table>
 
-                <col class="col0">
+								<col class="col0">
 				<col class="col2">
 				<col class="col3">
 				<col class="col4">
-                <tr><th colspan="4">Заплыв {{start.num}} ({{start.name}})</th></tr>
+								<tr><th colspan="4">Заплыв {{start.num}} ({{start.name}})</th></tr>
 
-                    {% for competitor in start.competitor_set.all %}
+										{% for competitor in start.competitor_set.all %}
 				<tr>
-                    <td class="lane"> {{competitor.lane}}</td>
+										<td class="lane"> {{competitor.lane}}</td>
 					<td class="competitor">
 						{% if competitor.main_distance%}<span><b>{% endif %}
 						{{competitor.person.last_name|title}} {{competitor.person.first_name|title}}
@@ -48,9 +49,9 @@
 					<td class="time">"{{competitor.age.name}}" ({{competitor.person.birth_year}} г.р.)</td>
 				</tr>
 					{% endfor %}
-            </table>
-		    </div>
-                    {% endfor %}
+						</table>
+				</div>
+										{% endfor %}
 
 
 	{% endfor %}
@@ -62,8 +63,8 @@
 
 <script>
 $("a").on("click", function () {
-    var d = new Date().toISOString().slice(0, 19).replace(/-/g, "");
-    $(this).attr("href", "data:application/vnd.ms-excel,"+document.getElementById('results_div').innerHTML.replace(/ /g, '%20')).attr("download", "final-" + d + ".xls");
+		var d = new Date().toISOString().slice(0, 19).replace(/-/g, "");
+		$(this).attr("href", "data:application/vnd.ms-excel,"+document.getElementById('results_div').innerHTML.replace(/ /g, '%20')).attr("download", "starts-" + d + ".xls");
 });
 </script>
 

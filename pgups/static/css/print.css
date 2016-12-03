@@ -1,62 +1,56 @@
 @media all {
+  body {
+    width: 100%;
+    margin: 0;
+    font-size: 11pt;
+  }
 
-	body {
-		width: 100%;
-		margin: 0;
-		font-size: 11pt;
-	}
+  .cdsg_name {
+    font-size: 15pt;
+  }
 
-	.cdsg_name {
-	    font-size: 15pt;
-	}
+  table {
+    border-collapse: collapse;
+    text-align: left;
+    width: 100%;
+    table-layout: fixed;
+    page-break-inside: auto;
+  }
 
-	table {
+  .div-table {
+    padding-bottom: 10px;
+    margin-left: 10px;
+    /*display: inline-block;*/
+    width: 80%;
+    vertical-align: top;
+    zoom: 1;
 
-		border-collapse: collapse;
-		text-align: left;
-		width: 100%;
-		table-layout: fixed;
-		page-break-inside: auto;
-	}
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
 
-	.div-table {
-		padding-bottom: 10px;
-		margin-left: 10px;
-		/*display: inline-block;*/
-		width: 80%;
-		vertical-align: top;
-		zoom: 1;
+  td,th {
+    border: 1px solid black;
+    padding: 3px;
+  }
 
-		page-break-inside: avoid;
-		page-break-after: auto;
-	}
+  .col0 {
+    width: 6%;
+  }
 
-	tr {
+  .col1 {
+    width: 6%;
+  }
 
-	}
+  .col2 {
+    width: 46%;
+  }
 
-	td,th {
-		border: 1px solid black;
-		padding: 3px;
-	}
+  .col3 {
+    width: 22%;
+  }
 
-	.col0 {
-	    width: 6%;
-	}
-
-	.col1 {
-	    width: 6%;
-	}
-
-	.col2 {
-		width: 46%;
-	}
-
-	.col3 {
-		width: 22%;
-	}
-
-	.col4 {
-		width: 20%;
-	}
+  .col4 {
+    width: 20%;
+  }
 }
