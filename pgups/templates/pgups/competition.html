@@ -20,7 +20,8 @@
 					{% else %}
 						индивидуальная заявка
 					{% endif %}
-					</a> {% if user.is_authenticated %} (подтверждено: {{userrequest.approved_competitors|length}} из {{userrequest.competitor_set.all|length}}){% endif %}
+					</a> {% if user.is_authenticated %} (подтверждено: {{userrequest.approved_competitors|length}} из
+					{{userrequest.competitor_set.all|length}}){% endif %}
 				</li>
 			{% endfor %}
 		</ul>
@@ -65,7 +66,8 @@
 				</a>
 
 
-				<a class="pull-right btn btn-lg btn-default" href="{% url 'starts_print' competition_id=competition.id %}" target="_blank">
+				<a class="pull-right btn btn-lg btn-default"
+				   href="{% url 'starts_print' competition_id=competition.id %}" target="_blank">
 					<span class="glyphicon glyphicon-print"></span> <span>Стартовые протоколы</span>
 				</a>
 				{% endif %}
@@ -75,7 +77,8 @@
 			{% if user.is_authenticated %}
 
 				<div class="col-lg-12 col-md-12 col-sm-12">
-					<a class="pull-left btn btn-lg btn-default" href="../../competition_starts_sort/{{competition.id}}/">
+					<a class="pull-left btn btn-lg btn-default"
+					   href="../../competition_starts_sort/{{competition.id}}/">
 						<span class="glyphicon glyphicon-wrench"></span> <span>Ручная настройка заплывов</span>
 					</a>
 				</div>
@@ -88,7 +91,10 @@
 
 						<input type="hidden" name="competition_id" value="{{competition.id}}">
 
-						<button type="submit" onclick="return confirm('Текущие результаты заплывов будут удалены и сетка будет сгенерирована заново. Продолжить?')" class="generate-starts btn btn-lg btn-warning"> <span class="glyphicon glyphicon-refresh"></span> Перегенерировать заплывы</button>
+						<button type="submit"
+								onclick="return confirm('Текущие результаты заплывов будут удалены и сетка будет сгенерирована заново. Продолжить?')"
+								class="generate-starts btn btn-lg btn-warning"> <span
+								class="glyphicon glyphicon-refresh"></span> Перегенерировать заплывы</button>
 
 						<select class="selectpicker pull-left lanes-select" name="lanes">
 							<option value="5">5 дорожек</option>
@@ -105,7 +111,8 @@
 				</div>
 
 				<div class="col-lg-6 col-md-6 col-sm-6 margin-10">
-					<a class="pull-right btn btn-lg btn-default" href="{% url 'competitionedit' competition_id=competition.id %}/" target="_blank">
+					<a class="pull-right btn btn-lg btn-default"
+					   href="{% url 'competitionedit' competition_id=competition.id %}/" target="_blank">
 						<span class="glyphicon glyphicon-wrench"></span> <span>Редактировать соревнования</span>
 					</a>
 				</div>
@@ -129,19 +136,23 @@
 	<div class="competition-menu">
 
 		<p>
-			<a class="btn btn-lg btn-primary" href="../../results/starts/{{competition.id}}/"><span class="glyphicon glyphicon-list-alt"></span> Результаты по заплывам и дорожкам</a>
+			<a class="btn btn-lg btn-primary" href="../../results/starts/{{competition.id}}/"><span
+					class="glyphicon glyphicon-list-alt"></span> Результаты по заплывам и дорожкам</a>
 		</p>
 
 		<p>
-			<a class="btn btn-lg btn-primary" href="../../results/tours/{{competition.id}}/"><span class="glyphicon glyphicon-list-alt"></span> Результаты по дисциплинам</a>
+			<a class="btn btn-lg btn-primary" href="../../results/tours/{{competition.id}}/"><span
+					class="glyphicon glyphicon-list-alt"></span> Результаты по дисциплинам</a>
 		</p>
 
 		<p>
-			<a class="btn btn-lg btn-primary" href="../../results/teams/{{competition.id}}/"><span class="glyphicon glyphicon-list-alt"></span> Результаты по командам</a>
+			<a class="btn btn-lg btn-primary" href="../../results/teams/{{competition.id}}/"><span
+					class="glyphicon glyphicon-list-alt"></span> Результаты по командам</a>
 		</p>
 
 		<p>
-			<a class="btn btn-lg btn-primary" href="{% url 'final_print' competition_id=competition.id %}" target="_blank"> <span class="glyphicon glyphicon-print"></span> Итоговые протоколы</a>
+			<a class="btn btn-lg btn-primary" href="{% url 'final_print' competition_id=competition.id %}"
+			   target="_blank"> <span class="glyphicon glyphicon-print"></span> Итоговые протоколы</a>
 		</p>
 
 		{% if user.is_authenticated %}
@@ -163,6 +174,8 @@
 {% endblock %}
 
 {% block additionaljs %}
-	<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css" rel="stylesheet"> <!-- Custom select styles -->
-	<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script> <!-- Custom select JS -->
+	<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css"
+		  rel="stylesheet"> <!-- Custom select styles -->
+	<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script> <!--
+	 Custom select JS -->
 {% endblock %}

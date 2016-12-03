@@ -35,7 +35,8 @@
 									</td>
 									<td class="column-result-wide">
 										{% if c.main_distance%}<span><b>{% endif %}
-											{{c.time|formatSeconds}} {% if c.main_distance%}</b></span>{% endif %} ({{c.prior_time|formatSeconds}})
+											{{c.time|formatSeconds}} {% if c.main_distance%}</b></span>{% endif %}
+										({{c.prior_time|formatSeconds}})
 
 									</td>
 								</tr>
@@ -53,7 +54,8 @@
 						<ul class="basic-list">
 							{% for c in result.2 %}
 								<li class="alt-color">
-									{{c.0.person.last_name|title}} {{c.0.person.first_name|title}} ({{c.1}}{% if c.0.time > 0 %}, {{c.0.time|formatSeconds}}{% endif %})
+									{{c.0.person.last_name|title}} {{c.0.person.first_name|title}} ({{c.1}}{% if
+									c.0.time > 0 %}, {{c.0.time|formatSeconds}}{% endif %})
 								</li>
 							{% endfor %}
 						</ul>
