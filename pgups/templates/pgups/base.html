@@ -10,12 +10,15 @@
 		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
-	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"> <!-- Bootstrap CSS-->
+
+	<link href="{% static 'libs/css/bootstrap.min.css' %}" rel="stylesheet"> <!-- Bootstrap CSS-->
+	<link href="{% static 'libs/css/jquery-ui.min.css' %}" rel="stylesheet"> <!-- jQueryUI CSS -->
+	<link href="{% static 'libs/css/notie.css' %}" rel="stylesheet"> <!-- Notie CSS -->
 	<link href="{% static 'css/main.css' %}" rel="stylesheet"> <!-- Main CSS -->
-	<link href="{% static 'css/jquery-ui.min.css' %}" rel="stylesheet"> <!-- jQueryUI CSS -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> <!-- jQuery core -->
-	<script src="{% static 'js/jquery-ui.min.js' %}"></script> <!-- jQueryUI -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> <!-- Bootstrap JS -->
+
+	<script src="{% static 'libs/js/jquery.min.js' %}"></script> <!-- jQuery core -->
+	<script src="{% static 'libs/js/jquery-ui.min.js' %}"></script> <!-- jQueryUI -->
+	<script src="{% static 'libs/js/bootstrap.min.js' %}"></script> <!-- Bootstrap JS -->
 
 </head>
 
@@ -54,8 +57,8 @@
 	</footer> <!-- End of Footer -->
 
 	<!-- Additional JS -->
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script> <!-- AngularJS -->
-	<script src="{% static 'js/notie.js' %}"></script> <!-- Notie -->
+	<script src="{% static 'libs/js/angular.min.js' %}"></script> <!-- AngularJS -->
+	<script src="{% static 'libs/js/notie.min.js' %}"></script> <!-- Notie -->
 
 	{% block additionaljs %}
 	{% endblock %}

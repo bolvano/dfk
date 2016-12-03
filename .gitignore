@@ -10,3 +10,4 @@ pgups/static/css/main.styl
 gulpfile.js
 node_modules/
 
+/.project
