@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import json
-from pgups.models import Userrequest, Competition, Team, Competitor, Tour, Age, Distance, Style, Start, Cdsg
+from pgups.models import Userrequest, Competition, Team, TeamRelay, Competitor, Tour, TourRelay, Age, Distance, \
+    DistanceRelay, Style, Start, Cdsg
 from django.http import HttpResponse
+
 
 def get_competitions(request, userrequest_id=None):
     competition_list = []
@@ -100,6 +102,7 @@ def get_ages_distances_styles(request, competition_id=None):
         data['data'] = {}
         data['fetchedData'] = {}
         data['tours'] = []
+        data['toursRelay'] = []
 
         data['data']['id'] = competition_id
         data['data']['name'] = competition.name
@@ -115,6 +118,7 @@ def get_ages_distances_styles(request, competition_id=None):
         data['data']['date_finish'] = competition.date_end.isoformat()
 
         tours = Tour.objects.filter(competition=competition)
+        toursRelay = TourRelay.objects.filter(competition=competition)
 
         distances = list(Distance.objects.all())
         competition_distances = list(Distance.objects.distinct().filter(tour__in=tours))
@@ -137,6 +141,26 @@ def get_ages_distances_styles(request, competition_id=None):
             obj = {'name':age.name,'id': age.id, 'kids': age.kids, 'min_age': age.min_age, 'max_age':  age.max_age}
             data['fetchedData']['ages'].append(obj)
 
+
+        # Эстафеты
+        distances = list(DistanceRelay.objects.all())
+        data['fetchedData']['distancesRelay'] = []
+        for distance in distances:
+            obj = {'name':distance.name,'id': distance.id}
+            data['fetchedData']['distancesRelay'].append(obj)
+
+        styles = list(Style.objects.all())
+        data['fetchedData']['stylesRelay'] = []
+        for style in styles:
+            obj = {'name':style.name,'id': style.id}
+            data['fetchedData']['stylesRelay'].append(obj)
+
+        ages = list(Age.objects.all().order_by('min_age'))
+        data['fetchedData']['agesRelay'] = []
+        for age in ages:
+            obj = {'name':age.name,'id': age.id, 'kids': age.kids, 'min_age': age.min_age, 'max_age':  age.max_age}
+            data['fetchedData']['agesRelay'].append(obj)
+
         for tour in tours:
             num_of_competitors = len(Competitor.objects.filter(tour=tour))
             data['tours'].append({'id': tour.id,
@@ -150,10 +174,27 @@ def get_ages_distances_styles(request, competition_id=None):
                                   'num_of_competitors': num_of_competitors
             })
 
+        for tour in toursRelay:
+            num_of_teams = len(TeamRelay.objects.filter(tour=tour))
+            data['tours'].append({'id': tour.id,
+                                  'age': tour.age.id,
+                                  'name': tour.__str__(),
+                                  'distance': tour.distance.id,
+                                  'style': tour.style.id,
+                                  'gender': tour.gender,
+                                  'min_age': tour.age.min_age,
+                                  'max_age': tour.age.max_age,
+                                  'num_of_teams': num_of_teams
+            })
+
         return HttpResponse(json.dumps({'ages': data['fetchedData']['ages'],
                                         'styles': data['fetchedData']['styles'],
                                         'distances': data['fetchedData']['distances'],
                                         'tours': data['tours'],
+                                        'agesRelay': data['fetchedData']['agesRelay'],
+                                        'stylesRelay': data['fetchedData']['stylesRelay'],
+                                        'distancesRelay': data['fetchedData']['distancesRelay'],
+                                        'toursRelay': data['toursRelay'],
                                         'id': data['data']['id'],
                                         'name': data['data']['name'],
                                         'type': data['data']['type'],
@@ -176,9 +217,29 @@ def get_ages_distances_styles(request, competition_id=None):
     for s in styles:
         style = {'id': s.id, 'name': s.name}
         style_list.append(style)
+
+    age_list_relay = []
+    ages = Age.objects.all().order_by('min_age')
+    for a in ages:
+        age = {'id': a.id, 'name': a.name, 'kids': a.kids}
+        age_list_relay.append(age)
+    distance_list_relay = []
+    distances = DistanceRelay.objects.all()
+    for d in distances:
+        distance = {'id': d.id, 'name': d.name}
+        distance_list_relay.append(distance)
+    style_list_relay = []
+    styles = Style.objects.all()
+    for s in styles:
+        style = {'id': s.id, 'name': s.name}
+        style_list_relay.append(style)
+
     return HttpResponse(json.dumps({'ages':age_list,
                                     'distances':distance_list,
-                                    'styles':style_list
+                                    'styles':style_list,
+                                    'ages_relay': age_list_relay,
+                                    'distances_relay': distance_list_relay,
+                                    'styles_relay': style_list_relay,
                                     }), content_type="application/json")
 
 

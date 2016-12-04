@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import  Competition, Team, Person, Age, Style, Distance, Userrequest, Tour, Competitor, Start, Cdsg
+from .models import  Competition, Team, Person, Age, Style, Distance, Userrequest, Tour, Competitor, Start, Cdsg, \
+    TeamRelay, DistanceRelay, TourRelay, CompetitorRelay, StartRelay, CdsgRelay
 
 admin.site.register(Competition)
 admin.site.register(Team)
@@ -12,3 +13,13 @@ admin.site.register(Tour)
 admin.site.register(Competitor)
 admin.site.register(Start)
 admin.site.register(Cdsg)
+
+admin.site.register(TeamRelay)
+admin.site.register(DistanceRelay)
+admin.site.register(TourRelay)
+admin.site.register(CompetitorRelay)
+admin.site.register(StartRelay)
+admin.site.register(CdsgRelay)
+
+
+
