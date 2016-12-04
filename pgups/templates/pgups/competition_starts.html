@@ -34,18 +34,18 @@
 					<tbody>
 
 						<tr>
-							<td class="column-lane text-center light-blue-background">№</td>
-							<td class="column-name light-blue-background">Участник</td>
-							<td class="column-team text-center light-blue-background">Команда</td>
-							<td class="column-age text-center light-blue-background">Категория</td>
-							<td class="column-time text-center light-blue-background">Предв. время</td>
-							<td class="column-time text-center light-blue-background">Результат</td>
+							<td class="column-lane text-center">№</td>
+							<td class="column-name">Участник</td>
+							<td class="column-team text-center">Команда</td>
+							<td class="column-age text-center">Категория</td>
+							<td class="column-time text-center">Предв. время</td>
+							<td class="column-time text-center">Результат</td>
 						</tr>
 
 					{% for competitor in start.competitor_set.all %}
 
 						<tr>
-							<td class="column-lane text-center light-blue-background">{{competitor.lane}}</td>
+							<td class="column-lane text-center">{{competitor.lane}}</td>
 							<td class="column-name">{{competitor.person.last_name|title}} {{competitor.person.first_name|title}}</td>
 							<td class="column-team text-center">{{competitor.userrequest.team}}</td>
 							<td class="column-age text-center">{{competitor.age}}</td>

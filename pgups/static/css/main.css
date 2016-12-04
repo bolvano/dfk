@@ -89,6 +89,9 @@ li.list-margin {
 .bootstrap-select {
   width: 100% !important;
 }
+.bordered-item {
+  border-bottom: 1px solid #bbb;
+}
 /* Competition page */
 /*==================*/
 .competition-menu {
