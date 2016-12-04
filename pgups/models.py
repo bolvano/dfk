@@ -245,7 +245,7 @@ class TeamRelay(models.Model):
         else:
             team = 'Инд.'
 
-        return  team + ': ' + self.tour.age.name + ' ' + self.tour.style.name
+        return team + ': ' + self.tour.age.name + ' ' + self.tour.style.name
 
     class Meta:
         ordering = ['lane']
