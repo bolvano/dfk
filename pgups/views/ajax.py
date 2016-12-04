@@ -237,9 +237,9 @@ def get_ages_distances_styles(request, competition_id=None):
     return HttpResponse(json.dumps({'ages':age_list,
                                     'distances':distance_list,
                                     'styles':style_list,
-                                    'ages_relay': age_list_relay,
-                                    'distances_relay': distance_list_relay,
-                                    'styles_relay': style_list_relay,
+                                    'agesRelay': age_list_relay,
+                                    'distancesRelay': distance_list_relay,
+                                    'stylesRelay': style_list_relay,
                                     }), content_type="application/json")
 
 
