@@ -27,19 +27,40 @@
 
           <!-- REQUESTS -->
           <div id="requests" class="tab-pane fade in active">
-            <ul class="basic-list">
-              {% for userrequest in competition.userrequest_set.all %}
-                <li>
-                  <a href="../../userrequest/{{userrequest.id}}/">{{userrequest.date|date:"d.m.Y"}}:
-                  {% if userrequest.team %}
-                    {{userrequest.team}} ({{userrequest.representative}})
-                  {% else %}
-                    индивидуальная заявка
-                  {% endif %}
-                  </a> {% if user.is_authenticated %} (подтверждено: {{userrequest.approved_competitors|length}} из {{userrequest.competitor_set.all|length}}){% endif %}
-                </li>
-              {% endfor %}
-            </ul>
+
+
+        <table class="table table-striped table-hover table-bordered">
+          <thead>
+
+            <tr>
+              <th class="text-center">Дата</th>
+              <th class="text-center">Команда</th>
+              <th class="text-center">Тренер</th>
+              {% if user.is_authenticated %}
+                <th class="text-center">Подтверджено</th>
+              {% endif %}
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for userrequest in competition.userrequest_set.all %}
+              <tr >
+                <td class="text-center"><a href="../../userrequest/{{userrequest.id}}/">{{userrequest.date|date:"d.m.Y"}}</a></td>
+                {% if userrequest.team %}
+                  <td class="text-center">{{userrequest.team}}</td>
+                {% else %}
+                  <td class="text-center">индивидуальная заявка</td>
+                {% endif %}
+                  <td class="text-center">{{userrequest.representative}}</td>
+                {% if user.is_authenticated %}
+                  <td class="text-center">{{userrequest.approved_competitors|length}} из {{userrequest.competitor_set.all|length}}</td>
+                {% endif %}
+              </tr>
+            {% endfor %}
+          </tbody>
+
+          </table>
+
           </div>
 
           <!-- TEAMS -->
@@ -87,10 +108,11 @@
             </a>
           </li>
 
+
           <li class="nav-item">
-            <a href="../../competition_starts_sort/{{competition.id}}/">
-              <span>Настройка заплывов</span>
-              <span class="pull-right glyphicon glyphicon-wrench"></span>
+            <a href="{% url 'starts_print' competition_id=competition.id %}" target="_blank">
+              <span>Стартовые протоколы</span>
+              <span class="pull-right glyphicon glyphicon-print"></span>
             </a>
           </li>
 
@@ -102,7 +124,16 @@
             </a>
           </li>
 
+          <li class="nav-item bordered-item">
+            <a href="../../competition_starts_sort/{{competition.id}}/">
+              <span>Настройка заплывов</span>
+              <span class="pull-right glyphicon glyphicon-wrench"></span>
+            </a>
+          </li>
+
           <li role="separator" class="divider"></li>
+
+
 
           <li class="nav-item">
             <a href="{% url 'competitionedit' competition_id=competition.id %}/" target="_blank">
@@ -111,12 +142,7 @@
             </a>
           </li>
 
-          <li class="nav-item">
-            <a href="{% url 'starts_print' competition_id=competition.id %}" target="_blank">
-              <span>Стартовые протоколы</span>
-              <span class="pull-right glyphicon glyphicon-print"></span>
-            </a>
-          </li>
+
 
           <li class="nav-item">
             <form action="." method="POST" >{% csrf_token %}
