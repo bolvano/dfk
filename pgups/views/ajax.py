@@ -176,7 +176,7 @@ def get_ages_distances_styles(request, competition_id=None):
 
         for tour in toursRelay:
             num_of_teams = len(TeamRelay.objects.filter(tour=tour))
-            data['tours'].append({'id': tour.id,
+            data['toursRelay'].append({'id': tour.id,
                                   'age': tour.age.id,
                                   'name': tour.__str__(),
                                   'distance': tour.distance.id,
