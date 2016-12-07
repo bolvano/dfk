@@ -57,6 +57,7 @@ function CreationFormController($scope, $http, $timeout, $window, $log, filterFi
     vm.newRelay = {out: false};
 
     vm.genders = [{ name: 'М' }, { name: 'Ж' }];
+    vm.gendersRelay = [{ name: 'М' }, { name: 'Ж' }, { name: 'Смешанные'}];
 
     vm.addTours = addTours;
     vm.addRelays = addRelays;
@@ -126,6 +127,10 @@ function CreationFormController($scope, $http, $timeout, $window, $log, filterFi
                 $timeout(function() {
                     groupTours(vm.data.ages, 2);
                 });
+            }
+
+            if (!vm.data.toursRelay) {
+                vm.data.toursRelay = [];
             }
 
             return data;
@@ -199,7 +204,7 @@ function CreationFormController($scope, $http, $timeout, $window, $log, filterFi
         vm.newRelays = [];
         vm.existingRelays = [];
         var ages = selected(vm.data.agesRelay);
-        var genders = selected(vm.genders);
+        var genders = selected(vm.gendersRelay);
 
         for (var k = 0; k < genders.length; k++) {
             for (var i = 0; i < ages.length; i++) {
@@ -243,6 +248,9 @@ function CreationFormController($scope, $http, $timeout, $window, $log, filterFi
         $timeout(function() {
             groupTours(vm.data.agesRelay, '.relay-edit-');
         });
+
+        vm.clearSelection(vm.data.agesRelay);
+        vm.clearSelection(vm.gendersRelay);
     }
 
     function disableAge(type) {
@@ -383,7 +391,6 @@ function CreationFormController($scope, $http, $timeout, $window, $log, filterFi
 
         if (!vm.edit) {
             vm.data.tours = selected(vm.tours);
-            vm.data.toursRelay = selected(vm.toursRelay);
         }
 
         // disable button to prevent multiple requests

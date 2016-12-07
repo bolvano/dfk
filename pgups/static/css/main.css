@@ -349,10 +349,12 @@ select .ng-invalid.ng-dirty {
   padding-top: 0;
 }
 .mb-20 {
-  margin-bottom: 2em !important;
+  margin-bottom: 1em !important;
 }
 .add-tour-form {
   padding: 30px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 30px;
 }
 .no-margin-top {
   margin-top: 0 !important;
