@@ -23,7 +23,7 @@ body {
   font-size: 0.8em;
 }
 .heading {
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   padding-bottom: 20px;
   border-bottom: 1px solid #979a9d;
 }
@@ -340,18 +340,21 @@ select .ng-invalid.ng-dirty {
   opacity: 0;
 }
 .button-wrapper {
-  margin-top: 50px;
-  margin-bottom: 50px;
-  padding-top: 50px;
+  margin-bottom: 20px;
   overflow: hidden;
-  border-top: 1px solid #979a9d;
+}
+.button-wrapper.no-border {
+  border: none;
+  margin-top: 0;
+  padding-top: 0;
 }
 .mb-20 {
-  margin-bottom: 2em !important;
+  margin-bottom: 1em !important;
 }
 .add-tour-form {
-  margin-top: 40px;
   padding: 30px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 30px;
 }
 .no-margin-top {
   margin-top: 0 !important;
