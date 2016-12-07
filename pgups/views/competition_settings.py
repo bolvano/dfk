@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from pgups.models import Competition, Competitor, Tour, Age, Distance, Style, Start, Cdsg
+from pgups.models import Competition, Competitor, Tour, Age, Distance, Style, Start, Cdsg, DistanceRelay, TourRelay
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 import datetime
@@ -309,13 +309,33 @@ def create_competition(request, competition_id=None):
                     new_tour_f.distance = distance
                     new_tour_f.age = age
                     new_tour_f.save()
+
+            if 'toursRelay' in data:
+                for tour in data['toursRelay']:
+                    style = Style.objects.get(pk=tour['style'])
+                    age = Age.objects.get(pk=tour['age'])
+                    distance = DistanceRelay.objects.get(pk=tour['distance'])
+                    if tour['gender'] == 'Смешанные':
+                        gender = 'С'
+                    elif tour['gender'] == 'М':
+                        gender = 'М'
+                    else:
+                        gender = 'Ж'
+
+                    new_tour_m = TourRelay(competition=competition, finished=False)
+                    new_tour_m.gender = gender
+                    new_tour_m.style = style
+                    new_tour_m.distance = distance
+                    new_tour_m.age = age
+                    new_tour_m.save()
+
         else:
             got_out_of_order_tours = False
             existing_tours = Tour.objects.filter(competition=competition)
             if 'tours' in data:
                 form_tours = data['tours']
 
-                #deleteng non-present in form
+                #deleting non-present in form
                 for tour in existing_tours:
                     if tour.id not in [t['id'] for t in form_tours if 'id' in t]:
                         tour.delete()
@@ -344,6 +364,51 @@ def create_competition(request, competition_id=None):
             if got_out_of_order_tours:
                 competition.typ = 'смешанные'
                 competition.save()
+
+            # Эстафеты
+            got_out_of_order_relay = False
+            existing_relays = TourRelay.objects.filter(competition=competition)
+            if 'toursRelay' in data:
+                form_tours = data['toursRelay']
+
+                #deleting non-present in form
+                for tour in existing_relays:
+                    if tour.id not in [t['id'] for t in form_tours if 'id' in t]:
+                        tour.delete()
+
+                #adding new ones
+                for tour in form_tours:
+                    if 'new' in tour:
+                        style = Style.objects.get(pk=tour['style'])
+                        age = Age.objects.get(pk=tour['age'])
+                        distance = DistanceRelay.objects.get(pk=tour['distance'])
+
+                        new_tour = TourRelay(competition=competition, finished=False)
+
+                        if tour['gender'] == 'Смешанные':
+                            gender = 'С'
+                        elif tour['gender'] == 'М':
+                            gender = 'М'
+                        else:
+                            gender = 'Ж'
+
+                        new_tour.gender = gender
+                        new_tour.style = style
+                        new_tour.distance = distance
+                        new_tour.age = age
+
+                        if 'out' in tour:
+                            new_tour.out = True
+                            got_out_of_order_relay = True
+
+                        new_tour.save()
+            else:
+                for tour in existing_relays:
+                    tour.delete()
+            if got_out_of_order_relay:
+                competition.typ = 'смешанные'
+                competition.save()
+
     else:
         data = {}
 
