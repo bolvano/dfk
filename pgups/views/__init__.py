@@ -3,3 +3,4 @@ from .results import *
 from .ajax import *
 from .competition_settings import *
 from .main import *
+from .relay import *

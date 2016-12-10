@@ -7,7 +7,7 @@ from django.forms import modelformset_factory
 
 from django.contrib.auth import authenticate, login, logout
 
-from pgups.models import Userrequest, Person, Competition, Team, Competitor, Tour, Age, Distance, Style, Start, Cdsg
+from pgups.models import Userrequest, Person, Competition, Team, Competitor, Tour, Age, Cdsg
 
 
 import json
