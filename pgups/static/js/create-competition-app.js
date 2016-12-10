@@ -264,11 +264,17 @@ function CreationFormController($scope, $http, $timeout, $window, $log, filterFi
         return false;
     }
 
-    function removeTour(name) {
+    function removeTour(name, targetArray, agesArr, className) {
+
+        function group() {
+            groupTours(agesArr, className);
+        }
+
         if (confirm('Удалить дисциплину ' + '"'+ name +'"?')) {
-            for (var i = 0; i < vm.data.tours.length; i++) {
-                if (vm.data.tours[i].name === name) {
-                    vm.data.tours.splice(i, 1);
+            for (var i = 0; i < targetArray.length; i++) {
+                if (targetArray[i].name === name) {
+                    targetArray.splice(i, 1);
+                    $timeout(group);
                     return;
                 }
             }
@@ -368,7 +374,7 @@ function CreationFormController($scope, $http, $timeout, $window, $log, filterFi
 
     function step3BtnClick() {
         vm.stepCounter.next();
-        vm.groupTours(vm.data.ages, '.tour-final-1-');
+        vm.groupTours(vm.data.ages, '.relay-edit-');
     }
 
     function step3BtnDisabled() {

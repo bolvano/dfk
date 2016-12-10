@@ -168,10 +168,10 @@
 				</div> <!-- End of Heading -->
 
 				<div class="button-wrapper row">
-					<button title="Вернуться к предыдущему шагу" class="btn btn-lg btn-default pull-left col-lg-2" ng-click="$ctrl.edit ? $ctrl.stepCounter.skipPrev() : $ctrl.stepCounter.prev()">
+					<button title="Вернуться к настройкам" class="btn btn-lg btn-default pull-left col-lg-2" ng-click="$ctrl.edit ? $ctrl.stepCounter.skipPrev() : $ctrl.stepCounter.prev()">
 						<span class="glyphicon glyphicon-arrow-left"></span>
 					</button>
-					<button title="Перейти к выбранным дисциплинам" class="btn btn-lg btn-default pull-right col-lg-2" ng-click="$ctrl.step3BtnClick()" ng-disabled="$ctrl.step3BtnDisabled()">
+					<button title="Перейти к редактированию эстафет" class="btn btn-lg btn-default pull-right col-lg-2" ng-click="$ctrl.step3BtnClick()" ng-disabled="$ctrl.step3BtnDisabled()">
 						<span class="glyphicon glyphicon-arrow-right"></span>
 					</button>
 				</div>
@@ -282,7 +282,7 @@
 							{$ tour.name $}
 							<span class="text-muted" ng-show="tour.num_of_competitors > -1">(участников: {$ tour.num_of_competitors $})</span>
 							<span class="text-primary" ng-show="tour.new">(добавлена<span ng-show="tour.out">, вне конкурса</span>)</span>
-							  <a href="#" ng-click="$ctrl.removeTour(tour.name)" ng-show="tour.new || !tour.num_of_competitors"><span class="glyphicon glyphicon-remove"></span></a>
+							  <a href="#" ng-click="$ctrl.removeTour(tour.name, $ctrl.data.tours, $ctrl.data.ages, '.tour-edit-')" ng-show="tour.new || !tour.num_of_competitors"><span class="glyphicon glyphicon-remove"></span></a>
 						</li>
 					</ul> <!-- End of All tours -->
 
@@ -390,15 +390,15 @@
 						</div>
 					</div>
 
-					<!-- All tours -->
+					<!-- All relays -->
 					<ul class="basic-list">
 						<li class="relay-edit-{$ tour.age $} list-margin" ng-repeat="tour in $ctrl.data.toursRelay | orderBy: 'age'">
 							{$ tour.name $}
 							<span class="text-muted" ng-show="tour.num_of_competitors > -1">(участников: {$ tour.num_of_competitors $})</span>
 							<span class="text-primary" ng-show="tour.new">(добавлена<span ng-show="tour.out">, вне конкурса</span>)</span>
-							  <a href="#" ng-click="$ctrl.removeTour(tour.name)" ng-show="tour.new || !tour.num_of_competitors"><span class="glyphicon glyphicon-remove"></span></a>
+							  <a href="#" ng-click="$ctrl.removeTour(tour.name, $ctrl.data.toursRelay, $ctrl.data.agesRelay, '.relay-edit-')" ng-show="tour.new || !tour.num_of_competitors"><span class="glyphicon glyphicon-remove"></span></a>
 						</li>
-					</ul> <!-- End of All tours -->
+					</ul> <!-- End of All relays -->
 
 					<!-- Existing -->
 					<div ng-show="$ctrl.existingRelays.length" class="text-danger">
