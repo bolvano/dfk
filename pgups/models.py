@@ -228,7 +228,8 @@ class StartRelay(models.Model):
 class TeamRelay(models.Model):
 
     """ ~ Competitor  model"""
-    userrequest = models.ForeignKey('Userrequest')
+    name = models.CharField(max_length=255, null=True, blank=True, default='foo')
+    team = models.ForeignKey('Team')
     age = models.ForeignKey('Age')
     approved = models.BooleanField(default=False)
     tour = models.ForeignKey('TourRelay')

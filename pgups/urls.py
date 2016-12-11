@@ -20,12 +20,14 @@ urlpatterns = [
     url(r'^competition/start_result_view/(?P<start_id>\d+)/$', start_result_view),
     url(r'^tour/(?P<id>\d+)/$', tour),
     url(r'^competition/team/(?P<competition_id>\d+)/(?P<team_id>\d+)/$', competition_team),
+    url(r'^relay_teams/(?P<relay_id>\d+)/$', relay_teams),
 
     # ajax
     url(r'^get_competitions/(?P<userrequest_id>\d+)?/?$', get_competitions),
     url(r'^get_teams/$', get_teams),
     url(r'^get_ages_distances_styles/(?P<competition_id>\d+)?/?$', get_ages_distances_styles),
     url(r'^get_competition_starts/(?P<id>\d+)/$', get_competition_starts),
+    url(r'^get_relay_teams/(?P<id>\d+)/$', get_relay_teams),
 
     # starts and tours
     url(r'^generate_starts/$', generate_starts),

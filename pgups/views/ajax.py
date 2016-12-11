@@ -4,6 +4,8 @@ import json
 from pgups.models import Userrequest, Competition, Team, TeamRelay, Competitor, Tour, TourRelay, Age, Distance, \
     DistanceRelay, Style, Start, Cdsg
 from django.http import HttpResponse
+import datetime
+
 
 
 def get_competitions(request, userrequest_id=None):
@@ -297,4 +299,59 @@ def get_competition_starts(request, id):
     return HttpResponse(json.dumps({'competition_id':competition.id,
                                     'competition_name':competition.name,
                                     'starts_list':starts_list
+                                    }), content_type="application/json")
+
+
+def get_relay_teams(request, id):
+
+    now = datetime.datetime.now()
+
+    relay = TourRelay.objects.get(pk=id)
+    competition = relay.competition
+
+    team_list = []
+    relay_team_list = []
+    person_list = []
+
+    relay_teams_qs = TeamRelay.objects.filter(tour=relay)
+    for r in relay_teams_qs:
+        d = {}
+        d['id'] = r.id
+        d['name'] = r.name
+        d['team_id'] = r.team.id
+        d['team_name'] = r.team.name
+        d['tour_id'] = r.tour.id
+        d['tour_name'] = r.tour.__str__()
+        d['gender'] = r.gender
+        d['tour_age_id'] = r.tour.age.id
+        d['tour_age_min'] = r.tour.age.min_age
+        d['tour_age_max'] = r.tour.age.max_age
+        relay_team_list.append(d)
+
+    userrequests = Userrequest.objects.filter(competition=competition)
+    competitors = Competitor.objects.filter(userrequest__in=userrequests)
+
+    for c in competitors:
+        if c.person not in person_list:
+            d = {}
+            d['id'] = c.person.id
+            d['name'] = c.person.__str__()
+            d['gender'] = c.person.gender
+            d['age_id'] = c.age.id
+            d['age'] = int(now.year) - int(c.person.birth_year)
+            d['team_id'] = c.userrequest.team.id
+            d['team_name'] = c.userrequest.team.name
+            person_list.append(d)
+        if c.userrequest.team not in team_list:
+            d = {}
+            d['id'] = c.userrequest.team.id
+            d['name'] = c.userrequest.team.name
+            team_list.append(d)
+
+    return HttpResponse(json.dumps({'competition_id':competition.id,
+                                    'competition_name':competition.name,
+                                    'relay_id':relay.id,
+                                    'persons': person_list,
+                                    'teams': team_list,
+                                    'relayTeams': relay_team_list
                                     }), content_type="application/json")
