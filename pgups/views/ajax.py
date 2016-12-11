@@ -2,7 +2,7 @@
 
 import json
 from pgups.models import Userrequest, Competition, Team, TeamRelay, Competitor, Tour, TourRelay, Age, Distance, \
-    DistanceRelay, Style, Start, Cdsg
+    DistanceRelay, Style, Start, Cdsg, CompetitorRelay
 from django.http import HttpResponse
 import datetime
 
@@ -320,14 +320,7 @@ def get_relay_teams(request, id):
         d = {}
         d['id'] = r.id
         d['name'] = r.name
-        d['team_id'] = r.team.id
-        d['team_name'] = r.team.name
-        d['tour_id'] = r.tour.id
-        d['tour_name'] = r.tour.__str__()
-        d['gender'] = r.gender
-        d['tour_age_id'] = r.tour.age.id
-        d['tour_age_min'] = r.tour.age.min_age
-        d['tour_age_max'] = r.tour.age.max_age
+        d['parent_id'] = r.team.id
         relay_team_list.append(d)
 
     userrequests = Userrequest.objects.filter(competition=competition)
@@ -343,6 +336,15 @@ def get_relay_teams(request, id):
             d['age'] = int(now.year) - int(c.person.birth_year)
             d['team_id'] = c.userrequest.team.id
             d['team_name'] = c.userrequest.team.name
+
+            try:
+                relay_competitor = CompetitorRelay.objects.get(person=c.person)
+                if relay_competitor:
+                    d['relay_team_name'] = relay_competitor.teamRelay.name
+                    d['relay_team_id'] = relay_competitor.teamRelay.id
+                    d['relay_competitor_id'] = relay_competitor.id
+            except CompetitorRelay.DoesNotExist:
+                pass
             person_list.append(d)
 
         relay_team_names = [c.userrequest.team.name + '-' + 'I' * i for i in range(1, max_relay_teams + 1)]
