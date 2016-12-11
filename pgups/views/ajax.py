@@ -344,17 +344,15 @@ def get_relay_teams(request, id):
             d['team_id'] = c.userrequest.team.id
             d['team_name'] = c.userrequest.team.name
             person_list.append(d)
-        if not any(ed['parent_team']['name'] == c.userrequest.team.name for ed in team_list):
-            d = {}
-            d['parent_team'] = {}
-            d['parent_team']['id'] = c.userrequest.team.id
-            d['parent_team']['name'] = c.userrequest.team.name
-            d['child_teams'] = []
-            relay_team_names = [c.userrequest.team.name + '-' + 'I'*i for i in range(1,max_relay_teams+1)]
-            for team_name in relay_team_names:
-                if not any(d['team_name'] == team_name for d in relay_team_list):
-                    d['child_teams'].append(team_name)
-            team_list.append(d)
+
+        relay_team_names = [c.userrequest.team.name + '-' + 'I' * i for i in range(1, max_relay_teams + 1)]
+
+        for rtn in relay_team_names:
+            if not any(ed['name'] == rtn for ed in team_list):
+                d = {}
+                d['name'] = rtn
+                d['parent_id'] = c.userrequest.team.id
+                team_list.append(d)
 
     return HttpResponse(json.dumps({'competition_id':competition.id,
                                     'competition_name':competition.name,
