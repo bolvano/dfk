@@ -343,6 +343,7 @@ def get_relay_teams(request, id):
                     d['relay_team_name'] = relay_competitor.teamRelay.name
                     d['relay_team_id'] = relay_competitor.teamRelay.id
                     d['relay_competitor_id'] = relay_competitor.id
+                    d['order'] = relay_competitor.order
             except CompetitorRelay.DoesNotExist:
                 pass
             person_list.append(d)
