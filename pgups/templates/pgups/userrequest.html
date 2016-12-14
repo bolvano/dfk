@@ -52,7 +52,7 @@
 							{{competitor_form.instance.person.last_name|title}} {{competitor_form.instance.person.first_name|title}}
 							{% if competitor_form.instance.main_distance%}</b></span>{% endif %}
                             {{competitor_form.instance.person.birth_year}} г.р.
-                            ({{competitor_form.instance.age.name}} лет)
+                            ({{competitor_form.instance.age.name}} лет {{competitor_form.instance.person.gender}})
 							{% if competitor_form.instance.tour.out %}В/К{% endif %}
 							<a href="{% url 'regrequest' userrequest_id=userrequest.id %}/">(Редактировать)</a>
 						</td>
