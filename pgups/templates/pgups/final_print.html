@@ -126,8 +126,73 @@
 	{% endfor %}
 
 	</table>
+
+    <br><br>
+
+
+
+
+<table>
+	<tr><td colspan="5">
+				<h2>Результаты эстафет</h2>
+	</td></tr>
+
+	{% for t in res_relay %}
+
+	<tr><td colspan="5"><h2>{{t.0.name}}</h2></td></tr>
+
+
+		{% for tuple in t.1 %}
+
+				<table>
+					<col class="col0">
+					<col class="col1">
+					<col class="col2">
+					<col class="col3">
+					<col class="col4">
+
+					<tr><th colspan="5" class="cdsg_name">{{tuple.0.style|capfirst}}, {{tuple.0.distance|capfirst}},
+						{{tuple.0.gender|capfirst}}, {{tuple.0.age|capfirst}} </th></tr>
+						{% for competitor in tuple.1 %}
+					<tr>
+						<td class="position">{{ forloop.counter }}</td>
+						<td class="result">{% if competitor.result %} {{competitor.result}} {% endif %}</td>
+						<td class="competitor">{{competitor.name}}</td>
+						<td class="team">
+							{% if competitor.team.name %}
+							{{competitor.team.name}}
+							{% endif %}
+						</td>
+						<td class="time"> {{competitor.time|formatSeconds}}  {% if competitor.disqualification > 0 %} <b>
+
+									{% if  competitor.disqualification == 1 %}
+										{% if competitor.tour.gender == 'Ж'%} Не вышла {% else %} Не вышел {% endif %}
+									{% endif %}
+									{% if  competitor.disqualification == 2 %}
+										Фальстарт
+									{% endif %}
+									{% if  competitor.disqualification == 3 %}
+										Нарушение правил поворота
+									{% endif %}
+									{% if  competitor.disqualification == 4 %}
+										Нарушение правил прохождения дистанции
+									{% endif %}
+
+
+						</b> {% endif %}</td>
+					</tr>
+						{% endfor %}
+				</table>
+
+		{% endfor %}
+
+	{% endfor %}
+
+	</table>
 </div>
 <br>
+
+
 
 
 <a id="link" href="#">Скачать</a>

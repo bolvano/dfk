@@ -2,7 +2,7 @@
 
 import json
 from pgups.models import Userrequest, Competition, Team, TeamRelay, Competitor, Tour, TourRelay, Age, Distance, \
-    DistanceRelay, Style, Start, Cdsg
+    DistanceRelay, Style, Start, CdsgRelay
 from django.http import HttpResponse
 
 from django.shortcuts import render, get_object_or_404
@@ -47,5 +47,16 @@ def relay_teams(request, relay_id):
         pass
     else:
         pass
+
     data = {'relay': relay}
     return render(request, 'pgups/relay_teams.html', data)
+
+
+def relay_starts(request, competition_id):
+    competition = Competition.objects.get(pk=competition_id)
+    cdsg_list = CdsgRelay.objects.filter(competition=competition)
+    return render(request, 'pgups/relay_starts.html', {'cdsg_list': cdsg_list,
+                                                             'competition_id':competition_id,
+                                                             'competition': competition,
+                                                            },)
+

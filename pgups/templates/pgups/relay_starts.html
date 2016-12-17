@@ -1,0 +1,85 @@
+{% extends 'pgups/base.html' %}
+{% load staticfiles %}
+{% load extras %}
+{% load l10n %}
+{% block content %}
+
+<div class="container">
+
+	<!-- Heading -->
+	<div class="heading heading-no-margin">
+		<a class="decorated-link" href="{% url 'competition' competition_id=competition.id %}">
+			<h1><b>{{competition.name}}</b></h1>
+		</a>
+        <h1>(Эстафеты)</h1>
+	</div> <!-- End of Heading -->
+
+	{% for cdsg in cdsg_list %}
+
+		<!-- Single discipline -->
+		<div class="single-start-container">
+
+			<h2><b>{{cdsg.name}}</b></h2>
+
+			{% for start in cdsg.startrelay_set.all|dictsort:"num"  %}
+
+				<!-- Start number -->
+				<div class="start-number" id="start{{start.num}}">
+					<h3 class="pull-left">Заплыв {{start.num}} ({{start.name}})</h3>
+					{% if user.is_authenticated %}
+						<a class="btn-results btn-lg pull-right btn btn-info"
+                           href="{% url 'relay_start_result' start_id=start.id %}"> <span
+                                class="glyphicon glyphicon-pencil"></span> Редактировать результат</a>
+					{% endif %}
+				</div> <!-- End of Start number -->
+
+				<table class="table table-striped table-hover table-bordered">
+					<tbody>
+
+						<tr>
+							<td class="column-lane text-center">№</td>
+							<td class="column-team text-center">Команда</td>
+							<td class="column-age text-center">Категория</td>
+							<td class="column-time text-center">Результат</td>
+						</tr>
+
+					{% for relay_team in start.teamrelay_set.all %}
+
+						<tr>
+							<td class="column-lane text-center">{{relay_team.lane}}</td>
+							<td class="column-team text-center">{{relay_team.name}}</td>
+							<td class="column-age text-center">{{relay_team.age}}</td>
+							<td class="column-time text-center">
+								{% if  relay_team.disqualification == 1 %}
+									{% if relay_team.tour.gender == 'Ж'%} Не вышла {% else %} Не вышел {% endif %}
+								{% endif %}
+								{% if  relay_team.disqualification == 2 %}
+									Фальстарт
+								{% endif %}
+								{% if  relay_team.disqualification == 3 %}
+									Нарушение правил поворота
+								{% endif %}
+								{% if  relay_team.disqualification == 4 %}
+									Нарушение правил прохождения дистанции
+								{% endif %}
+
+                                {% if  relay_team.time > 0%}
+
+                                <b>{{relay_team.time|formatSeconds}}</b>
+
+							    {% endif %}</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+
+			{% endfor %}
+            <a class="btn-results btn-lg pull-right btn btn-info" href="{% url 'relay_cdsg_print' cdsg_id=cdsg.id %}"
+               target="_blank"><span class="glyphicon glyphicon-print"></span> Печать результата</a>
+            <br>
+
+		</div> <!-- End of Single discipline -->
+
+	{% endfor %}
+</div>
+{% endblock %}

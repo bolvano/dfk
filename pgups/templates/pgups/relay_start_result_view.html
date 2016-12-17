@@ -1,0 +1,95 @@
+{% extends 'pgups/base.html' %}
+{% load staticfiles %}
+{% load extras %}
+{% block content %}
+
+<!-- Notie messages -->
+{% for message in messages %}
+	<script src="{% static 'js/notie.min.js' %}"></script>
+	<script> notie.alert(1, 'Результат сохранён!', 0.5); </script>
+{% endfor %}
+
+<div class="container">
+
+	<div class="row">
+
+		<!-- Heading -->
+		<div class="heading">
+			<a class="decorated-link" href="{% url 'relay_starts' competition_id=competition_id %}#start{{start_num}}">
+				<h1><b>Список заплывов</b></h1>
+			</a>
+		</div> <!-- End of Heading -->
+
+		<!-- Start number -->
+		<div class="start-number">
+			<h3 class="pull-left">Заплыв {{start_num}} ({{cdsg_name}})</h3>
+			<!--<a class="btn-results btn-lg btn btn-info pull-right" href="../../starts/{{competition_id}}/">Все старты</a>-->
+		</div> <!-- End of Start number -->
+
+		<table class="table table-striped table-hover table-bordered">
+			<tbody>
+
+				<tr>
+					<td class="column-lane text-center light-blue-background">№</td>
+					<td class="column-team text-center light-blue-background">Команда</td>
+					<td class="column-age text-center light-blue-background">Категория</td>
+					<td class="column-time text-center light-blue-background">Результат</td>
+					<td class="column-disqualified padding-15 text-center light-blue-background">Дисквалиф.</td>
+				</tr>
+
+			{% for competitor in relay_teams %}
+
+				<tr>
+					<td class="column-lane text-center light-blue-background">{{competitor.lane}}</td>
+					<td class="column-team text-center">{{competitor.name}}</td>
+					<td class="column-age text-center">{{competitor.age}}</td>
+					<td class="column-time column-time-animation text-center">{{competitor.time|formatSeconds}}</td>
+					<td class="column-disqualified padding-15 text-center">
+						{% if  competitor.disqualification == 1 %}
+							{% if competitor.person.gender == 'Ж'%} Не вышла {% else %} Не вышел {% endif %}
+						{% endif %}
+						{% if  competitor.disqualification == 2 %}
+							Фальстарт
+						{% endif %}
+						{% if  competitor.disqualification == 3 %}
+							Нарушение правил поворота
+						{% endif %}
+						{% if  competitor.disqualification == 4 %}
+							Нарушение правил прохождения дистанции
+						{% endif %}
+					</td>
+				</tr>
+
+			{% endfor %}
+			</tbody>
+		</table>
+
+		<a class="btn btn-default btn-lg pull-right" href="../../relay_start_result/{{start_id}}/"><span
+				class="glyphicon glyphicon-pencil"></span> Редактировать</a>
+		{% if last_in_cdsg %}
+		<br><br><br><a class="btn-lg pull-right btn btn-info" href="{% url 'relay_cdsg_print' cdsg_id=cdsg_id %}"
+                       target="_blank"><span class="glyphicon glyphicon-print"></span> Печать результата</a>
+		{% endif %}
+
+	</div>
+
+	<div class="row">
+
+	<hr>
+
+	{% if prev_start_id %}
+		<a class="btn btn-primary btn-lg pull-left" href="../../relay_start_result/{{prev_start_id}}/">
+			<span class="glyphicon glyphicon-chevron-left"></span> Предыдущий заплыв
+		</a>
+	{% endif %}
+
+	{% if next_start_id %}
+		<a class="btn btn-primary btn-lg pull-right" href="../../relay_start_result/{{next_start_id}}/">
+			Следующий заплыв <span class="glyphicon glyphicon-chevron-right"></span>
+		</a>
+	{% endif %}
+
+	</div>
+
+</div>
+{% endblock %}
