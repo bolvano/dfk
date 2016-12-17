@@ -44,6 +44,7 @@
                             <a class="decorated-link" href="{% url 'userrequest' userrequest_id=competitor_form.instance.userrequest.id %}">
                                 <b>заявка</b>
                             </a>)
+                            {% if competitor_form.instance.tour.out %} В/К{% endif %}
 						</td>
 						<td class="column-tour padding-15">
 							{% if competitor_form.instance.main_distance%}<span><b>{% endif %}
@@ -52,7 +53,6 @@
 							({{competitor_form.instance.prior_time|formatSeconds}})
 							{% if competitor_form.instance.main_distance%}</b></span>{% endif %}
 						</td>
-
 
 						<td class="column-approved padding-15 text-center">{{competitor_form.approved}}</td>
 
