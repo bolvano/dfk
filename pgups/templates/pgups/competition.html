@@ -108,7 +108,6 @@
             </a>
           </li>
 
-
           <li class="nav-item">
             <a href="{% url 'starts_print' competition_id=competition.id %}" target="_blank">
               <span>Стартовые протоколы</span>
@@ -117,7 +116,6 @@
           </li>
 
           <li class="nav-item">
-
             <a href="#" ng-click="comp.openModal();">
               <span>Перегенерировать заплывы</span>
               <span class="glyphicon glyphicon-refresh pull-right"></span>
@@ -133,7 +131,22 @@
 
           <li role="separator" class="divider"></li>
 
+          <li class="nav-item">
+            <a href="../../competition/relay_starts/{{competition.id}}/">
+               <span>Сетка эстафет</span>
+               <span class="pull-right glyphicon glyphicon-list-alt"></span>
+            </a>
+          </li>
 
+          <li class="nav-item bordered-item">
+            <a href="#" ng-click="comp.openModalRelay();">
+              <span>Перегенерировать эстафетные заплывы</span>
+              <span class="glyphicon glyphicon-refresh pull-right"></span>
+            </a>
+          </li>
+
+
+            <li role="separator" class="divider"></li>
 
           <li class="nav-item">
             <a href="{% url 'competitionedit' competition_id=competition.id %}/" target="_blank">
@@ -182,8 +195,46 @@
                 </div>
                 <div class="col-sm-6">
                   <input type="checkbox" name="ages" id="ages">
-                  <label for="ages">С разбивкой по возрастам</span>
+                    <label for="ages">С разбивкой по возрастам</label>
                 </div>
+              </div>
+
+              <div class="modal-footer">
+                <div class="btns-wrapper">
+                  <button type="submit" class="btn btn-default">Перегенерировать</button>
+                  <button type="button" ng-click="$ctrl.cancel()" class="btn btn-default">Отмена</button>
+                </div>
+              </div>
+          </form>
+        </div>
+
+      </div>
+    </script>
+
+    <!-- RELAY MODAL TEMPLATE -->
+    <script type="text/ng-template" id="modalRelay.html">
+      <div class="modal-content">
+
+        <div class="modal-header text-center">
+          <i><span class="text-danger">Внимание!</span> Текущие результаты эстафет будут удалены и сетка будет
+              сгенерирована заново.</i>
+        </div>
+
+        <div class="modal-body">
+          <form action="../../generate_relay_starts/" method="POST" class="inline-form" ng-submit="$ctrl.cancel()">{% csrf_token %}
+              <input type="hidden" name="competition_id" value="{{competition.id}}">
+
+              <div class="row fields">
+                <div class="col-sm-6">
+                  <select name="lanes" class="lanes-select">
+                    <option value="5">5 дорожек</option>
+                    <option value="6">6 дорожек</option>
+                  </select>
+                </div>
+                <!-- <div class="col-sm-6">
+                  <input type="checkbox" name="ages" id="ages">
+                    <label for="ages">С разбивкой по возрастам</label>
+                </div> -->
               </div>
 
               <div class="modal-footer">

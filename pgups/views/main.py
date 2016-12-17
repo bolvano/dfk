@@ -7,7 +7,7 @@ from django.forms import modelformset_factory
 
 from django.contrib.auth import authenticate, login, logout
 
-from pgups.models import Userrequest, Person, Competition, Team, Competitor, Tour, Age, Cdsg
+from pgups.models import Userrequest, Person, Competition, Team, Competitor, Tour, Age, Cdsg, TourRelay, TeamRelay
 
 
 import json
@@ -31,6 +31,8 @@ def competition(request, competition_id):
 
         points = {1:30, 2:25, 3:20, 4:15, 5:10}
 
+        relay_points = {1: 60, 2: 50, 3: 35}
+
         close = request.POST.get("close", '0')
         if close == '1':
             competition.finished=True
@@ -53,6 +55,24 @@ def competition(request, competition_id):
 
                     else:
                         break
+            tours = TourRelay.objects.filter(competition=competition)
+            for tour in tours:
+                competitors = TeamRelay.objects.filter(tour=tour,
+                                                        disqualification=0,
+                                                        time__gt=0).order_by('time')
+                competitors = list(competitors)
+                for i in range(1,6):
+                    if competitors:
+                        c = competitors.pop(0)
+                        if i in relay_points:
+                            c.points = relay_points[i]
+                        if i <= 3:
+                            c.result = i
+                        c.save()
+
+                    else:
+                        break
+
         else:
             competition.finished=False
             tours = Tour.objects.filter(competition=competition)
@@ -62,6 +82,15 @@ def competition(request, competition_id):
                     c.result = 0
                     c.points = 0
                     c.save()
+
+            tours_relay = TourRelay.objects.filter(competition=competition)
+            for tour in tours_relay:
+                competitors = TeamRelay.objects.filter(tour=tour)
+                for c in competitors:
+                    c.result = 0
+                    c.points = 0
+                    c.save()
+
         competition.save()
 
     return render(request, 'pgups/competition.html', {'competition': competition, 'teams':teams},)

@@ -2,8 +2,10 @@
 
 import json
 from pgups.models import Userrequest, Competition, Team, TeamRelay, Competitor, Tour, TourRelay, Age, Distance, \
-    DistanceRelay, Style, Start, Cdsg
+    DistanceRelay, Style, Start, Cdsg, CompetitorRelay
 from django.http import HttpResponse
+import datetime
+
 
 
 def get_competitions(request, userrequest_id=None):
@@ -297,4 +299,68 @@ def get_competition_starts(request, id):
     return HttpResponse(json.dumps({'competition_id':competition.id,
                                     'competition_name':competition.name,
                                     'starts_list':starts_list
+                                    }), content_type="application/json")
+
+
+def get_relay_teams(request, id):
+
+    max_relay_teams = 2
+
+    now = datetime.datetime.now()
+
+    relay = TourRelay.objects.get(pk=id)
+    competition = relay.competition
+
+    team_list = []
+    relay_team_list = []
+    person_list = []
+
+    relay_teams_qs = TeamRelay.objects.filter(tour=relay)
+    for r in relay_teams_qs:
+        d = {}
+        d['id'] = r.id
+        d['name'] = r.name
+        d['parent_id'] = r.team.id
+        relay_team_list.append(d)
+
+    userrequests = Userrequest.objects.filter(competition=competition)
+    competitors = Competitor.objects.filter(userrequest__in=userrequests)
+
+    for c in competitors:
+        if c.person not in person_list:
+            d = {}
+            d['id'] = c.person.id
+            d['name'] = c.person.__str__()
+            d['gender'] = c.person.gender
+            d['age_id'] = c.age.id
+            d['age'] = int(now.year) - int(c.person.birth_year)
+            d['team_id'] = c.userrequest.team.id
+            d['team_name'] = c.userrequest.team.name
+
+            try:
+                relay_competitor = CompetitorRelay.objects.get(person=c.person)
+                if relay_competitor:
+                    d['relay_team_name'] = relay_competitor.teamRelay.name
+                    d['relay_team_id'] = relay_competitor.teamRelay.id
+                    d['relay_competitor_id'] = relay_competitor.id
+                    d['order'] = relay_competitor.order
+            except CompetitorRelay.DoesNotExist:
+                pass
+            person_list.append(d)
+
+        relay_team_names = [c.userrequest.team.name + '-' + 'I' * i for i in range(1, max_relay_teams + 1)]
+
+        for rtn in relay_team_names:
+            if not any(ed['name'] == rtn for ed in team_list):
+                d = {}
+                d['name'] = rtn
+                d['parent_id'] = c.userrequest.team.id
+                team_list.append(d)
+
+    return HttpResponse(json.dumps({'competition_id':competition.id,
+                                    'competition_name':competition.name,
+                                    'relay_id':relay.id,
+                                    'persons': person_list,
+                                    'teams': team_list,
+                                    'relayTeams': relay_team_list
                                     }), content_type="application/json")

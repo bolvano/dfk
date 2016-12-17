@@ -228,24 +228,28 @@ class StartRelay(models.Model):
 class TeamRelay(models.Model):
 
     """ ~ Competitor  model"""
-    userrequest = models.ForeignKey('Userrequest')
+    name = models.CharField(max_length=255, null=True, blank=True, default='foo')
+    team = models.ForeignKey('Team')
     age = models.ForeignKey('Age')
     approved = models.BooleanField(default=False)
     tour = models.ForeignKey('TourRelay')
 
+    start = models.ForeignKey('StartRelay', null=True, blank=True)
+
     time = models.DecimalField(max_digits=7, decimal_places=2, null=True)
-    result = models.PositiveSmallIntegerField(null=True)
-    points = models.PositiveSmallIntegerField(null=True)
+    result = models.PositiveSmallIntegerField(null=True, blank=True)
+    points = models.PositiveSmallIntegerField(null=True, blank=True)
     disqualification = models.PositiveSmallIntegerField(default=0)
-    lane = models.PositiveIntegerField(null=True)
+    lane = models.PositiveIntegerField(null=True, blank=True)
 
     def __str__(self):
-        if self.userrequest.team:
-            team = self.userrequest.team.name
+        if self.team:
+            team = self.team.name
         else:
             team = 'Инд.'
 
-        return team + ': ' + self.tour.age.name + ' ' + self.tour.style.name
+        return self.name + ' (' + team + ') : ' + self.tour.age.name + ' ' + self.tour.style.name + ' ' + \
+               self.tour.gender
 
     class Meta:
         ordering = ['lane']
@@ -256,14 +260,14 @@ class CompetitorRelay(models.Model):
     teamRelay = models.ForeignKey('TeamRelay')
     person = models.ForeignKey('Person')
     order = models.PositiveSmallIntegerField(default=1)  # order in relay
-    start = models.ForeignKey('StartRelay', null=True)
-    time = models.DecimalField(max_digits=7, decimal_places=2, null=True)
-    points = models.PositiveSmallIntegerField(null=True)
+    time = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
+    points = models.PositiveSmallIntegerField(null=True, blank=True)
 
     def __str__(self):
-        if self.teamRelay.userrequest.team:
-            team = self.teamRelay.userrequest.team.name
+        if self.teamRelay.team:
+            team = self.teamRelay.name
         else:
             team = 'Инд.'
         return self.person.last_name.title() + ' ' + self.person.first_name.title() + ' ('+ team +')' +': ' + \
-               self.teamRelay.tour.age.name + ' ' + self.teamRelay.tour.style.name
+               self.teamRelay.tour.age.name + ' ' + self.teamRelay.tour.style.name + ' дорожка ' + \
+               str(self.teamRelay.lane) + ', #' + str(self.order)

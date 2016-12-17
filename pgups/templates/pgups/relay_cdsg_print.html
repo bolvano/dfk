@@ -1,0 +1,78 @@
+{% load staticfiles %}
+{% load extras %}
+
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" media="all" href="{% static 'css/print.css' %}">
+	<title> {{cdsg.name}}, результаты ({{cdsg.competition.name}})</title>
+
+</head>
+
+<body>
+Эстафета {{cdsg.competition.name}}
+<br>
+<br>
+<div>
+	{% for tuple in tour_list %}
+
+		<div class="div-table">
+
+			<table>
+
+				<col class="col0">
+				<col class="col1">
+				<col class="col3">
+				<col class="col4">
+
+				<tr>
+					<th colspan="5">
+						Эстафета
+                        "{{tuple.0.style|capfirst}},
+						{{tuple.0.distance|capfirst}},
+						{{tuple.0.gender|capfirst}},
+						{{tuple.0.age|capfirst}}{% if tuple.0.out %} (вне конкурса){% endif %}"
+					</th>
+				</tr>
+
+				{% for competitor in tuple.1 %}
+
+				<tr>
+					<td class="position">{{ forloop.counter }} </td>
+					<td class="result">{% if competitor.result%}{{competitor.result}}{% endif %}</td>
+					<td class="competitor"> {{competitor.name}}</td>
+					<td class="time"> {{competitor.time|formatSeconds}}  {% if competitor.disqualification > 0 %}
+
+						<b>
+							{% if  competitor.disqualification == 1 %}
+								{% if competitor.tour.gender == 'Ж'%} Не вышла {% else %} Не вышел {% endif %}
+							{% endif %}
+							{% if  competitor.disqualification == 2 %}
+								Фальстарт
+							{% endif %}
+							{% if  competitor.disqualification == 3 %}
+								Нарушение правил поворота
+							{% endif %}
+							{% if  competitor.disqualification == 4 %}
+								Нарушение правил прохождения дистанции
+							{% endif %}
+						</b>
+						{% endif %}
+					</td>
+				</tr>
+
+				{% endfor %}
+
+			</table>
+		</div>
+
+	{% endfor %}
+
+	</div>
+</body>
+</html>

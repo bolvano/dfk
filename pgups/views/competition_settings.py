@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from pgups.models import Competition, Competitor, Tour, Age, Distance, Style, Start, Cdsg, DistanceRelay, TourRelay
+from pgups.models import Competition, Competitor, Tour, Age, Distance, Style, Start, Cdsg, DistanceRelay, TourRelay, \
+    CdsgRelay, StartRelay, CompetitorRelay, TeamRelay
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 import datetime
@@ -17,11 +18,155 @@ def attribute_lanes(competitor_set, num_of_lanes):
 
     return return_set
 
+
+def attribute_lanes_relay(relay_team_set, num_of_lanes):
+    num_of_lanes = int(num_of_lanes)
+    return_set = {}
+    if num_of_lanes == 5:
+        lanes = [3,2,4,1,5]
+    elif num_of_lanes == 6:
+        lanes = [3,4,2,5,1,6]
+    for relay_team in reversed(relay_team_set):
+        return_set[lanes.pop(0)] = relay_team
+    return return_set
+
+
+def generate_relay_starts(request):
+    if request.method == "POST":
+
+        # import ipdb; ipdb.set_trace()
+        competition_id = request.POST.get("competition_id", "")
+        num_of_lanes = int(request.POST.get("lanes", 5))
+        age_diff = bool(request.POST.get("ages", False))
+
+        minimal = 3
+
+        all_starts = []
+
+        competition = Competition.objects.get(pk=competition_id)
+
+        # delete old starts
+        cdsgs = CdsgRelay.objects.filter(competition=competition)
+        for cdsg in cdsgs:
+            starts = StartRelay.objects.filter(cdsg=cdsg)
+            for start in starts:
+                competitors = CompetitorRelay.objects.filter(start=start)
+                for competitor in competitors:
+                    competitor.start = None
+                    competitor.result = None
+                    competitor.points = 0
+                    #competitor.disqualification = 0
+                    #competitor.time = 0
+                    competitor.save()
+            cdsg.delete()
+
+        distances = DistanceRelay.objects.all().order_by('meters') #[50, 100]
+        styles = [Style.objects.get(name='на спине'),
+                  Style.objects.get(name='вольный стиль'),
+                  Style.objects.get(name='брасс'),
+                  Style.objects.get(name='баттерфляй'),
+                  Style.objects.get(name='комплекс') ]
+        genders = ['Ж', 'М', 'С']
+        ages = Age.objects.all().order_by('min_age')
+
+        i_cdsg = 1
+        i_starts = 1
+
+        for distance in distances:
+            for style in styles:
+                for gender in genders:
+                    for age in ages:
+                        starts = []
+                        tours = TourRelay.objects.filter(competition=competition,
+                                                    distance=distance,
+                                                    style=style,
+                                                    gender=gender,
+                                                    age=age)
+                        if tours:
+                            relay_teams = TeamRelay.objects.filter(tour__in=tours)
+                            if relay_teams:
+                                #import ipdb; ipdb.set_trace()
+                                cdsg = CdsgRelay(competition=competition, number=i_cdsg)
+                                cdsg.name = 'Эстафеты ' + distance.name + ' ' + style.name + ' ' + age.name + ' ' + \
+                                            gender
+                                cdsg.save()
+                                i_cdsg += 1
+                                (full_starts, remainders) = divmod(len(relay_teams), num_of_lanes)
+
+                                #import ipdb; ipdb.set_trace()
+
+                                if remainders > 0: # есть остаток
+                                    if full_starts > 0 and remainders < minimal:
+                                        #есть полные и остаток меньше трёх, перегруппировка первых двух
+                                        starts.append(relay_teams[:minimal])
+                                        # первый старт - три участника
+                                        if full_starts == 1:
+                                            # был один полный старт: будет два неполных
+                                            starts.append(relay_teams[minimal:])
+                                        else:
+                                            # было более одного полного: второй будет неполным, остальные полными
+                                            begin = minimal
+                                            end = begin + num_of_lanes - (minimal - remainders)
+
+                                            starts.append(relay_teams[begin:end])
+
+                                            begin = end
+                                            for i in range(0, full_starts - 1):
+                                                end = begin + num_of_lanes
+                                                starts.append(relay_teams[begin:end])
+                                                begin = end
+
+                                    elif full_starts > 0 and remainders >= minimal:
+                                        # есть полные старты и остаток три или больше
+                                        starts.append(relay_teams[:remainders])
+                                        begin = remainders
+                                        for i in range(0, full_starts):
+                                            end = begin + num_of_lanes
+                                            starts.append(relay_teams[begin:end])
+                                            begin = end
+
+                                    else:
+                                        starts.append(relay_teams[:])
+
+                                elif full_starts: # нет остатков, просто раскидываем
+                                    begin = 0
+                                    for i in range(0, full_starts):
+                                        end = begin + num_of_lanes
+                                        starts.append(relay_teams[begin:end])
+                                        begin = end
+
+                                num_starts = len(starts)
+                                starts2 = []
+
+                                for relay_team_set in starts:
+                                    start = StartRelay()
+                                    start.num = i_starts
+                                    start.name = 'Эстафета ' + distance.name + ' ' \
+                                                 + style.name + ' ' \
+                                                 + age.name + ' ' \
+                                                 + gender
+                                    start.cdsg = cdsg
+                                    start.save()
+
+                                    #import ipdb; ipdb.set_trace()
+
+                                    relay_team_set = attribute_lanes_relay(relay_team_set, num_of_lanes)
+                                    for lane, relay_team in relay_team_set.items():
+                                        relay_team.lane = lane
+                                        relay_team.start = start
+                                        relay_team.save()
+
+                                    starts2.append(start)
+                                    i_starts += 1
+
+        return HttpResponseRedirect('../../competition/relay_starts/' + competition_id + '/')
+
+
 def generate_starts(request):
 
     if request.method == "POST":
 
-        #import ipdb; ipdb.set_trace()
+        # import ipdb; ipdb.set_trace()
         competition_id = request.POST.get("competition_id", "")
         num_of_lanes = int(request.POST.get("lanes", 5))
         age_diff = bool(request.POST.get("ages", False))
@@ -476,7 +621,7 @@ def competition_starts_sort(request, competition_id):
             start.name = ', '.join(name_dict['distance']) + ' ' \
                          + ', '.join(name_dict['style']) + ' ' \
                          + ', '.join(name_dict['age']) + ' '\
-                         +', '.join(name_dict['gender'])
+                         + ', '.join(name_dict['gender'])
             start.save()
 
             competitors_good = list(filter(lambda c: c.prior_time > 0, competitor_set))
