@@ -15,17 +15,17 @@
 
 </head>
 <body>
+
 <div id="results_div">
 <table>
 	<tr><td colspan="5">
 				<h2>Результаты соревнований: {{competition.name}}</h2>
 	</td></tr>
 
-	{% for t in res %}
+	{% for t in res.0 %}
 
 	<tr><td colspan="5"><h2>{{t.0.name}}</h2></td></tr>
 
-				{% if not t.2 %}
 
 		{% for tuple in t.1 %}
 
@@ -77,9 +77,19 @@
 
 		{% endfor %}
 
-				{% endif %}
+	{% endfor %}
 
-				{% if t.2 %}
+    <tr><td></td></tr>
+    <tr><td colspan="5"><h1>Вне конкурса</h1></td></tr>
+
+
+
+	{% for t in res.1 %}
+
+	<tr><td colspan="5"><h2>{{t.0.name}}</h2></td></tr>
+
+
+		{% for tuple in t.1 %}
 
 				<table>
 					<col class="col0">
@@ -88,14 +98,18 @@
 					<col class="col3">
 					<col class="col4">
 
-					<tr><th colspan="5" class="cdsg_name">Вне конкурса: {{t.0.name}}</th></tr>
-						{% for competitor in t.2 %}
+					<tr><th colspan="5" class="cdsg_name">{{tuple.0.style|capfirst}}, {{tuple.0.distance|capfirst}},
+						{{tuple.0.gender|capfirst}}, {{tuple.0.age|capfirst}} </th></tr>
+						{% for competitor in tuple.1 %}
 					<tr>
 						<td class="position">{{ forloop.counter }}</td>
-						<td class="result"></td>
+						<td class="result">{% if competitor.result %} {{competitor.result}} {% endif %}
+						{% if not competitor.main_distance %} в/з {% endif %}</td>
 						<td class="competitor">
+							{% if competitor.main_distance%}<span><b>{% endif %}
 							{{competitor.person.last_name|title}} {{competitor.person.first_name|title}}
-														 ({{competitor.person.birth_year}} г.р.)
+							{% if competitor.main_distance%}</b></span>{% endif %}
+							 ({{competitor.person.birth_year}} г.р.)
 						</td>
 						<td class="team">
 							{% if competitor.userrequest.team %}
@@ -117,12 +131,14 @@
 										Нарушение правил прохождения дистанции
 									{% endif %}
 
+
 						</b> {% endif %}</td>
 					</tr>
 						{% endfor %}
 				</table>
 
-				{% endif %}
+		{% endfor %}
+
 	{% endfor %}
 
 	</table>
