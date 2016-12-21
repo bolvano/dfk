@@ -135,12 +135,9 @@ def final_print(request, competition_id, as_csv=0):
 
     # cdsg_dict = { cdsg_id1 : [competitor1, competitor2 , ...],  cdsg_id2 : [competitor3, competitor4 , ...], ... }
 
-    res = []
     tour_dict = defaultdict(list)
 
     for k,v in cdsg_dict.items():
-        cdsg = Cdsg.objects.get(pk=k)
-
         for competitor in v:
             tour_dict[competitor.tour.id].append(competitor)
 
@@ -188,8 +185,9 @@ def final_print(request, competition_id, as_csv=0):
     # grouped_out_list = {'50 brass M': [(tour1, [comp1, comp2]), (tour2, [comp3, comp4])], '50 brass F': [(t,[c,c]),
     # ()]}
 
-    grouped_out_dict = {k: [(i[0], sorted((a for a in i[1] if a.disqualification == 0), key=lambda k: k.time)
-                              + list(filter(lambda k: k.disqualification > 0, i[1]))) for i in v]
+    grouped_out_dict = {k: [(i[0], sorted((a for a in i[1] if a.disqualification == 0 and a.time > 0), key=lambda k:
+    k.time)
+                              + list(filter(lambda k: k.disqualification > 0 or k.time == 0, i[1]))) for i in v]
                          for k,v in grouped_out_dict.items()}
 
     grouped_out_list = [(k, v) for k, v in grouped_out_dict.items()]
@@ -203,10 +201,11 @@ def final_print(request, competition_id, as_csv=0):
 
     res = (grouped_tour_list, grouped_out_list)
 
+    #
     # эстафеты
     #
 
-    '''relay_cdsg_dict = defaultdict(list)
+    relay_cdsg_dict = defaultdict(list)
 
     styles = {'на спине': 1, 'вольный стиль': 2, 'брасс': 3, 'баттерфляй': 4, 'комплекс': 5 }
     ages = Age.objects.all().order_by('min_age')
@@ -222,42 +221,56 @@ def final_print(request, competition_id, as_csv=0):
 
     relay_cdsg_dict = dict(relay_cdsg_dict)
 
-    res_relay = []
+    relay_tour_dict = defaultdict(list)
 
     for k,v in relay_cdsg_dict.items():
-        cdsg = CdsgRelay.objects.get(pk=k)
-        tour_dict = defaultdict(list)
         for competitor in v:
-            tour_dict[competitor.tour.id].append(competitor)
-        tour_dict = dict(tour_dict)
+            relay_tour_dict[competitor.tour.id].append(competitor)
 
-        out = []
-        for k1, v1 in tour_dict.items():
-            for c in v1:
-                if c.tour.out == True:
-                    out.append(c)
-        out.sort(key=lambda c: c.time)
+    relay_tour_dict = dict(relay_tour_dict)
 
-        tour_dict = {k: sorted((c for c in v if c.disqualification==0 and c.tour.out==False),
-                               key=lambda k:k.time) + list(filter(lambda c: c.disqualification > 0 and
-                                                                           c.tour.out==False, v))
-                     for k, v in tour_dict.items()}
-        tour_list = [(TourRelay.objects.get(pk=k), v) for k, v in tour_dict.items()]
+    relay_tour_list = [(TourRelay.objects.get(pk=k), v) for k, v in relay_tour_dict.items() if TourRelay.objects.get(pk=k).out ==
+                       False]
+    relay_out_list = [(TourRelay.objects.get(pk=k), v) for k, v in relay_tour_dict.items() if TourRelay.objects.get(pk=k).out == True]
 
-        tour_list.sort(key=lambda tup: genders[tup[0].gender])
-        tour_list.sort(key=lambda tup: ages[tup[0].age.name])
-        tour_list.sort(key=lambda tup: styles[tup[0].style.name])
+    relay_grouped_tour_dict = defaultdict(list)
+    for t in relay_tour_list:
+        relay_grouped_tour_dict[t[0].style.name + t[0].distance.name + t[0].gender].append((t[0], t[1]))
 
-        tour_list = [t for t in tour_list if len(t[1])]
+    relay_grouped_tour_dict = dict(relay_grouped_tour_dict)
 
-        if len(out):
-            res_relay.append((cdsg, tour_list, out))
-        else:
-            res_relay.append((cdsg, tour_list))
+    relay_grouped_tour_dict = {k: [(i[0], sorted((a for a in i[1] if a.disqualification == 0), key=lambda k: k.time)
+                              + list(filter(lambda k: k.disqualification > 0, i[1]))) for i in v]
+                         for k,v in relay_grouped_tour_dict.items()}
 
-    res_relay.sort(key=lambda e: styles[e[1][0][1][0].tour.style.name ] if len(e)==2 else styles[e[2][0].tour.style.name])'''
+    relay_grouped_tour_list = [(k, v) for k, v in relay_grouped_tour_dict.items()]
+    relay_grouped_tour_list.sort(key=lambda t: genders[t[1][0][0].gender])
+    relay_grouped_tour_list.sort(key=lambda tup: ages[tup[1][0][0].age.name])
+    relay_grouped_tour_list.sort(key=lambda tup: styles[tup[1][0][0].style.name])
 
+
+    # внеконкурсники:
+
+    relay_grouped_out_dict = defaultdict(list)
+    for t in relay_out_list:
+        relay_grouped_out_dict[t[0].style.name + t[0].distance.name + t[0].gender].append((t[0], t[1]))
+
+        relay_grouped_out_dict = dict(relay_grouped_out_dict)
+
+    relay_grouped_out_dict = {k: [(i[0], sorted((a for a in i[1] if a.disqualification == 0 and a.time > 0),
+                                               key=lambda k:
+    k.time)
+                              + list(filter(lambda k: k.disqualification > 0 or k.time == 0, i[1]))) for i in v]
+                         for k,v in relay_grouped_out_dict.items()}
+
+    relay_grouped_out_list = [(k, v) for k, v in relay_grouped_out_dict.items()]
+
+    relay_grouped_out_list.sort(key=lambda t: genders[t[1][0][0].gender])
+    relay_grouped_out_list.sort(key=lambda tup: ages[tup[1][0][0].age.name])
+    relay_grouped_out_list.sort(key=lambda tup: styles[tup[1][0][0].style.name])
+
+    res_relay = (relay_grouped_tour_list, relay_grouped_out_list)
 
     return render(request, 'pgups/final_print.html', {'competition': competition,
                                                       'res': res,
-                                                      'res_relay': []}, )
+                                                      'res_relay': res_relay}, )
