@@ -39,7 +39,8 @@
 					<tr><th colspan="5" class="cdsg_name">{{tuple.0.style|capfirst}}, {{tuple.0.distance|capfirst}},
 						{{tuple.0.gender|capfirst}}, {{tuple.0.age|capfirst}} </th></tr>
 						{% for competitor in tuple.1 %}
-					<tr>
+					<tr {% if competitor.result == 1 or competitor.result == 2 or competitor.result == 3 %}
+						class="prize"{% endif %}>
 						<td class="position">{{ forloop.counter }}</td>
 						<td class="result">{% if competitor.result %} {{competitor.result}} {% endif %}
 						{% if not competitor.main_distance %} в/з {% endif %}</td>
@@ -170,7 +171,8 @@
 					<tr><th colspan="5" class="cdsg_name">{{tuple.0.style|capfirst}}, {{tuple.0.distance|capfirst}},
 						{{tuple.0.gender|capfirst}}, {{tuple.0.age|capfirst}} </th></tr>
 						{% for competitor in tuple.1 %}
-					<tr>
+					<tr {% if competitor.result == 1 or competitor.result == 2 or competitor.result == 3 %}
+						class="prize"{% endif %}>
 						<td class="position">{{ forloop.counter }}</td>
 						<td class="result">{% if competitor.result %} {{competitor.result}} {% endif %}</td>
 						<td class="competitor">{{competitor.name}}</td>
