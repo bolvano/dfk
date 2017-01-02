@@ -24,8 +24,8 @@
 						<table class="table table-bordered team-result-table">
 							{% for c in v.competitors %}
 							<tr>
-								<td>{{c.person.last_name}} {{c.person.first_name}}</td>
-								<td>{{c.tour}}</td>
+								<td>{{c.person.last_name|title}} {{c.person.first_name|title}}</td>
+								<td>{{c.tour|capfirst}}</td>
 								<td>{{c.result}}</td>
 								<td>{{c.points}}</td>
 							</tr>
@@ -37,7 +37,7 @@
 							{% for c in v.relay_competitors %}
 							<tr>
 								<td>{{c.name}}</td>
-								<td>{{c.tour}}</td>
+								<td>{{c.tour|capfirst}}</td>
 								<td>{{c.result}}</td>
 								<td>{{c.points}}</td>
 							</tr>

@@ -55,7 +55,7 @@ def results_teams(request, competition_id):
     competition = Competition.objects.get(pk=competition_id)
     result_dict = {}
 
-    tours = Tour.objects.filter(competition=competition)
+    tours = Tour.objects.filter(competition=competition, out=False)
     for tour in tours:
         competitors = Competitor.objects.filter(tour=tour,
                                                 approved=True,
@@ -70,7 +70,7 @@ def results_teams(request, competition_id):
                 result_dict[competitor.userrequest.team.name]['competitors'].append(competitor)
                 result_dict[competitor.userrequest.team.name]['total'] += int(competitor.points or 0)
 
-    relay_tours = TourRelay.objects.filter(competition=competition)
+    relay_tours = TourRelay.objects.filter(competition=competition, out=False)
     for tour in relay_tours:
         competitors = TeamRelay.objects.filter(tour=tour,
                                                 disqualification=0,
@@ -83,6 +83,9 @@ def results_teams(request, competition_id):
                                                               'total':0})
                 result_dict[competitor.team.name]['relay_competitors'].append(competitor)
                 result_dict[competitor.team.name]['total'] += int(competitor.points or 0)
+
+    for k,v in result_dict.items():
+        v['competitors'].sort(key=lambda c: c.person.last_name)
 
     result_dict = OrderedDict(sorted(result_dict.items(), key=lambda x: x[1]['total'], reverse=True))
 

@@ -54,7 +54,7 @@
 							{{competitor.userrequest.team.name}} ({{competitor.userrequest.representative}})
 							{% endif %}
 						</td>
-						<td class="time"> {{competitor.time|formatSeconds}}  {% if competitor.disqualification > 0 %} <b>
+						<td class="time"> "{{competitor.time|formatSeconds}}"  {% if competitor.disqualification > 0 %} <b>
 
 									{% if  competitor.disqualification == 1 %}
 										{% if competitor.person.gender == 'Ж'%} Не вышла {% else %} Не вышел {% endif %}
@@ -116,7 +116,7 @@
 							{{competitor.userrequest.team.name}} ({{competitor.userrequest.representative}})
 							{% endif %}
 						</td>
-						<td class="time"> {{competitor.time|formatSeconds}}  {% if competitor.disqualification > 0 %} <b>
+						<td class="time"> "{{competitor.time|formatSeconds}}"  {% if competitor.disqualification > 0 %} <b>
 
 									{% if  competitor.disqualification == 1 %}
 										{% if competitor.person.gender == 'Ж'%} Не вышла {% else %} Не вышел {% endif %}
