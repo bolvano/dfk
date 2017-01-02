@@ -4,7 +4,6 @@ __pycache__
 dfk/settings.py
 pgups/migrations/*
 .idea/
-pgups/static/css/main.styl
 *~
 
 gulpfile.js

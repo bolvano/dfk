@@ -49,7 +49,7 @@ def competition(request, competition_id):
                         c = competitors.pop(0)
                         if i in points:
                             c.points = points[i]
-                        if i <= 3:
+                        if i <= 5:
                             c.result = i
                         c.save()
 
