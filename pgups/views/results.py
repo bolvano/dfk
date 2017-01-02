@@ -85,7 +85,8 @@ def results_teams(request, competition_id):
                 result_dict[competitor.team.name]['total'] += int(competitor.points or 0)
 
     for k,v in result_dict.items():
-        v['competitors'].sort(key=lambda c: c.person.last_name)
+        v['competitors'].sort(key=lambda c: (c.tour.style.name, c.tour.distance.meters, c.tour.age.min_age,
+                                             c.tour.gender, c.person.last_name))
 
     result_dict = OrderedDict(sorted(result_dict.items(), key=lambda x: x[1]['total'], reverse=True))
 

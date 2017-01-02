@@ -44,13 +44,13 @@ def competition(request, competition_id):
                                                         disqualification=0,
                                                         time__gt=0).order_by('time')
                 competitors = list(competitors)
-                for i in range(1,6):
+                for i in range(1,len(competitors)+1):
                     if competitors:
                         c = competitors.pop(0)
                         if i in points:
                             c.points = points[i]
-                        if i <= 5:
-                            c.result = i
+                        #if i <= 5:
+                        c.result = i
                         c.save()
 
                     else:
@@ -61,13 +61,13 @@ def competition(request, competition_id):
                                                         disqualification=0,
                                                         time__gt=0).order_by('time')
                 competitors = list(competitors)
-                for i in range(1,6):
+                for i in range(1,len(competitors)+1):
                     if competitors:
                         c = competitors.pop(0)
                         if i in relay_points:
                             c.points = relay_points[i]
-                        if i <= 3:
-                            c.result = i
+                        #if i <= 3:
+                        c.result = i
                         c.save()
 
                     else:
