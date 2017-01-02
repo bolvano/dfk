@@ -11,22 +11,48 @@
 		<h2>Результаты по командам</h2>
 	</div> <!-- End of Heading -->
 
-	<div class="row">
-		<div class="col-lg-6 col-md-7 col-sm-8 col-xs-10">
-
-			<table class="table table-striped table-hover table-bordered">
-				<tbody>
-				{% for res in result_list %}
-					{{result_form.id}}
-					<tr>
-						<td class="column-name-wide">{{res.0}}</td>
-						<td class="column-result-wide">{{res.1}}</td>
-					</tr>
-				{% endfor %}
-				</tbody>
-			</table>
-
+	<div id="accordion">
+	{% for k,v in result_dict.items %}
+		<div class="panel team-result-row row">
+				<div data-toggle="collapse" class="col-xs-4" data-parent="#accordion" href="#row-{{forloop.counter}}">
+					<div class="row team-result-handle">
+						<div class="col-xs-9">{{k}}</div>
+						<div class="col-xs-3">{{v.total}}</div>
+					</div>
+				</div>
+				<div class="col-xs-8 collapse team-result-table-wrapper" id="row-{{forloop.counter}}">
+						<table class="table table-bordered team-result-table">
+							{% for c in v.competitors %}
+							<tr>
+								<td>{{c.person.last_name|title}} {{c.person.first_name|title}}</td>
+								<td>{{c.tour|capfirst}}</td>
+								<td>{{c.result}}</td>
+								<td>{{c.points}}</td>
+							</tr>
+							{% endfor %}
+						</table>
+						{% if v.relay_competitors|length %}
+						<table class="table table-bordered team-result-table">
+							<caption>Эстафеты</caption>
+							{% for c in v.relay_competitors %}
+							<tr>
+								<td>{{c.name}}</td>
+								<td>{{c.tour|capfirst}}</td>
+								<td>{{c.result}}</td>
+								<td>{{c.points}}</td>
+							</tr>
+							{% endfor %}
+						</table>
+						{% endif %}
+				</div>
 		</div>
-	</div>
+	{% endfor %}
 </div>
+
+</div>
+<script>
+
+
+
+</script>
 {% endblock %}

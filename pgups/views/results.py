@@ -9,6 +9,8 @@ from pgups.common import SplitTimeWidget
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 
+from collections import OrderedDict
+
 
 def results_starts(request, competition_id):
     competition = get_object_or_404(Competition, pk=competition_id)
@@ -48,13 +50,12 @@ def results_tours(request, competition_id):
                                                         'competition': competition
                                                         },)
 
+
 def results_teams(request, competition_id):
     competition = Competition.objects.get(pk=competition_id)
+    result_dict = {}
 
-    result = {}
-    result_list = []
-
-    tours = Tour.objects.filter(competition=competition)
+    tours = Tour.objects.filter(competition=competition, out=False)
     for tour in tours:
         competitors = Competitor.objects.filter(tour=tour,
                                                 approved=True,
@@ -63,31 +64,33 @@ def results_teams(request, competition_id):
                                                 time__gt=0).order_by('time')
         for competitor in competitors:
             if competitor.userrequest.team:
-                if competitor.userrequest.team.name in result:
-                    result[competitor.userrequest.team.name] += competitor.points
-                else:
-                    result[competitor.userrequest.team.name] = competitor.points
+                result_dict.setdefault(competitor.userrequest.team.name, {'competitors':[],
+                                                                          'relay_competitors': [],
+                                                                          'total':0})
+                result_dict[competitor.userrequest.team.name]['competitors'].append(competitor)
+                result_dict[competitor.userrequest.team.name]['total'] += int(competitor.points or 0)
 
-
-    relay_tours = TourRelay.objects.filter(competition=competition)
+    relay_tours = TourRelay.objects.filter(competition=competition, out=False)
     for tour in relay_tours:
         competitors = TeamRelay.objects.filter(tour=tour,
                                                 disqualification=0,
                                                 time__gt=0).order_by('time')
         for competitor in competitors:
             if competitor.team:
-                if competitor.team.name in result:
-                    result[competitor.team.name] += competitor.points
-                else:
-                    result[competitor.team.name] = competitor.points
 
+                result_dict.setdefault(competitor.team.name, {'competitors':[],
+                                                              'relay_competitors': [],
+                                                              'total':0})
+                result_dict[competitor.team.name]['relay_competitors'].append(competitor)
+                result_dict[competitor.team.name]['total'] += int(competitor.points or 0)
 
-    for k,v in result.items():
-        result_list.append((k,v))
+    for k,v in result_dict.items():
+        v['competitors'].sort(key=lambda c: c.person.last_name)
 
-    result_list.sort(key=lambda c: c[1], reverse=True)
+    result_dict = OrderedDict(sorted(result_dict.items(), key=lambda x: x[1]['total'], reverse=True))
 
-    return render(request, 'pgups/results_teams.html', {'result_list': result_list, 'competition': competition},)
+    return render(request, 'pgups/results_teams.html', {'competition': competition,
+                                                        'result_dict': result_dict},)
 
 
 def relay_start_result(request, start_id):
