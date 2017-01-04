@@ -350,6 +350,7 @@ def get_relay_teams(request, id):
                 person_list.append(d)
 
             relay_team_names = [c.userrequest.team.name + '-' + 'I' * i for i in range(1, max_relay_teams + 1)]
+            relay_team_names = [r for r in relay_team_names if r not in [r['name'] for r in relay_team_list]]
 
             for rtn in relay_team_names:
                 if not any(ed['name'] == rtn for ed in team_list):

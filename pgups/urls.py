@@ -15,7 +15,6 @@ urlpatterns = [
     url(r'^results/tours/(?P<competition_id>\d+)/$', results_tours),
     url(r'^results/teams/(?P<competition_id>\d+)/$', results_teams),
     url(r'^competition/starts/(?P<competition_id>\d+)/$', competition_starts, name='competition_starts'),
-    url(r'^competition/relays/(?P<competition_id>\d+)/$', competition_relays, name='competition_relays'),
     url(r'^competition/start_result/(?P<start_id>\d+)/$', start_result, name='start_result'),
     url(r'^competition/start_result_view/(?P<start_id>\d+)/$', start_result_view),
     url(r'^tour/(?P<id>\d+)/$', tour),
