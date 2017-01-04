@@ -25,6 +25,7 @@ def competition(request, competition_id):
     competition = get_object_or_404(Competition, pk=competition_id)
     userrequests = Userrequest.objects.filter(competition=competition)
     teams = set([userrequest.team for userrequest in userrequests if userrequest.team is not None])
+    relay_list = TourRelay.objects.filter(competition=competition)
 
     if request.method == "POST":
         #import ipdb; ipdb.set_trace()
@@ -93,7 +94,7 @@ def competition(request, competition_id):
 
         competition.save()
 
-    return render(request, 'pgups/competition.html', {'competition': competition, 'teams':teams},)
+    return render(request, 'pgups/competition.html', {'competition': competition, 'teams':teams, 'relays': relay_list},)
 
 
 def person(request, person_id):

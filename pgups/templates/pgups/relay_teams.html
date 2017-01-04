@@ -2,9 +2,47 @@
 {% load staticfiles %}
 {% block content %}
 
-  <!-- HEADING -->
-  <div class="heading">
-    <h1>{{relay.competition.name}}. {{relay}}</h1>
-  </div>
+<div class="container" ng-app="relayApp" ng-controller="RelayController as $ctrl">
+	<!-- HEADING -->
+	<div class="heading">
+		<a class="decorated-link" href="/competition/{{ relay.competition.id }}/">
+			<h1><b>{{relay.competition.name}}</b></h1>
+		</a>
+		<h2><b>{{relay}}</b></h2>
+	</div>
 
+	<!-- RELAY TEAMS -->
+	<div class="relay-list">
+		<input type="hidden" name="csrf_token" ng-init="$ctrl.csrf_token='{{csrf_token}}'" ng-model="$ctrl.csrf_token">
+
+		<form ng-submit="$ctrl.addTeam(teamForm)" name="teamForm" novalidate>
+			<div class="row">
+				<div class="col-xs-4">
+					<select class="form-control" name="team" ng-options="team as team.name for team in $ctrl.teams" ng-model="$ctrl.selectedTeam" required>
+						<option value="" disabled selected hidden>Выберите команду:</option>
+					</select>
+				</div>
+				<div class="col-xs-2">
+					<button ng-disabled="teamForm.$invalid" type="submit" class="btn btn-default">Добавить</button>
+				</div>
+			</div>
+		</form>
+
+		<div class="relay-team-list">
+			<div class="relay-team-list--item" ng-repeat="relayTeam in $ctrl.relayTeams">
+				<div>{$ relayTeam.name $}</div>
+				<div class="relay-team-list--trash pull-right" ng-click="$ctrl.removeTeam($index)"><span class="glyphicon glyphicon-trash"></span></div>
+			</div>
+		</div>
+
+		<button class="btn btn-primary" ng-click="$ctrl.saveTeams()">Сохранить</button>
+	</div>
+</div>
+{% endblock %}
+{% block additionaljs %}
+	<link href="{% static 'libs/css/bootstrap-select.min.css' %}" rel="stylesheet"> <!-- Custom select styles -->
+	<link href="{% static 'css/relay-teams.css' %}" rel="stylesheet">
+	<script src="{% static 'libs/js/bootstrap-select.min.js' %}"></script> <!-- Custom select JS -->
+	<script src="{% static 'libs/js/ui-bootstrap-tpls.js' %}"></script> <!-- Competition App -->
+	<script src="{% static 'js/relay-teams.js' %}"></script> <!-- Competition App -->
 {% endblock %}
