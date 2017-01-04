@@ -12,10 +12,10 @@
 	</div>
 
 	<!-- RELAY TEAMS -->
-	<div class="relay-list">
+	<div class="relay-list row">
 		<input type="hidden" name="csrf_token" ng-init="$ctrl.csrf_token='{{csrf_token}}'" ng-model="$ctrl.csrf_token">
 
-		<form ng-submit="$ctrl.addTeam(teamForm)" name="teamForm" novalidate>
+		<form class="col-xs-12" ng-submit="$ctrl.addTeam(teamForm)" name="teamForm" novalidate>
 			<div class="row">
 				<div class="col-xs-4">
 					<select class="form-control" name="team" ng-options="team as team.name for team in $ctrl.teams" ng-model="$ctrl.selectedTeam" required>
@@ -23,20 +23,22 @@
 					</select>
 				</div>
 				<div class="col-xs-2">
-					<button ng-disabled="teamForm.$invalid" type="submit" class="btn btn-default">Добавить</button>
+					<button ng-disabled="teamForm.$invalid" type="submit" class="btn btn-default pull-right">Добавить</button>
 				</div>
 			</div>
 		</form>
 
-		<div class="relay-team-list">
+		<div class="relay-team-list col-xs-6">
 			<div class="relay-team-list--item" ng-repeat="relayTeam in $ctrl.relayTeams">
 				<div>{$ relayTeam.name $}</div>
 				<div class="relay-team-list--trash pull-right" ng-click="$ctrl.removeTeam($index)"><span class="glyphicon glyphicon-trash"></span></div>
 			</div>
 		</div>
+		</div>
 
-		<button class="btn btn-primary" ng-click="$ctrl.saveTeams()">Сохранить</button>
-	</div>
+		<div class="row save-teams-btn">
+			<button class="btn btn-lg btn-success" ng-click="$ctrl.saveTeams()">Сохранить изменения <span class="glyphicon glyphicon-ok"></span></button>
+		</div>
 </div>
 {% endblock %}
 {% block additionaljs %}

@@ -94,7 +94,11 @@
         function saveTeams() {
             teamService.saveRelayTeams(vm.relayTeams, vm.csrf_token)
                           .then(function(response) {
-                                // do nothing
+                                notie.alert(1, 'Изменения сохранены', 2);
+                                activate();
+                          })
+                          .catch(function() {
+                                notie.alert(3, 'Произошла ошибка!', 5);
                           });
         }
 

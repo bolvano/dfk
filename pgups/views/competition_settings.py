@@ -50,7 +50,8 @@ def generate_relay_starts(request):
         for cdsg in cdsgs:
             starts = StartRelay.objects.filter(cdsg=cdsg)
             for start in starts:
-                competitors = CompetitorRelay.objects.filter(start=start)
+                team_relays = TeamRelay.objects.filter(start=start)
+                competitors = CompetitorRelay.objects.filter(teamRelay__in=team_relays)
                 for competitor in competitors:
                     competitor.start = None
                     competitor.result = None

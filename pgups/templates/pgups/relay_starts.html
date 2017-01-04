@@ -11,7 +11,6 @@
 		<a class="decorated-link" href="{% url 'competition' competition_id=competition.id %}">
 			<h1><b>{{competition.name}}</b></h1>
 		</a>
-        <h1>(Эстафеты)</h1>
 	</div> <!-- End of Heading -->
 
 	{% for cdsg in cdsg_list %}
@@ -28,8 +27,8 @@
 					<h3 class="pull-left">Заплыв {{start.num}} ({{start.name}})</h3>
 					{% if user.is_authenticated %}
 						<a class="btn-results btn-lg pull-right btn btn-info"
-                           href="{% url 'relay_start_result' start_id=start.id %}"> <span
-                                class="glyphicon glyphicon-pencil"></span> Редактировать результат</a>
+						   href="{% url 'relay_start_result' start_id=start.id %}"> <span
+								class="glyphicon glyphicon-pencil"></span> Редактировать результат</a>
 					{% endif %}
 				</div> <!-- End of Start number -->
 
@@ -63,20 +62,20 @@
 									Нарушение правил прохождения дистанции
 								{% endif %}
 
-                                {% if  relay_team.time > 0%}
+								{% if  relay_team.time > 0%}
 
-                                <b>{{relay_team.time|formatSeconds}}</b>
+								<b>{{relay_team.time|formatSeconds}}</b>
 
-							    {% endif %}</td>
+								{% endif %}</td>
 						</tr>
 					{% endfor %}
 					</tbody>
 				</table>
 
 			{% endfor %}
-            <a class="btn-results btn-lg pull-right btn btn-info" href="{% url 'relay_cdsg_print' cdsg_id=cdsg.id %}"
-               target="_blank"><span class="glyphicon glyphicon-print"></span> Печать результата</a>
-            <br>
+			<a class="btn-results btn-lg pull-right btn btn-info" href="{% url 'relay_cdsg_print' cdsg_id=cdsg.id %}"
+			   target="_blank"><span class="glyphicon glyphicon-print"></span> Печать результата</a>
+			<br>
 
 		</div> <!-- End of Single discipline -->
 
