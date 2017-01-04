@@ -21,6 +21,7 @@ def competition_relays(request, competition_id):
 
 
 def relay_teams(request, relay_id):
+    relay = get_object_or_404(TourRelay, pk=relay_id)
 
     if request.method == "POST":
         body_unicode = request.body.decode('utf-8')
@@ -40,10 +41,24 @@ def relay_teams(request, relay_id):
          {"parent_id": 2, "name": "MEVIS-I"},
          {"parent_id": 2, "name": "MEVIS-II"}]}'''
 
+        relay_teams_old = TeamRelay.objects.filter(tour=relay)
+        relay_teams_new = data["relayTeams"]
 
-    relay = get_object_or_404(TourRelay, pk=relay_id)
-    if request.method == "POST":
-        # save new order
+        # delete missing
+        for rt in relay_teams_old:
+            if str(rt.id) not in [r['id'] for r in relay_teams_new if 'id' in r]:
+                rt.delete()
+
+        # add new
+        for rt in relay_teams_new:
+            team = Team.objects.get(pk=int(rt['parent_id']))
+            new_rt = TeamRelay()
+            new_rt.name = rt['name']
+            new_rt.team = team
+            new_rt.age = relay.age
+            new_rt.tour = relay
+            new_rt.time = 0
+            new_rt.save()
         pass
     else:
         pass
