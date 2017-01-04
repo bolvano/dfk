@@ -1,0 +1,13 @@
+.relay-team-list {
+  padding: 10px;
+}
+
+.relay-team-list--item {
+  line-height: 2.5;
+  cursor: pointer;
+  width: 50%;
+}
+
+.relay-team-list--item div {
+  display: inline-block;
+}
