@@ -8,8 +8,6 @@ urlpatterns = [
     url(r'^competition/(?P<competition_id>\d+)/$', competition, name='competition'),
     url(r'^userrequest/(?P<userrequest_id>\d+)/$', userrequest, name='userrequest'),
 
-    #url(r'^userrequest_edit/(?P<userrequest_id>\d+)/$', userrequest_edit, name='userrequest_edit'),
-
     url(r'^person/(?P<person_id>\d+)/$', person, name='person'),
     url(r'^results/starts/(?P<competition_id>\d+)/$', results_starts),
     url(r'^results/tours/(?P<competition_id>\d+)/$', results_tours),
@@ -45,6 +43,8 @@ urlpatterns = [
     # sortable starts
     url(r'^competition_starts_sort/(?P<competition_id>\d+)/$', competition_starts_sort,
         name="competition_starts_sort"),
+    url(r'^competition_relays_sort/(?P<competition_id>\d+)/$', competition_relays_sort,
+        name="competition_relays_sort"),
 
     url(r'^login/$', login_user, name="login"),
     url(r'^logout/$', logout_user, name="logout"),

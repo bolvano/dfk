@@ -50,3 +50,6 @@ def relay_starts(request, competition_id):
                                                              'competition': competition,
                                                             },)
 
+
+def competition_relays_sort(request, competition_id):
+    return render(request, 'pgups/competition_relays_sort.html', { 'competition_id': competition_id, }, )

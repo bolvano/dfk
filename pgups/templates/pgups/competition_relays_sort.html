@@ -1,0 +1,205 @@
+{% extends 'pgups/base.html' %}
+{% load staticfiles %}
+{% block content %}
+
+  {% if user.is_authenticated %}
+
+  <div ng-app="sortableRelaysApp" ng-controller="SortController as sortCtrl">
+
+    <input type="hidden" name="csrf_token" ng-init="csrf_token='{{csrf_token}}'" ng-model="csrf_token">
+
+    <!-- Jumbotron -->
+    <div class="jumbotron">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-11">
+            <a class="decorated-link" href="{% url 'competition' competition_id=competition_id %}">
+              <h1><b>{$ sortCtrl.data.competition_name $}</b></h1>
+            </a>
+            <p class="lead">Ручное создание и сортировка эстафет</p>
+          </div>
+        </div>
+      </div>
+    </div> <!-- End of Jumbotron -->
+
+    <div class="container">
+
+      <!-- DEBUG
+      <input type="checkbox" ng-model="showDebugData"><span> DEBUG: показать данные</span>
+      <pre ng-show="showDebugData">{$ sortCtrl.data | json $}</pre>
+      DEBUG -->
+
+      <br>
+
+      <div class="row">
+        <div class="col-xs-4">
+          <span>Количество дорожек: &nbsp</span>
+          <select class="selectpicker" ng-model="sortCtrl.maxLength" title="">
+            <option value="" selected disabled></option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Step 1 -->
+      <div ng-show="sortCtrl.stepCounter.step === 1" class="animation-show-hide">
+
+        <div class="row"
+             ui-sortable="sortCtrl.sortableRelaysListOptions"
+             ng-model="sortCtrl.data.relays">
+
+          <div class="sort-buffer-wrapper single-start-sort col-lg-5 col-md-5"
+               ng-repeat-start="relay in sortCtrl.data.relays"
+               ng-if="$first"
+               fix-on-scroll="fix-to-top">
+
+            <div class="connected-competitors sort-buffer"
+                 ui-sortable="sortCtrl.sortableRelayOptions"
+                 ng-model="relay.teams">
+
+              <div class="single-competitor-sort"
+                   ng-repeat="team in relay.teams">
+                  {$ team.name $}
+              </div>
+            </div>
+
+          </div>
+
+          <div id="relay-{$ $index $}"
+               class="single-start-sort sortable-start-list col-lg-offset-6 col-md-offset-6"
+               ng-repeat-end
+               ng-if="!$first">
+
+            <!-- Start number -->
+            <div class="start-number relay-start-number">
+              <h3 class="pull-left">Заплыв {$ $index $}</h3>
+
+              <button id="remove-start-button-{$ $index $}"
+                      class="btn btn-sm btn-danger pull-right remove-start-button"
+                      ng-click="sortCtrl.removeRelay($index)">
+                      <span class="glyphicon glyphicon-remove"></span>
+              </button>
+            </div> <!-- End of Start number -->
+
+            <div class="edit-relay-name">
+              <h4 ng-if="!relay.editable">
+                {$ relay.name $}
+                <span class="glyphicon glyphicon-pencil pull-right"
+                      ng-click="relay.editable = true"></span>
+              </h4>
+              <input ng-if="relay.editable"
+                     type="text"
+                     ng-model="relay.name"
+                     ng-keydown="sortCtrl.confirmOnEnter($event, relay)"/>
+              <span ng-if="relay.editable"
+                    class="glyphicon glyphicon-ok"
+                    ng-click="relay.editable = false"></span>
+            </div>
+
+            <div class="connected-competitors competitor-list-sort"
+                 ui-sortable="sortCtrl.sortableRelayOptions"
+                 ng-model="relay.teams">
+              <div class="single-competitor-sort"
+                   ng-repeat="team in relay.teams">
+                   {$ team.name $}
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="row">
+          <div class="col-lg-3 col-md-3">
+            <button id="add-start-button" class="btn btn-lg btn-default button-margin"
+                    ng-click="sortCtrl.addRelay()">
+                    <span class="glyphicon glyphicon-plus"></span> Добавить заплыв
+            </button>
+          </div>
+          <div class="col-lg-3 col-md-4 col-lg-offset-6 col-md-offset-5">
+            <button class="btn btn-lg btn-default button-margin"
+                    ng-click="sortCtrl.stepCounter.next()">
+                    Перейти к сортировке заплывов <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+          </div>
+        </div>
+
+      </div> <!-- End of Step 1 -->
+
+      <!-- Step 2 -->
+      <div ng-show="sortCtrl.stepCounter.step === 2"
+           class="animation-show-hide">
+
+        <div ui-sortable="sortCtrl.sortableRelaysListOptions"
+             ng-model="sortCtrl.data.relays">
+
+          <div class="row"
+               ng-repeat="relay in sortCtrl.data.relays"
+               ng-show="!$first && relay.teams.length !== 0">
+
+            <div class="single-start-sort single-start-movable col-lg-6 col-md-6">
+
+              <!-- Start number -->
+              <div class="start-number">
+                <h3 class="pull-left">Заплыв {$ $index $}</h3>
+              </div> <!-- End of Start number -->
+
+            <div class="edit-relay-name">
+              <h4>{$ relay.name $}</h4>
+            </div>
+
+              <div ng-model="start.competitors">
+                <div class="single-competitor-sort"
+                     ng-repeat="team in relay.teams">
+                  {$ team.name $}
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="row">
+          <div class="col-lg-3 col-md-3">
+            <button class="btn btn-lg btn-default button-margin"
+                    ng-click="sortCtrl.stepCounter.prev();">
+                    <span class="glyphicon glyphicon-chevron-left"></span> Вернуться к распределению команд
+            </button>
+          </div>
+          <div class="col-lg-3 col-md-4 col-lg-offset-6 col-md-offset-5">
+            <button id="submit-request-button"
+                    class="btn btn-lg btn-success button-margin"
+                    ng-click="sortCtrl.validateRelays()">
+                    Сохранить заплывы <span class="glyphicon glyphicon-ok"></span>
+            </button>
+          </div>
+        </div>
+
+      </div> <!-- End of Step 2 -->
+
+    </div>
+
+  </div>
+
+  {% else %}
+
+  <div class="container">
+    <h3 style="margin-top: 20%">
+      <span style="font-size: larger" class="alt-color glyphicon glyphicon-alert"></span> Для просмотра этой страницы необходимо залогиниться.
+    </h3>
+  </div>
+
+  {% endif %}
+
+{% endblock %}
+
+{% block additionaljs %}
+  <link href="{% static 'libs/css/bootstrap-select.min.css' %}" rel="stylesheet"> <!-- Custom select styles -->
+  <script src="{% static 'libs/js/bootstrap-select.min.js' %}"></script> <!-- Custom select JS -->
+  <script src="{% static 'libs/js/angular-animate.min.js' %}"></script> <!-- Angular animations -->
+  <script src="{% static 'libs/js/sortable.min.js' %}"></script> <!-- sortable directive -->
+  <script src="{% static 'js/sortable-relays.js' %}"></script> <!-- SortableStartsApp -->
+{% endblock %}
