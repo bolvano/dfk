@@ -369,8 +369,11 @@ def get_relay_teams(request, id):
 
 
 def get_relay_starts(request, id):
-    relay_cdsg_list = []
+    relay_list = []
+    buffer = {'role': 'buffer', 'teams': []}
+    relay_list.append(buffer)
     competition = Competition.objects.get(pk=id)
+
     cdsgs_qs = CdsgRelay.objects.filter(competition=competition)
     for cdsg in cdsgs_qs:
         cdsg_dict = dict()
@@ -394,9 +397,70 @@ def get_relay_starts(request, id):
                 team_dict['tour_name'] = team.tour.__str__()
                 start_dict['teams'].append(team_dict)
 
-            cdsg_dict['starts'].append(start_dict)
-        relay_cdsg_list.append(cdsg_dict)
+                relay_list.append(start_dict)
     return HttpResponse(json.dumps({'competition_id': competition.id,
                                     'competition_name': competition.name,
-                                    'relayCDSGs': relay_cdsg_list
+                                    'relays': relay_list
                                     }), content_type="application/json")
+
+
+var TEST_DATA = {
+  "competition_id": 8,
+  "relays": [
+
+    { role: 'buffer', teams: [
+      {
+        "tour_name": "на спине 4 x 50 м. 18-29 С",
+        "name": "ДФК ПГУПС-I",
+        "id": 65,
+        "lane": 2
+      },
+      {
+        "tour_name": "на спине 4 x 50 м. 18-29 С",
+        "name": "ДФК ПГУПС-II",
+        "id": 66,
+        "lane": 3
+      },
+      {
+        "tour_name": "на спине 4 x 50 м. 18-29 С",
+        "name": "Мжвяки-II",
+        "id": 66,
+        "lane": 3
+      }
+    ]},
+
+    {
+      "name": "Эстафета 4 x 50 м. на спине 18-29 С",
+      "id": 18,
+      "num": 1,
+      "teams": [
+        {
+          "tour_name": "на спине 4 x 50 м. 18-29 С",
+          "name": "ДФК ПГУПС-I",
+          "id": 65,
+          "lane": 2
+        },
+        {
+          "tour_name": "на спине 4 x 50 м. 18-29 С",
+          "name": "ДФК ПГУПС-II",
+          "id": 66,
+          "lane": 3
+        }
+      ]
+    },
+    {
+      "name": "Эстафета 4 x 50 м. на спине 30-39 С",
+      "id": 19,
+      "num": 2,
+      "teams": [
+        {
+          "tour_name": "на спине 4 x 50 м. 30-39 С",
+          "name": "ДФК ПГУПС-I",
+          "id": 64,
+          "lane": 3
+        }
+      ]
+    }
+  ],
+  "competition_name": "test"
+}
