@@ -34,7 +34,7 @@ def attribute_lanes_relay(relay_team_set, num_of_lanes):
 def generate_relay_starts(request):
     if request.method == "POST":
 
-        # import ipdb; ipdb.set_trace()
+        #import ipdb; ipdb.set_trace()
         competition_id = request.POST.get("competition_id", "")
         num_of_lanes = int(request.POST.get("lanes", 5))
         age_diff = bool(request.POST.get("ages", False))
@@ -59,6 +59,9 @@ def generate_relay_starts(request):
                     #competitor.disqualification = 0
                     #competitor.time = 0
                     competitor.save()
+                for t in team_relays:
+                    t.start = None
+                    t.save()
             cdsg.delete()
 
         distances = DistanceRelay.objects.all().order_by('meters') #[50, 100]
@@ -136,6 +139,7 @@ def generate_relay_starts(request):
                                         starts.append(relay_teams[begin:end])
                                         begin = end
 
+                                #import ipdb; ipdb.set_trace()
                                 num_starts = len(starts)
                                 starts2 = []
 
