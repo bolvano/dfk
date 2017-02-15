@@ -2,34 +2,39 @@
 {% load staticfiles %}
 {% block content %}
 
+<h1>Соревнования</h1>
 
-<!-- Jumbotron -->
-<div class="jumbotron">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-11">
+<table class="bordered highlight">
+  <thead>
+    <tr>
+      <th>Даты проведения</th>
+      <th>Название</th>
+      <th>Тип</th>
+      <th>Статус</th>
+    </tr>
+  </thead>
 
-				<h1>Соревнования</h1>
-
-			</div>
-		</div>
-	</div>
-</div> <!-- End of Jumbotron -->
-
-<div class="container">
-	<ul class="basic-list basic-list-larger">
-		{% for competition in competitions %}
-		<li>
-			<a href="competition/{{competition.id}}/">
-				{{competition.name}} ({{competition.typ}}) <span style="font-size:smaller">({{competition.date_start|date:"d.m.Y"}} &ndash; {{competition.date_end|date:"d.m.Y"}})</span>
-			</a>
-			{% if competition.finished %} 
-				<span class="alt-color"> (завершены) </span> 
-			{% endif %}
-		</li>
-		{% endfor %}
-	</ul>
-</div>
-
-
+  <tbody>
+  {% for competition in competitions %}
+    <tr {% if not competition.finished %} style="font-weight: bold" {% endif %}>
+      <td style="font-size: smaller">
+        {{competition.date_start|date:"d.m.Y"}} &ndash; {{competition.date_end|date:"d.m.Y"}}
+      </td>
+      <td>
+        <a class="blue-text text-darken-2" href="competition/{{competition.id}}/">
+          {{competition.name|capfirst}}
+        </a>
+      </td>
+      <td>
+        {{competition.typ|lower}}
+      </td>
+      <td>
+      {% if competition.finished %}
+        <span class="blue-text text-darken-4">завершены</span>
+      {% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
 {% endblock %}

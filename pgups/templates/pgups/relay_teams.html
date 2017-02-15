@@ -2,49 +2,46 @@
 {% load staticfiles %}
 {% block content %}
 
-<div class="container" ng-app="relayApp" ng-controller="RelayController as $ctrl">
-	<!-- HEADING -->
-	<div class="heading">
-		<a class="decorated-link" href="/competition/{{ relay.competition.id }}/">
-			<h1><b>{{relay.competition.name}}</b></h1>
-		</a>
-		<h2><b>{{relay}}</b></h2>
-	</div>
+<div ng-app="relayApp" ng-controller="RelayController as $ctrl">
+  <!-- HEADING -->
+  <div class="heading">
+    <a class="decorated-link" href="/competition/{{ relay.competition.id }}/">
+      <h1>{{relay.competition.name|capfirst}}</h1>
+    </a>
+    <h4>{{relay|capfirst}}</h4>
+  </div>
 
-	<!-- RELAY TEAMS -->
-	<div class="relay-list row">
-		<input type="hidden" name="csrf_token" ng-init="$ctrl.csrf_token='{{csrf_token}}'" ng-model="$ctrl.csrf_token">
+  <!-- RELAY TEAMS -->
+  <div class="relay-list row">
+    <input type="hidden" name="csrf_token" ng-init="$ctrl.csrf_token='{{csrf_token}}'" ng-model="$ctrl.csrf_token">
 
-		<form class="col-xs-12" ng-submit="$ctrl.addTeam(teamForm)" name="teamForm" novalidate>
-			<div class="row">
-				<div class="col-xs-4">
-					<select class="form-control" name="team" ng-options="team as team.name for team in $ctrl.teams" ng-model="$ctrl.selectedTeam" required>
-						<option value="" disabled selected hidden>Выберите команду:</option>
-					</select>
-				</div>
-				<div class="col-xs-2">
-					<button ng-disabled="teamForm.$invalid" type="submit" class="btn btn-default pull-right">Добавить</button>
-				</div>
-			</div>
-		</form>
+    <form class="col s12" ng-submit="$ctrl.addTeam(teamForm)" name="teamForm" novalidate>
+      <div class="row">
+        <div class="col s4 input-field">
+          <select class="browser-default" name="team" ng-options="team as team.name for team in $ctrl.teams" ng-model="$ctrl.selectedTeam" required></select>
+        </div>
+        <div class="col s2">
+          <button ng-disabled="teamForm.$invalid" type="submit" class="add-team-btn waves-effect waves-light btn blue darken-3">Добавить</button>
+        </div>
+      </div>
+    </form>
 
-		<div class="relay-team-list col-xs-6">
-			<div class="relay-team-list--item" ng-repeat="relayTeam in $ctrl.relayTeams">
-				<div>{$ relayTeam.name $}</div>
-				<div class="relay-team-list--trash pull-right" ng-click="$ctrl.removeTeam($index)"><span class="glyphicon glyphicon-trash"></span></div>
-			</div>
-		</div>
-		</div>
+    <div class="relay-team-list col s6">
+      <div class="relay-team-list--item" ng-repeat="relayTeam in $ctrl.relayTeams">
+        <div>{$ relayTeam.name $}</div>
+        <div class="relay-team-list--trash right" ng-click="$ctrl.removeTeam($index)"><i class="material-icons">delete</i></div>
+      </div>
+    </div>
+    </div>
 
-		<div class="row save-teams-btn">
-			<button class="btn btn-lg btn-success" ng-click="$ctrl.saveTeams()">Сохранить изменения <span class="glyphicon glyphicon-ok"></span></button>
-		</div>
+    <div class="row save-teams-btn">
+      <button class="waves-effect waves-light btn blue darken-3" ng-click="$ctrl.saveTeams()">Сохранить изменения</button>
+    </div>
 </div>
+
 {% endblock %}
 {% block additionaljs %}
-	<link href="{% static 'libs/css/bootstrap-select.min.css' %}" rel="stylesheet"> <!-- Custom select styles -->
-	<link href="{% static 'css/relay-teams.css' %}" rel="stylesheet">
-	<script src="{% static 'libs/js/bootstrap-select.min.js' %}"></script> <!-- Custom select JS -->
-	<script src="{% static 'libs/js/ui-bootstrap-tpls.js' %}"></script> <!-- Competition App -->
-	<script src="{% static 'js/relay-teams.js' %}"></script> <!-- Competition App -->
+  <link href="{% static 'css/relay-teams.css' %}" rel="stylesheet">
+  <script src="{% static 'libs/js/ui-bootstrap-tpls.js' %}"></script> <!-- Competition App -->
+  <script src="{% static 'js/relay-teams.js' %}"></script>
 {% endblock %}

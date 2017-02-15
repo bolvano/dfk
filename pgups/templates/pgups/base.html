@@ -2,67 +2,63 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
 
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<!--[if lt IE 9]>
-		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-	<![endif]-->
+<link href="{% static 'libs/css/jquery-ui.min.css' %}" rel="stylesheet">
+<link href="{% static 'libs/css/notie.css' %}" rel="stylesheet">
+<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'libs/css/materialize.min.css' %}"  media="screen,projection"/>
 
-	<link href="{% static 'libs/css/bootstrap.min.css' %}" rel="stylesheet"> <!-- Bootstrap CSS-->
-	<link href="{% static 'libs/css/jquery-ui.min.css' %}" rel="stylesheet"> <!-- jQueryUI CSS -->
-	<link href="{% static 'libs/css/notie.css' %}" rel="stylesheet"> <!-- Notie CSS -->
-	<link href="{% static 'css/main.css' %}" rel="stylesheet"> <!-- Main CSS -->
-	<link href="{% static 'css/temp.css' %}" rel="stylesheet">
+<!-- Styles -->
+<link href="{% static 'css/main.css' %}" rel="stylesheet">
+<link href="{% static 'css/temp.css' %}" rel="stylesheet">
 
-	<script src="{% static 'libs/js/jquery.min.js' %}"></script> <!-- jQuery core -->
-	<script src="{% static 'libs/js/jquery-ui.min.js' %}"></script> <!-- jQueryUI -->
-	<script src="{% static 'libs/js/bootstrap.min.js' %}"></script> <!-- Bootstrap JS -->
-
+<script src="{% static 'libs/js/jquery.min.js' %}"></script>
+<script src="{% static 'libs/js/jquery-ui.min.js' %}"></script>
+<script src="{% static 'libs/js/materialize.min.js' %}"></script>
 </head>
 
 <body>
+  <nav>
+    <div class="nav-wrapper blue-grey lighten-5">
+      <a href="{% url 'index' %}" class="brand-logo left hide-on-med-and-down grey-text text-darken-3" title="Главная страница"><i class="material-icons left">home</i>ДФК ПГУПС</a>
+      <ul id="nav-mobile" class="right">
+        <li><a href="{% url 'regrequest' %}" class="grey-text text-darken-3">Подать заявку</a></li>
+        <li><a href="{% url 'competitioncreate' %}" class="grey-text text-darken-3">Зарегистрировать соревнования</a></li>
+        <li>
+            {% if user.is_authenticated %}
+              <a href="{% url 'logout' %}" class="grey-text text-darken-3" title="Выйти">
+                {{user.username}}<i class="material-icons right">input</i>
+              </a>
+            {% else %}
+              <a href="{% url 'login' %}" class="grey-text text-darken-3" title="Войти">
+                Войти <i class="material-icons right">input</i>
+              </a>
+            {% endif %}
+        </li>
+      </ul>
+    </div>
+  </nav>
 
-	<!-- Nav -->
-	<nav class="navbar navbar-default navbar-static-top">
-		<div class="container">
-			<div id="navbar">
-				<ul class="nav navbar-nav">
-					<li><a href="{% url 'index' %}"><span class="glyphicon glyphicon-home"></span> Главная</a></li>
-					<li><a href="{% url 'regrequest' %}">Подать заявку</a></li>
-					{% if user.is_authenticated %}
-					<li><a href="{% url 'competitioncreate' %}">Зарегистрировать соревнования</a></li>
-					{% endif %}
-				</ul>
-				<div class="login pull-right">
-					<span>
-						{% if user.is_authenticated %}
-							Здравствуйте, {{user.username}} <a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> Выйти</a>
-						{% else %}
-							Вы не залогинены  <a href="{% url 'login' %}"> <span class="glyphicon glyphicon-log-in"></span> Войти</a>
-						{% endif %}
-					</span>
-				</div>
-			</div>
-		</div>
-	</nav> <!-- End of Nav -->
+  <main>
+    {% block content %}
+    {% endblock %}
+  </main>
 
-	{% block content %}
-	{% endblock %}
+  <footer class="footer">
+    <div class="container"></div>
+  </footer> <!-- End of Footer -->
 
-	<!-- Footer -->
-	<footer class="footer">
-		<div class="container"></div>
-	</footer> <!-- End of Footer -->
+  <script src="{% static 'libs/js/angular.min.js' %}"></script> <!-- AngularJS -->
+  <script src="{% static 'libs/js/notie.min.js' %}"></script> <!-- Notie -->
 
-	<!-- Additional JS -->
-	<script src="{% static 'libs/js/angular.min.js' %}"></script> <!-- AngularJS -->
-	<script src="{% static 'libs/js/notie.min.js' %}"></script> <!-- Notie -->
-
-	{% block additionaljs %}
-	{% endblock %}
-
+  {% block additionaljs %}
+  {% endblock %}
 </body>
 </html>

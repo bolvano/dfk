@@ -5,82 +5,80 @@
 
 <!-- Notie messages -->
 {% for message in messages %}
-	<script src="{% static 'libs/notie.min.js' %}"></script>
-	<script> notie.alert(1, 'Изменения сохранены', 0.5); </script>
+  <script src="{% static 'libs/js/notie.min.js' %}"></script>
+  <script> notie.alert(1, 'Изменения сохранены', 0.5); </script>
 {% endfor %}
 
-<div class="container">
+<div>
 
-	<!-- Heading -->
-	<div class="heading">
-        <a class="decorated-link" href="/competition/{{ competition.id }}/">
-			<h1><b>{{ competition.name }}</b></h1>
-		</a>
+  <!-- Heading -->
+  <div class="heading">
+    <a class="decorated-link" href="/competition/{{ competition.id }}/">
+      <h1>{{ competition.name|capfirst }}</h1>
+    </a>
+    <h4>{% if team != '' %} Команда {{team.name}} {% else %} Вне команд {% endif %}</h4>
+  </div> <!-- End of Heading -->
 
-		<h2><b>{% if team != '' %}Команда {{team.name}}{% else %} Вне команд {% endif %}</b></h2>
-	</div> <!-- End of Heading -->
+  {% if user.is_authenticated %}
 
-    {% if user.is_authenticated %}
+    <form role="form" method="POST">{% csrf_token %}
 
-		<form role="form" method="POST">{% csrf_token %}
+    {{ competitor_formset.management_form }}
 
-		{{ competitor_formset.management_form }}
+      <table class="table striped highlight bordered">
+        <tbody>
 
-	<table class="table table-striped table-hover table-bordered">
-		<tbody>
+          {% for competitor_form in competitor_formset %}
+          {{competitor_form.id}}
 
-						{% for competitor_form in competitor_formset %}
-					{{competitor_form.id}}
-
-					<tr>
-						<td class="column-name">
-							{% if competitor_form.instance.main_distance%}<span><b>{% endif %}
-							{{competitor_form.instance.person.last_name|title}} {{competitor_form.instance.person.first_name|title}},
-							{{competitor_form.instance.person.birth_year}} г.р.
-							{% if competitor_form.instance.main_distance%}</b></span>{% endif %}/
-                            {{competitor_form.instance.age.name}} {{competitor_form.instance.person.gender}} /
-							({{competitor_form.instance.userrequest.representative}},
-
-                            <a class="decorated-link" href="{% url 'userrequest' userrequest_id=competitor_form.instance.userrequest.id %}">
-                                <b>заявка</b>
-                            </a>)
-                            {% if competitor_form.instance.tour.out %} В/К{% endif %}
-						</td>
-						<td class="column-tour padding-15">
-							{% if competitor_form.instance.main_distance%}<span><b>{% endif %}
-							{{competitor_form.instance.tour.style.name}}
-							{{competitor_form.instance.tour.distance.name}}
-							({{competitor_form.instance.prior_time|formatSeconds}})
-							{% if competitor_form.instance.main_distance%}</b></span>{% endif %}
-						</td>
-
-						<td class="column-approved padding-15 text-center">{{competitor_form.approved}}</td>
-
-					</tr>
-				{% endfor %}
-		</tbody>
-	</table>
-
-
-				<button class="btn btn-lg btn-success pull-right" type="submit">Сохранить изменения <span class="glyphicon glyphicon-ok"></span></button>
-
-		</form>
-
-    {% else %}
-	<table class="table table-striped table-hover table-bordered">
-		<tbody>
-        {% for person in persons %}
             <tr>
-				<td class="column-name">
-                    {{person.last_name|title}} {{person.first_name|title}}, {{person.birth_year}} г.р.
-                </td>
+              <td class="column-name">
+                <span {% if competitor_form.instance.main_distance %} style="font-weight: bold"{% endif %}>
+                  {{competitor_form.instance.person.last_name|title}} {{competitor_form.instance.person.first_name|title}},
+                </span>
+                <span>
+                  {{competitor_form.instance.person.birth_year}} г.р./
+                  {{competitor_form.instance.age.name}} {{competitor_form.instance.person.gender}} /
+                  ({{competitor_form.instance.userrequest.representative}},
+                </span>
+                <a href="{% url 'userrequest' userrequest_id=competitor_form.instance.userrequest.id %}">
+                  заявка</a>)
+                {% if competitor_form.instance.tour.out %} В/К{% endif %}
+              </td>
+              <td class="column-tour">
+                <span {% if competitor_form.instance.main_distance%} style="font-weight: bold" {% endif %}>
+                {{competitor_form.instance.tour.style.name}} {{competitor_form.instance.tour.distance.name}} ({{competitor_form.instance.prior_time|formatSeconds}})
+                </span>
+              </td>
+
+              <td class="column-approved center-align">
+                {{competitor_form.approved}}
+                <label for="{{ competitor_form.approved.id_for_label }}"></label>
+              </td>
             </tr>
-        {% endfor %}
-		</tbody>
-	</table>
-    {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
 
+      <div class="button-wrapper">
+        <button class="waves-effect waves-light btn right blue darken-3" type="submit">
+          Сохранить изменения <i class="material-icons right">done</i>
+        </button>
+      </div>
+    </form>
 
+  {% else %}
+  <table class="table striped highlight bordered">
+    <tbody>
+      {% for person in persons %}
+      <tr>
+        <td class="column-name">
+          {{person.last_name|title}} {{person.first_name|title}}, {{person.birth_year}} г.р.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
 </div>
-
 {% endblock %}

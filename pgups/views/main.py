@@ -117,8 +117,7 @@ def competition_team(request, competition_id, team_id):
             persons.append(c.person)
     CompetitorFormSet = modelformset_factory(Competitor,
                                              fields=('approved',),
-                                             extra=0,
-                                             widgets={'approved': forms.CheckboxInput()})
+                                             extra=0)
     if request.method == "POST":
         competitor_formset = CompetitorFormSet(request.POST)
         if(competitor_formset.is_valid()):
@@ -145,8 +144,7 @@ def userrequest(request, userrequest_id):
             persons.append(c.person)
     CompetitorFormSet = modelformset_factory(Competitor,
                                              fields=('approved',),
-                                             extra=0,
-                                             widgets={'approved': forms.CheckboxInput(),})
+                                             extra=0)
 
     if request.method == "POST":
         competitor_formset = CompetitorFormSet(request.POST)

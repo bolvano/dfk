@@ -2,38 +2,36 @@
 {% load staticfiles %}
 {% block content %}
 
-<div class="container">
+<div>
 
-	<div class="heading">
-		<a class="decorated-link" href="/competition/{{ competition_id }}/">
-			<h1><b>{{ competition_name }}</b></h1>
-		</a>
+  <div class="heading">
+    <a class="decorated-link" href="/competition/{{ competition_id }}/">
+      <h1>{{ competition_name|capfirst }}</h1>
+    </a>
+    <h4>{{tour_name}}, подтверждённые участники</h4>
+  </div>
 
-		<h2><b>{{tour_name}}, подтверждённые участники</b></h2>
-	</div>
+  <table class="table highlight bordered">
+    <thead>
+      <tr>
+        <th>Участник</th>
+        <th>Предварительное время (мин:сек)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for pair in res %}
+        <tr>
+          <td class="result-tour-name">
+            {{pair.0}}
+          </td>
+          <td class="result-tour-result">
+            {{pair.1}}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
-	<div class="row">
-		<div class="col-lg-6 col-md-6 col-sm-10 col-xs-12">
-			<table class="result-tour-table table table-striped table-hover table-bordered">
-				<tbody>
-					<tr>
-						<td>Участник</td>
-						<td>Предварительное время (мин:сек)</td>
-					</tr>
-					{% for pair in res %}
-						<tr>
-							<td class="result-tour-name">
-								{{pair.0}}
-							</td>
-							<td class="result-tour-result">
-								{{pair.1}}
-							</td>
-						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-	</div>
 
 </div>
 

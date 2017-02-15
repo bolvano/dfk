@@ -2,187 +2,162 @@
 {% load staticfiles %}
 {% block content %}
 
-<div class="container" ng-app="competitionApp" ng-controller="CompetitionController as comp">
+<div ng-app="competitionApp" ng-controller="CompetitionController as comp">
 
   <!-- HEADING -->
   <div class="heading">
-    <h1><b>{{competition.name}}</b></h2>
+    <h1>{{competition.name|capfirst}}</h2>
   </div>
 
   {% if not competition.finished %}
 
-    <div class="row">
+    <div class="row dfk-tabs-content">
 
-      <div class="col-sm-8 dfk-tabs-content">
+      <div class="col s9">
+        <div class="row">
+          <div class="col s12">
+            <ul class="tabs tabs-fixed-width">
+              <li class="tab col s3"><a class="active light-blue-text text-darken-3" href="#requests">Заявки</a></li>
+              <li class="tab col s3"><a class="light-blue-text text-darken-3" href="#teams">Команды</a></li>
+              {% if user.is_authenticated %}
+              <li class="tab col s3"><a class="light-blue-text text-darken-3" href="#tours">Дисциплины</a></li>
+              <li class="tab col s3"><a class="light-blue-text text-darken-3" href="#relays">Эстафеты</a></li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
 
-        <ul class="nav nav-tabs">
-          <li class="active"><a data-toggle="tab" href="#requests">Заявки</a></li>
-          <li><a data-toggle="tab" href="#teams">Составы команд</a></li>
-          {% if user.is_authenticated %}
-            <li><a data-toggle="tab" href="#tours">Дисциплины</a></li>
-            <li><a data-toggle="tab" href="#relays">Эстафеты</a></li>
-          {% endif %}
-        </ul>
-
-        <div class="tab-content ">
+        <div class="tab-content">
 
           <!-- REQUESTS -->
-          <div id="requests" class="tab-pane fade in active">
-
-
-        <table class="table table-striped table-hover table-bordered">
-          <thead>
-
-            <tr>
-              <th class="text-center">Дата</th>
-              <th class="text-center">Команда</th>
-              <th class="text-center">Тренер</th>
-              {% if user.is_authenticated %}
-                <th class="text-center">Подтверждено</th>
-              {% endif %}
-            </tr>
-          </thead>
-
-          <tbody>
-            {% for userrequest in competition.userrequest_set.all %}
-              <tr >
-                <td class="text-center"><a href="../../userrequest/{{userrequest.id}}/">{{userrequest.date|date:"d.m.Y"}}</a></td>
-                {% if userrequest.team %}
-                  <td class="text-center">{{userrequest.team}}</td>
-                {% else %}
-                  <td class="text-center">индивидуальная заявка</td>
-                {% endif %}
-                  <td class="text-center">{{userrequest.representative}}</td>
-                {% if user.is_authenticated %}
-                  <td class="text-center">{{userrequest.approved_competitors|length}} из {{userrequest.competitor_set.all|length}}</td>
-                {% endif %}
-              </tr>
-            {% endfor %}
-          </tbody>
-
-          </table>
-
+          <div id="requests">
+            <table class="table bordered centered highlight">
+              <thead>
+                <tr>
+                  <th>Дата</th>
+                  <th>Команда</th>
+                  <th>Тренер</th>
+                  {% if user.is_authenticated %}
+                    <th>Подтверждено</th>
+                  {% endif %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for userrequest in competition.userrequest_set.all %}
+                  <tr >
+                    <td>
+                      <a href="../../userrequest/{{userrequest.id}}/">{{userrequest.date|date:"d.m.Y"}}</a>
+                    </td>
+                    {% if userrequest.team %} <td>{{userrequest.team}}</td>
+                    {% else %} <td>индивидуальная заявка</td> {% endif %}
+                    <td>{{userrequest.representative}}</td>
+                    {% if user.is_authenticated %}
+                    <td>{{userrequest.approved_competitors|length}} из {{userrequest.competitor_set.all|length}}</td>
+                    {% endif %}
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
 
           <!-- TEAMS -->
-          <div id="teams" class="tab-pane fade">
-            <ul class="basic-list">
+          <div id="teams">
+            <ul class="collection">
               {% for team in teams %}
-                <li>
-                  <a href="../../competition/team/{{competition.id}}/{{team.id}}/">{{team}}</a>
-                </li>
+              <a class="collection-item" href="../../competition/team/{{competition.id}}/{{team.id}}/">{{team}}</a>
               {% endfor %}
-                <li>
-                  <a href="../../competition/team/{{competition.id}}/0/">Без команды</a>
-                </li>
+              <a class="collection-item" href="../../competition/team/{{competition.id}}/0/">Без команды</a>
             </ul>
           </div>
 
           <!-- TOURS -->
           {% if user.is_authenticated %}
           <div id="tours" class="tab-pane fade">
-            <ul class="basic-list">
+            <ul class="collection">
               {% for tour in competition.tour_set.all %}
-              <!-- {% if tour.competitor_set.all|length > 0 %} -->
-                <li>
-                  <a href="../../tour/{{tour.id}}/">{{tour}}</a>
-                </li>
-              <!-- {% endif %} -->
+              <a class="collection-item" href="../../tour/{{tour.id}}/">{{tour}}</a>
               {% endfor %}
             </ul>
           </div>
 
           <!-- RELAYS -->
-          <div id="relays" class="tab-pane fade">
-            <ul class="basic-list">
+          <div id="relays">
+            <ul class="collection">
               {% for relay in relays %}
-                <li>
-                  <a href="../../relay_teams/{{relay.id}}/">{{relay}}</a>
-                </li>
+              <a class="collection-item" href="../../relay_teams/{{relay.id}}/">{{relay}}</a>
               {% endfor %}
             </ul>
           </div>
           {% endif %}
-
         </div>
-
       </div>
 
     {% if user.is_authenticated %}
-      <div class="col-sm-4">
+      <div class="col s3">
 
-        <ul class="nav nav-pills nav-stacked">
-
-          <li class="nav-item">
-            <a href="../../competition/starts/{{competition.id}}/">
+        <ul>
+          <li>
+            <a class="btn-flat dfk-side-btn" href="../../competition/starts/{{competition.id}}/">
                <span>Сетка заплывов</span>
-               <span class="pull-right glyphicon glyphicon-list-alt"></span>
+               <i class="material-icons right">view_list</i>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a href="{% url 'starts_print' competition_id=competition.id %}" target="_blank">
+          <li>
+            <a class="btn-flat dfk-side-btn" href="{% url 'starts_print' competition_id=competition.id %}" target="_blank">
               <span>Стартовые протоколы</span>
-              <span class="pull-right glyphicon glyphicon-print"></span>
+              <i class="material-icons right">print</i>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a href="#" ng-click="comp.openModal();">
+          <li>
+            <a class="btn-flat dfk-side-btn" href="#" ng-click="comp.openModal()">
               <span>Перегенерировать заплывы</span>
-              <span class="glyphicon glyphicon-refresh pull-right"></span>
+              <i class="material-icons right">refresh</i>
             </a>
           </li>
 
-          <li class="nav-item bordered-item">
-            <a href="../../competition_starts_sort/{{competition.id}}/">
+          <li class="bordered-item">
+            <a class="btn-flat dfk-side-btn" href="../../competition_starts_sort/{{competition.id}}/">
               <span>Настройка заплывов</span>
-              <span class="pull-right glyphicon glyphicon-wrench"></span>
+              <i class="material-icons right">build</i>
             </a>
           </li>
 
-          <li role="separator" class="divider"></li>
-
-          <li class="nav-item">
-            <a href="../../competition/relay_starts/{{competition.id}}/">
-               <span>Сетка эстафет</span>
-               <span class="pull-right glyphicon glyphicon-list-alt"></span>
+          <li>
+            <a class="btn-flat dfk-side-btn" href="../../competition/relay_starts/{{competition.id}}/">
+              <span>Сетка эстафет</span>
+              <i class="material-icons right">view_list</i>
             </a>
           </li>
 
-          <li class="nav-item">
-            <a href="../../competition_relays_sort/{{competition.id}}/">
+          <li>
+            <a class="btn-flat dfk-side-btn" href="../../competition_relays_sort/{{competition.id}}/">
               <span>Настройка эстафет</span>
-              <span class="glyphicon glyphicon-wrench pull-right"></span>
+              <i class="material-icons right">build</i>
             </a>
           </li>
 
-          <li class="nav-item bordered-item">
-            <a href="#" ng-click="comp.openModalRelay();">
-              <span>Перегенерировать эстафетные заплывы</span>
-              <span class="glyphicon glyphicon-refresh pull-right"></span>
+          <li class="bordered-item">
+            <a class="btn-flat dfk-side-btn" href="#" ng-click="comp.openModalRelay();">
+              <span>Перегенерировать эстафеты</span>
+              <i class="material-icons right">refresh</i>
             </a>
           </li>
 
-
-            <li role="separator" class="divider"></li>
-
-          <li class="nav-item">
-            <a href="{% url 'competitionedit' competition_id=competition.id %}/" target="_blank">
-              <span>Редактировать соревнования</span>
-              <span class="pull-right glyphicon glyphicon-cog"></span>
+          <li>
+            <a class="btn-flat dfk-side-btn" href="{% url 'competitionedit' competition_id=competition.id %}/" target="_blank">
+              <span>Редактировать соревнования</span><i class="material-icons right">settings</i>
             </a>
           </li>
 
-
-
-          <li class="nav-item">
+          <li>
             <form action="." method="POST" >{% csrf_token %}
               <input type="hidden" name="competition_id" value="{{competition.id}}">
               <input type="hidden" name="close" value="1">
-              <button type="submit" class="btn btn-link dfk-btn-link">
-                 <span>Закрыть соревнования</span>
-                 <span class="glyphicon glyphicon-off pull-right"></span>
+              <button type="submit" class="btn-flat dfk-btn-link dfk-side-btn">
+                <span>Закрыть соревнования</span>
+                <i class="material-icons right">power_settings_new</i>
               </button>
             </form>
           </li>

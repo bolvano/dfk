@@ -209,8 +209,6 @@ function SortController($scope, $log, $timeout, $window, $http, getStarts) {
                 notie.alert(3, 'Произошла ошибка: ' + response.status + ' ' + response.statusText, 3);
                 angular.element('#submit-request-button').attr('disabled', false).html('Сохранить заплывы');
             });
-
     }
-
 }
 })();

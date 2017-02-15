@@ -114,8 +114,6 @@ def relay_start_result(request, start_id):
     except StartRelay.DoesNotExist:
         prev_start_id = ''
 
-    #import ipdb; ipdb.set_trace()
-
     ResultFormSet = modelformset_factory(TeamRelay,
                                          fields=('time', 'disqualification'),
                                          extra=0,
@@ -135,7 +133,6 @@ def relay_start_result(request, start_id):
 
     if request.method == "POST":
         result_formset = ResultFormSet(request.POST)
-        #import ipdb; ipdb.set_trace()
         if(result_formset.is_valid()):
             result_formset.save()
             messages.success(request, 'Результат сохранён')

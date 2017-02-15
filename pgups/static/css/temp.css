@@ -1,3 +1,27 @@
+body {
+  margin-bottom: 0;
+}
+
+main {
+  padding-left: 5vw;
+  padding-right: 5vw;
+}
+
+.footer {
+  margin-top: 30px;
+  position: static;
+}
+
+.heading {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+.table {
+  table-layout: auto;
+}
+
 .team-result-row {
   box-shadow: none;
   min-height: 40px;
@@ -93,4 +117,104 @@
 .sort-buffer,
 .competitor-list-sort {
   border-width: 1px;
+}
+
+.tabs .indicator {
+  background-color: #0277bd;
+}
+
+.dfk-tabs-content {
+  border: none;
+  margin-bottom: 0;
+}
+
+.collection a.collection-item {
+  color: #0277bd;
+}
+
+a {
+  color: #0277bd;
+}
+
+.dfk-side-btn {
+  padding: 5px 10px ;
+  height: auto;
+  text-transform: none;
+  width: 100%;
+  position: relative;
+}
+
+.dfk-side-btn i {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+}
+
+.dfk-side-btn span {
+  max-width: 90%;
+}
+
+[type="checkbox"]:checked+label:before {
+  border-right-color: #01579b;
+  border-bottom-color: #01579b;
+}
+
+.button-wrapper {
+  margin-bottom: 0;
+  margin-top: 20px;
+}
+
+.start-number {
+  margin-bottom: 0;
+}
+
+.single-start-container {
+  border-bottom: none;
+}
+
+.single-start-wrapper:not(:last-child) {
+  margin-bottom: 50px;
+}
+
+.single-start-wrapper .table {
+  margin-bottom: 40px;
+}
+
+.row-no-margin,
+.row-no-margin input[type=number],
+.select-wrapper input.select-dropdown {
+  margin-bottom: 0;
+}
+
+.dropdown-content li>a, .dropdown-content li>span {
+  color: black;
+}
+
+
+input:not([type]):focus:not([readonly]),
+input[type=text]:focus:not([readonly]),
+input[type=password]:focus:not([readonly]),
+input[type=email]:focus:not([readonly]),
+input[type=url]:focus:not([readonly]),
+input[type=time]:focus:not([readonly]),
+input[type=date]:focus:not([readonly]),
+input[type=datetime]:focus:not([readonly]),
+input[type=datetime-local]:focus:not([readonly]),
+input[type=tel]:focus:not([readonly]),
+input[type=number]:focus:not([readonly]),
+input[type=search]:focus:not([readonly]),
+textarea.materialize-textarea:focus:not([readonly]) {
+  border-color: #01579b;
+}
+
+.select-wrapper {
+  height: 50px;
+}
+
+.col-result {
+  width: 30%;
+}
+
+.add-team-btn {
+  margin-top: 1.5rem;
 }
