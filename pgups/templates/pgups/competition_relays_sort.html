@@ -29,8 +29,6 @@
       <pre ng-show="showDebugData">{$ sortCtrl.data | json $}</pre>
       DEBUG -->
 
-      <br>
-
       <div class="row">
         <div class="col-xs-4">
           <span>Количество дорожек: &nbsp</span>
@@ -63,7 +61,6 @@
                   {$ team.name $}
               </div>
             </div>
-
           </div>
 
           <div id="relay-{$ $index $}"
@@ -105,9 +102,7 @@
                    {$ team.name $}
               </div>
             </div>
-
           </div>
-
         </div>
 
         <div class="row">
@@ -141,11 +136,11 @@
             <div class="single-start-sort single-start-movable col-lg-6 col-md-6">
 
               <!-- Start number -->
-              <div class="start-number">
+              <div class="start-number relay-start-number">
                 <h3 class="pull-left">Заплыв {$ $index $}</h3>
               </div> <!-- End of Start number -->
 
-            <div class="edit-relay-name">
+            <div class="edit-relay-name" ng-if="relay.name">
               <h4>{$ relay.name $}</h4>
             </div>
 
@@ -155,11 +150,8 @@
                   {$ team.name $}
                 </div>
               </div>
-
             </div>
-
           </div>
-
         </div>
 
         <div class="row">
@@ -177,11 +169,8 @@
             </button>
           </div>
         </div>
-
       </div> <!-- End of Step 2 -->
-
     </div>
-
   </div>
 
   {% else %}

@@ -24,68 +24,6 @@ function getRelays($http, $window, $location) {
             var urlArr = $location.absUrl().split('/');
             var competition_id = urlArr[urlArr.length - 2];
 
-            var TEST_DATA = {
-                              "competition_id": 8,
-                              "relays": [
-
-                                    { role: 'buffer', teams: [
-                                        {
-                                          "tour_name": "\u043d\u0430 \u0441\u043f\u0438\u043d\u0435 4 x 50 \u043c. 18-29 \u0421",
-                                          "name": "\u0414\u0424\u041a \u041f\u0413\u0423\u041f\u0421-I",
-                                          "id": 65,
-                                          "lane": 2
-                                        },
-                                        {
-                                          "tour_name": "\u043d\u0430 \u0441\u043f\u0438\u043d\u0435 4 x 50 \u043c. 18-29 \u0421",
-                                          "name": "\u0414\u0424\u041a \u041f\u0413\u0423\u041f\u0421-II",
-                                          "id": 66,
-                                          "lane": 3
-                                        },
-                                        {
-                                          "tour_name": "\u043d\u0430 \u0441\u043f\u0438\u043d\u0435 4 x 50 \u043c. 18-29 \u0421",
-                                          "name": "Мжвяки-II",
-                                          "id": 66,
-                                          "lane": 3
-                                        }
-                                    ]},
-
-                                    {
-                                      "name": "\u042d\u0441\u0442\u0430\u0444\u0435\u0442\u0430 4 x 50 \u043c. \u043d\u0430 \u0441\u043f\u0438\u043d\u0435 18-29 \u0421",
-                                      "id": 18,
-                                      "num": 1,
-                                      "teams": [
-                                        {
-                                          "tour_name": "\u043d\u0430 \u0441\u043f\u0438\u043d\u0435 4 x 50 \u043c. 18-29 \u0421",
-                                          "name": "\u0414\u0424\u041a \u041f\u0413\u0423\u041f\u0421-I",
-                                          "id": 65,
-                                          "lane": 2
-                                        },
-                                        {
-                                          "tour_name": "\u043d\u0430 \u0441\u043f\u0438\u043d\u0435 4 x 50 \u043c. 18-29 \u0421",
-                                          "name": "\u0414\u0424\u041a \u041f\u0413\u0423\u041f\u0421-II",
-                                          "id": 66,
-                                          "lane": 3
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "name": "\u042d\u0441\u0442\u0430\u0444\u0435\u0442\u0430 4 x 50 \u043c. \u043d\u0430 \u0441\u043f\u0438\u043d\u0435 30-39 \u0421",
-                                      "id": 19,
-                                      "num": 2,
-                                      "teams": [
-                                        {
-                                          "tour_name": "\u043d\u0430 \u0441\u043f\u0438\u043d\u0435 4 x 50 \u043c. 30-39 \u0421",
-                                          "name": "\u0414\u0424\u041a \u041f\u0413\u0423\u041f\u0421-I",
-                                          "id": 64,
-                                          "lane": 3
-                                        }
-                                      ]
-                                    }
-                              ],
-                              "competition_name": "test"
-                            }
-
-            /*
             var promise = $http.get('http://' +
                                     $window.location.host +
                                     '/get_relay_starts/' +
@@ -93,11 +31,8 @@ function getRelays($http, $window, $location) {
                                 .then(function (response) {
                                     return response.data;
                                 });
-            */
 
-            return TEST_DATA;
-
-            // return promise;
+            return promise;
         }
     };
     return relayService;
@@ -161,22 +96,10 @@ function SortController($scope, $timeout, $window, $http, getRelays) {
     vm.submitRequest = submitRequest;
 
     function activate() {
-        vm.data = getRelays.async();
-
-        console.log(vm.data);
-
-        /*
         getRelays.async().then(function(response) {
             vm.data = response;
-
-            //adding an empty list to act as a buffer
-            vm.data.relayCDSGs.unshift({ role: 'buffer', competitors: []});
-
-            console.log(vm.data);
-
             return response;
         });
-        */
     }
 
     function basicAnimation(id) {
