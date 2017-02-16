@@ -2,7 +2,7 @@
 
 import json
 from pgups.models import Userrequest, Competition, Team, TeamRelay, Competitor, Tour, TourRelay, Age, Distance, \
-    DistanceRelay, Style, Start, Cdsg, CompetitorRelay
+    DistanceRelay, Style, Start, Cdsg, CompetitorRelay, CdsgRelay, StartRelay
 from django.http import HttpResponse
 import datetime
 
@@ -327,35 +327,37 @@ def get_relay_teams(request, id):
     competitors = Competitor.objects.filter(userrequest__in=userrequests)
 
     for c in competitors:
-        if c.person not in person_list:
-            d = {}
-            d['id'] = c.person.id
-            d['name'] = c.person.__str__()
-            d['gender'] = c.person.gender
-            d['age_id'] = c.age.id
-            d['age'] = int(now.year) - int(c.person.birth_year)
-            d['team_id'] = c.userrequest.team.id
-            d['team_name'] = c.userrequest.team.name
-
-            try:
-                relay_competitor = CompetitorRelay.objects.get(person=c.person)
-                if relay_competitor:
-                    d['relay_team_name'] = relay_competitor.teamRelay.name
-                    d['relay_team_id'] = relay_competitor.teamRelay.id
-                    d['relay_competitor_id'] = relay_competitor.id
-                    d['order'] = relay_competitor.order
-            except CompetitorRelay.DoesNotExist:
-                pass
-            person_list.append(d)
-
-        relay_team_names = [c.userrequest.team.name + '-' + 'I' * i for i in range(1, max_relay_teams + 1)]
-
-        for rtn in relay_team_names:
-            if not any(ed['name'] == rtn for ed in team_list):
+        if c.userrequest.team:
+            if c.person not in person_list:
                 d = {}
-                d['name'] = rtn
-                d['parent_id'] = c.userrequest.team.id
-                team_list.append(d)
+                d['id'] = c.person.id
+                d['name'] = c.person.__str__()
+                d['gender'] = c.person.gender
+                d['age_id'] = c.age.id
+                d['age'] = int(now.year) - int(c.person.birth_year)
+                d['team_id'] = c.userrequest.team.id
+                d['team_name'] = c.userrequest.team.name
+
+                try:
+                    relay_competitor = CompetitorRelay.objects.get(person=c.person)
+                    if relay_competitor:
+                        d['relay_team_name'] = relay_competitor.teamRelay.name
+                        d['relay_team_id'] = relay_competitor.teamRelay.id
+                        d['relay_competitor_id'] = relay_competitor.id
+                        d['order'] = relay_competitor.order
+                except CompetitorRelay.DoesNotExist:
+                    pass
+                person_list.append(d)
+
+            relay_team_names = [c.userrequest.team.name + '-' + 'I' * i for i in range(1, max_relay_teams + 1)]
+            relay_team_names = [r for r in relay_team_names if r not in [r['name'] for r in relay_team_list]]
+
+            for rtn in relay_team_names:
+                if not any(ed['name'] == rtn for ed in team_list):
+                    d = {}
+                    d['name'] = rtn
+                    d['parent_id'] = c.userrequest.team.id
+                    team_list.append(d)
 
     return HttpResponse(json.dumps({'competition_id':competition.id,
                                     'competition_name':competition.name,
@@ -363,4 +365,40 @@ def get_relay_teams(request, id):
                                     'persons': person_list,
                                     'teams': team_list,
                                     'relayTeams': relay_team_list
+                                    }), content_type="application/json")
+
+
+def get_relay_starts(request, id):
+    relay_list = []
+    buffer = {'role': 'buffer', 'teams': []}
+    relay_list.append(buffer)
+    competition = Competition.objects.get(pk=id)
+
+    cdsgs_qs = CdsgRelay.objects.filter(competition=competition)
+    for cdsg in cdsgs_qs:
+        cdsg_dict = dict()
+        cdsg_dict['id'] = cdsg.id
+        cdsg_dict['name'] = cdsg.name
+        cdsg_dict['num'] = cdsg.number
+        cdsg_dict['starts'] = list()
+        starts_qs = StartRelay.objects.filter(cdsg=cdsg)
+        for start in starts_qs:
+            start_dict = dict()
+            start_dict['id'] = start.id
+            start_dict['name'] = start.name
+            start_dict['num'] = start.num
+            start_dict['teams'] = list()
+            relay_teams_qs = TeamRelay.objects.filter(start=start)
+            for team in relay_teams_qs:
+                team_dict = dict()
+                team_dict['id'] = team.id
+                team_dict['name'] = team.name
+                team_dict['lane'] = team.lane
+                team_dict['tour_name'] = team.tour.__str__()
+                start_dict['teams'].append(team_dict)
+
+            relay_list.append(start_dict)
+    return HttpResponse(json.dumps({'competition_id': competition.id,
+                                    'competition_name': competition.name,
+                                    'relays': relay_list
                                     }), content_type="application/json")

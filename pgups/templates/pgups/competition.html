@@ -20,6 +20,7 @@
           <li><a data-toggle="tab" href="#teams">Составы команд</a></li>
           {% if user.is_authenticated %}
             <li><a data-toggle="tab" href="#tours">Дисциплины</a></li>
+            <li><a data-toggle="tab" href="#relays">Эстафеты</a></li>
           {% endif %}
         </ul>
 
@@ -77,16 +78,27 @@
             </ul>
           </div>
 
-          <!-- TEAMS -->
+          <!-- TOURS -->
           {% if user.is_authenticated %}
           <div id="tours" class="tab-pane fade">
             <ul class="basic-list">
               {% for tour in competition.tour_set.all %}
-              {% if tour.competitor_set.all|length > 0 %}
+              <!-- {% if tour.competitor_set.all|length > 0 %} -->
                 <li>
                   <a href="../../tour/{{tour.id}}/">{{tour}}</a>
                 </li>
-              {% endif %}
+              <!-- {% endif %} -->
+              {% endfor %}
+            </ul>
+          </div>
+
+          <!-- RELAYS -->
+          <div id="relays" class="tab-pane fade">
+            <ul class="basic-list">
+              {% for relay in relays %}
+                <li>
+                  <a href="../../relay_teams/{{relay.id}}/">{{relay}}</a>
+                </li>
               {% endfor %}
             </ul>
           </div>
@@ -135,6 +147,13 @@
             <a href="../../competition/relay_starts/{{competition.id}}/">
                <span>Сетка эстафет</span>
                <span class="pull-right glyphicon glyphicon-list-alt"></span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="../../competition_relays_sort/{{competition.id}}/">
+              <span>Настройка эстафет</span>
+              <span class="glyphicon glyphicon-wrench pull-right"></span>
             </a>
           </li>
 

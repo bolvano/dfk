@@ -2,69 +2,48 @@
 'use strict';
 
 angular
-.module('sortableStartsApp', ['ui.sortable', 'ngAnimate'])
+.module('sortableRelaysApp', ['ui.sortable', 'ngAnimate'])
 .config(altTemplateTags)
 .controller('SortController', SortController)
-.filter('cap', capitalizeWord)
-.filter('time', formatTime)
-.factory('getStarts', getStarts)
+.factory('getRelays', getRelays)
 .directive('fixOnScroll', fixOnScroll);
 
 altTemplateTags.$inject = ['$interpolateProvider'];
-SortController.$inject = ['$scope', '$log', '$timeout', '$window', '$http', 'getStarts'];
-getStarts.$inject = ['$http', '$window', '$log', '$location'];
+SortController.$inject = ['$scope', '$timeout', '$window', '$http', 'getRelays'];
+getRelays.$inject = ['$http', '$window', '$location'];
 fixOnScroll.$inject = ['$window'];
-
-function capitalizeWord() {
-    return function(word) {
-        return word.substring(0,1).toUpperCase() + word.slice(1);
-    };
-}
-
-function formatTime() {
-    return function(seconds) {
-        var min = Math.floor(seconds / 60);
-        var sec = seconds % 60;
-        var zero = sec < 10 ? '0' : '';
-        return  min + ':' + zero + sec.toFixed(2);
-    };
-}
 
 function altTemplateTags($interpolateProvider) {
     $interpolateProvider.startSymbol('{$');
     $interpolateProvider.endSymbol('$}');
 }
 
-function getStarts($http, $window, $log, $location) {
-    var starts = {
+function getRelays($http, $window, $location) {
+    var relayService = {
         async: function() {
+            var urlArr = $location.absUrl().split('/');
+            var competition_id = urlArr[urlArr.length - 2];
 
-            var urlArr = $location.absUrl().split('/'),
-                competition_id = urlArr[urlArr.length - 2],
-
-                promise = $http.get('http://' +
+            var promise = $http.get('http://' +
                                     $window.location.host +
-                                    '/get_competition_starts/' +
+                                    '/get_relay_starts/' +
                                     competition_id)
-
-            .then(function (response) {
-                return response.data;
-            });
+                                .then(function (response) {
+                                    return response.data;
+                                });
 
             return promise;
         }
     };
-    return starts;
+    return relayService;
 }
 
 function fixOnScroll($window) {
-
     var win = angular.element($window);
 
     return {
         restrict: 'A',
         link: function (scope, element, attrs) {
-
             // get CSS class from directive's attribute value
             var topClass = attrs.fixOnScroll,
                 offsetTop = element.offset().top,
@@ -82,19 +61,18 @@ function fixOnScroll($window) {
     };
 }
 
-function SortController($scope, $log, $timeout, $window, $http, getStarts) {
-
+function SortController($scope, $timeout, $window, $http, getRelays) {
     var vm = this;
 
     activate();
 
-    vm.sortableStartOptions = {
+    vm.sortableRelayOptions = {
         placeholder: 'single-competitor-sort-highlight',
         connectWith: '.connected-competitors',
         opacity: 0.75
     };
 
-    vm.sortableStartsListOptions = {
+    vm.sortableRelaysListOptions = {
         placeholder: 'single-start-sort-highlight',
         opacity: 0.75
     };
@@ -105,23 +83,22 @@ function SortController($scope, $log, $timeout, $window, $http, getStarts) {
             this.step++;
             $window.scrollTo(0, 0);
         },
-
         prev: function() {
             this.step--;
             $window.scrollTo(0, 0);
         }
     };
 
-    vm.addStart = addStart;
-    vm.removeStart = removeStart;
-    vm.validateStarts = validateStarts;
+    vm.addRelay = addRelay;
+    vm.removeRelay = removeRelay;
+    vm.validateRelays = validateRelays;
+    vm.confirmOnEnter = confirmOnEnter;
     vm.submitRequest = submitRequest;
 
     function activate() {
-        getStarts.async().then(function(response) {
-            var data = response;
+        getRelays.async().then(function(response) {
             vm.data = response;
-            return data;
+            return response;
         });
     }
 
@@ -131,53 +108,53 @@ function SortController($scope, $log, $timeout, $window, $http, getStarts) {
         });
     }
 
-    function addStart() {
-        vm.data.starts_list.push({
-            'competitors': []
+    function addRelay() {
+        vm.data.relays.push({
+            'teams': [],
+            'editable': true
         });
 
         basicAnimation('#add-start-button');
     }
 
-    function removeStart(idx) {
+    function removeRelay(idx) {
+        var removedTeams = vm.data.relays[idx].teams,
+            buffer = vm.data.relays[0].teams;
 
-        var removedCompetitors = vm.data.starts_list[idx].competitors,
-            buffer = vm.data.starts_list[0].competitors;
-
-        // move competitors to buffer
-        removedCompetitors.forEach(function(item){
-            buffer.push(item);
+        angular.forEach(removedTeams, function(team, i){
+            buffer.push(team);
         });
 
-        vm.data.starts_list.splice(idx, 1);
-
+        vm.data.relays.splice(idx, 1);
     }
 
-    function validateStarts() {
-
-        var startList = vm.data.starts_list,
+    function validateRelays() {
+        var relayList = vm.data.relays,
             tooLongLists = [];
 
         if (!vm.maxLength) {
-
             notie.alert(3, 'Укажите количество дорожек!', 5);
-
         } else {
-
-            for (var i = 1; i < startList.length; i++) {
-                if (startList[i].competitors.length > vm.maxLength) {
+            angular.forEach(relayList, function(relay, i) {
+                if (relay.teams.length > vm.maxLength) {
                     tooLongLists.push(i);
                 }
-            }
+            });
 
-            if (startList[0].competitors.length > 0) {
-                notie.alert(3, 'В буфере остались нераспределённые участники!', 5);
+            if (relayList[0].teams.length > 0) {
+                notie.alert(3, 'В буфере остались нераспределённые команды!', 5);
             } else if (tooLongLists.length > 0) {
-                var startsPlural = tooLongLists.length === 1 ? 'заплыве' : 'заплывах';
-                notie.alert(3, 'В '+ startsPlural + ' № ' + tooLongLists.join(', ') + ' более ' + vm.maxLength + ' участников!', 5);
+                var relaysPlural = tooLongLists.length === 1 ? 'заплыве' : 'заплывах';
+                notie.alert(3, 'В '+ relaysPlural + ' № ' + tooLongLists.join(', ') + ' более ' + vm.maxLength + ' участников!', 5);
             } else {
                 submitRequest();
             }
+        }
+    }
+
+    function confirmOnEnter(event, relay) {
+        if (event.keyCode === 13) {
+            relay.editable = false;
         }
     }
 
@@ -189,7 +166,7 @@ function SortController($scope, $log, $timeout, $window, $http, getStarts) {
 
         var req = {
             method: 'POST',
-            url: 'http://' + $window.location.host + '/competition_starts_sort/' + vm.data.competition_id + '/',
+            url: 'http://' + $window.location.host + '/competition_relays_sort/' + vm.data.competition_id + '/',
             headers: {
                 'X-CSRFToken' : $scope.csrf_token,
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -199,18 +176,16 @@ function SortController($scope, $log, $timeout, $window, $http, getStarts) {
 
         $http(req)
             .then(function() {
-                notie.alert(1, 'Данные сохранены! Вы будете перенаправлены на текущую сетку заплывов.', 2);
+                notie.alert(1, 'Данные сохранены! Вы будете перенаправлены на текущую сетку эстафетных заплывов.', 2);
 
                 $timeout(function() {
-                    $window.location.href = '/competition/starts/' + vm.data.competition_id + '/';
+                    $window.location.href = '/competition/relay_starts/' + vm.data.competition_id + '/';
                 }, 4000);
 
             }, function(response) {
                 notie.alert(3, 'Произошла ошибка: ' + response.status + ' ' + response.statusText, 3);
                 angular.element('#submit-request-button').attr('disabled', false).html('Сохранить заплывы');
             });
-
     }
-
 }
 })();

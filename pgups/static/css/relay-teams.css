@@ -1,0 +1,16 @@
+.relay-team-list {
+  padding: 20px;
+}
+
+.relay-team-list--item {
+  line-height: 2.5;
+  cursor: pointer;
+}
+
+.relay-team-list--item div {
+  display: inline-block;
+}
+
+.save-teams-btn {
+  padding: 15px;
+}

@@ -8,14 +8,11 @@ urlpatterns = [
     url(r'^competition/(?P<competition_id>\d+)/$', competition, name='competition'),
     url(r'^userrequest/(?P<userrequest_id>\d+)/$', userrequest, name='userrequest'),
 
-    #url(r'^userrequest_edit/(?P<userrequest_id>\d+)/$', userrequest_edit, name='userrequest_edit'),
-
     url(r'^person/(?P<person_id>\d+)/$', person, name='person'),
     url(r'^results/starts/(?P<competition_id>\d+)/$', results_starts),
     url(r'^results/tours/(?P<competition_id>\d+)/$', results_tours),
     url(r'^results/teams/(?P<competition_id>\d+)/$', results_teams),
     url(r'^competition/starts/(?P<competition_id>\d+)/$', competition_starts, name='competition_starts'),
-    url(r'^competition/relays/(?P<competition_id>\d+)/$', competition_relays, name='competition_relays'),
     url(r'^competition/start_result/(?P<start_id>\d+)/$', start_result, name='start_result'),
     url(r'^competition/start_result_view/(?P<start_id>\d+)/$', start_result_view),
     url(r'^tour/(?P<id>\d+)/$', tour),
@@ -32,7 +29,8 @@ urlpatterns = [
     url(r'^get_teams/$', get_teams),
     url(r'^get_ages_distances_styles/(?P<competition_id>\d+)?/?$', get_ages_distances_styles),
     url(r'^get_competition_starts/(?P<id>\d+)/$', get_competition_starts),
-    url(r'^get_relay_teams/(?P<id>\d+)/$', get_relay_teams),
+    url(r'^get_relay_teams/(?P<id>\d+)/$', get_relay_teams), # id - relay_tour_id
+    url(r'^get_relay_starts/(?P<id>\d+)/$', get_relay_starts), # id - competition_id
 
     # starts and tours
     url(r'^generate_starts/$', generate_starts),
@@ -45,6 +43,8 @@ urlpatterns = [
     # sortable starts
     url(r'^competition_starts_sort/(?P<competition_id>\d+)/$', competition_starts_sort,
         name="competition_starts_sort"),
+    url(r'^competition_relays_sort/(?P<competition_id>\d+)/$', competition_relays_sort,
+        name="competition_relays_sort"),
 
     url(r'^login/$', login_user, name="login"),
     url(r'^logout/$', logout_user, name="logout"),
