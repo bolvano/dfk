@@ -1,5 +1,6 @@
 {% extends 'pgups/base.html' %}
 {% load staticfiles %}
+{% load extras %}
 {% block content %}
 
 <div class="container" ng-app="competitionApp" ng-controller="CompetitionController as comp">
@@ -15,16 +16,22 @@
 
       <div class="col-sm-8 dfk-tabs-content">
 
+        {% if user.is_authenticated %}
+
         <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#requests">Заявки</a></li>
+            {% if request.user|has_group:"moderators" %}
           <li><a data-toggle="tab" href="#teams">Составы команд</a></li>
-          {% if user.is_authenticated %}
-            <li><a data-toggle="tab" href="#tours">Дисциплины</a></li>
-            <li><a data-toggle="tab" href="#relays">Эстафеты</a></li>
-          {% endif %}
+          <li><a data-toggle="tab" href="#tours">Дисциплины</a></li>
+          <li><a data-toggle="tab" href="#relays">Эстафеты</a></li>
+            {% endif %}
         </ul>
 
+        {% endif %}
+
         <div class="tab-content ">
+
+        {% if user.is_authenticated %}
 
           <!-- REQUESTS -->
           <div id="requests" class="tab-pane fade in active">
@@ -45,6 +52,9 @@
 
           <tbody>
             {% for userrequest in competition.userrequest_set.all %}
+
+            {% if  request.user|has_group:"moderators" or request.user == userrequest.user  %}
+
               <tr >
                 <td class="text-center"><a href="../../userrequest/{{userrequest.id}}/">{{userrequest.date|date:"d.m.Y"}}</a></td>
                 {% if userrequest.team %}
@@ -57,12 +67,18 @@
                   <td class="text-center">{{userrequest.approved_competitors|length}} из {{userrequest.competitor_set.all|length}}</td>
                 {% endif %}
               </tr>
+
+            {% endif %}
+
+
             {% endfor %}
           </tbody>
 
           </table>
 
           </div>
+
+            {% if request.user|has_group:"moderators" %}
 
           <!-- TEAMS -->
           <div id="teams" class="tab-pane fade">
@@ -79,7 +95,6 @@
           </div>
 
           <!-- TOURS -->
-          {% if user.is_authenticated %}
           <div id="tours" class="tab-pane fade">
             <ul class="basic-list">
               {% for tour in competition.tour_set.all %}
@@ -102,13 +117,16 @@
               {% endfor %}
             </ul>
           </div>
+
+            {% endif %}
+
           {% endif %}
 
         </div>
 
       </div>
 
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and request.user|has_group:"moderators"%}
       <div class="col-sm-4">
 
         <ul class="nav nav-pills nav-stacked">
@@ -120,12 +138,16 @@
             </a>
           </li>
 
+      {% endif %}
+
           <li class="nav-item">
             <a href="{% url 'starts_print' competition_id=competition.id %}" target="_blank">
               <span>Стартовые протоколы</span>
               <span class="pull-right glyphicon glyphicon-print"></span>
             </a>
           </li>
+
+            {% if user.is_authenticated and request.user|has_group:"moderators"%}
 
           <li class="nav-item">
             <a href="#" ng-click="comp.openModal();">
@@ -290,7 +312,7 @@
       <a class="btn btn-lg btn-primary" href="{% url 'final_print' competition_id=competition.id %}" target="_blank"> <span class="glyphicon glyphicon-print"></span> Итоговые протоколы</a>
     </p>
 
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and request.user|has_group:"moderators" %}
         <form action="." method="POST" >{% csrf_token %}
           <input type="hidden" name="competition_id" value="{{competition.id}}">
           <input type="hidden" name="close" value="0">

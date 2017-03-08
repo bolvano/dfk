@@ -30,7 +30,8 @@
 
 	<h3>Участники:</h3>
 
-		{% if user.is_authenticated %}<form role="form" method="POST">{% csrf_token %}
+		{% if request.user|has_group:"moderators" or request.user == userrequest.user %}<form role="form"
+                                                                                              method="POST">{% csrf_token %}
 
 		{{ competitor_formset.management_form }}
 
@@ -39,7 +40,9 @@
 				<tr>
 					<td class="column-name light-blue-background"><b>Участник</b></td>
 					<td class="column-tour padding-15 light-blue-background"><b>Дистанция</b></td>
+                    {% if request.user|has_group:"moderators" %}
 					<td class="column-approved padding-15 light-blue-background"><b>Подтверждение</b></td>
+                    {% endif %}
 				</tr>
 
 				<tbody>
@@ -61,7 +64,9 @@
 							{{competitor_form.instance.tour.style.name}} {{competitor_form.instance.tour.distance.name}} ({{competitor_form.instance.prior_time|formatSeconds}})
 							{% if competitor_form.instance.main_distance%}</b></span>{% endif %}
 						</td>
+                        {% if request.user|has_group:"moderators" %}
 						<td class="column-approved padding-15 text-center">{{competitor_form.approved}}</td>
+                        {% endif %}
 					</tr>
 
 				{% endfor %}
@@ -70,7 +75,9 @@
 			</table>
 			<div class="userrequest-button-wrapper">
 				<a href="{% url 'regrequest' userrequest_id=userrequest.id %}/" class="btn btn-lg btn-default pull-left"><span class="glyphicon glyphicon-pencil"></span> Редактировать заявку</a>
+				{% if request.user|has_group:"moderators" %}
 				<button class="btn btn-lg btn-success pull-right" type="submit">Сохранить изменения <span class="glyphicon glyphicon-ok"></span></button>
+                {% endif %}
 			</div>
 		</form>
 

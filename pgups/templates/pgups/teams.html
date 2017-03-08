@@ -1,0 +1,41 @@
+{% extends 'pgups/base.html' %}
+{% load staticfiles %}
+{% load extras %}
+{% block content %}
+
+<!-- Notie messages -->
+{% for message in messages %}
+	<script src="{% static 'js/notie.min.js' %}"></script>
+	<script> notie.alert(1, 'Изменения сохранены', 0.5); </script>
+{% endfor %}
+
+<div class="container">
+
+	<!-- Heading -->
+	<div class="heading">
+
+			<h1>Команды</h1>
+
+	</div> <!--End of Heading -->
+
+		{% if request.user|has_group:"moderators" %}
+        {% for team in data.teams %}
+
+        {{team}}<br>
+
+        {% endfor %}
+
+        <form method="POST" action=".">{% csrf_token %}
+
+            <input type="text" name="team" >
+
+            <button type="submit">Добавить</button>
+
+        </form>
+
+
+
+		{% endif %}
+</div>
+
+{% endblock %}

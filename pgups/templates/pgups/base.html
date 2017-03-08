@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load extras %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -31,9 +32,13 @@
 			<div id="navbar">
 				<ul class="nav navbar-nav">
 					<li><a href="{% url 'index' %}"><span class="glyphicon glyphicon-home"></span> Главная</a></li>
-					<li><a href="{% url 'regrequest' %}">Подать заявку</a></li>
 					{% if user.is_authenticated %}
+					<li><a href="{% url 'regrequest' %}">Подать заявку</a></li>
+                    {% if user|has_group:"moderators" %}
 					<li><a href="{% url 'competitioncreate' %}">Зарегистрировать соревнования</a></li>
+					<li><a href="{% url 'teams' %}">Список команд</a></li>
+					<li><a href="{% url 'applicants' %}">Список заявителей</a></li>
+                    {% endif %}
 					{% endif %}
 				</ul>
 				<div class="login pull-right">

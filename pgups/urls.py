@@ -8,6 +8,9 @@ urlpatterns = [
     url(r'^competition/(?P<competition_id>\d+)/$', competition, name='competition'),
     url(r'^userrequest/(?P<userrequest_id>\d+)/$', userrequest, name='userrequest'),
 
+    url(r'^applicants/$', applicants, name='applicants'),
+    url(r'^teams/$', teams, name='teams'),
+
     url(r'^person/(?P<person_id>\d+)/$', person, name='person'),
     url(r'^results/starts/(?P<competition_id>\d+)/$', results_starts),
     url(r'^results/tours/(?P<competition_id>\d+)/$', results_tours),

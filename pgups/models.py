@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*- 
 
 from django.db import models
+from django.contrib.auth.models import User
 
 
 #Соревнования
@@ -89,6 +90,7 @@ class Userrequest(models.Model):
     email = models.EmailField()
     ip = models.GenericIPAddressField()
     date = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User, default=2)
     
     def __str__(self):
         team = '('+self.team.name+')' if self.team else '(Инд.)'

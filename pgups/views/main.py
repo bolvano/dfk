@@ -2,13 +2,16 @@
 from django.shortcuts import render, get_object_or_404, render_to_response,redirect
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseForbidden
+
 from django import forms
 from django.forms import modelformset_factory
 
 from django.contrib.auth import authenticate, login, logout
 
 from pgups.models import Userrequest, Person, Competition, Team, Competitor, Tour, Age, Cdsg, TourRelay, TeamRelay
-
+from django.contrib.auth.models import User, Group
+from django.contrib.auth.decorators import login_required
 
 import json
 
@@ -135,7 +138,7 @@ def competition_team(request, competition_id, team_id):
                                                            'competition':competition,
                                                            'persons': persons},)
 
-
+@login_required
 def userrequest(request, userrequest_id):
     persons = []
     userrequest = get_object_or_404(Userrequest, pk=userrequest_id)
@@ -164,8 +167,13 @@ def userrequest(request, userrequest_id):
                                                       'competitor_formset': competitor_formset,
                                                       'persons':persons},)
 
-
+@login_required
 def reg_request(request, userrequest_id=None):
+
+    #import ipdb; ipdb.set_trace()
+
+    user = request.user
+
     if request.method == "POST":
 
         body_unicode = request.body.decode('utf-8')
@@ -190,13 +198,15 @@ def reg_request(request, userrequest_id=None):
             userrequest.representative = representative
             userrequest.phone = phone
             userrequest.email = email
+            #userrequest.user = user
         else:
             userrequest = Userrequest(competition=competition,
                                       team=team,
                                       representative=representative,
                                       phone=phone,
                                       email=email,
-                                      ip=ip)
+                                      ip=ip,
+                                      user=user)
         userrequest.save()
 
         actual_person_ids = []
@@ -258,8 +268,8 @@ def reg_request(request, userrequest_id=None):
         for p in Person.objects.filter(userrequest=userrequest):
             if p.id not in actual_person_ids:
                 p.delete()
-    else:
-        pass
+    elif not user.groups.filter(name='moderators').count() and Userrequest.objects.get(pk=userrequest_id).user != user:
+        return HttpResponseForbidden()
 
     data = {}
 
@@ -310,6 +320,36 @@ def tour(request, id):
                                                'competition_name':competition_name,
                                                'res': res,
                                                'tour_name': tour_name},)
+
+
+@login_required
+def applicants(request):
+    if request.POST:
+        login = request.POST.get("login", False)
+        password = request.POST.get("password", False)
+        if login and password:
+            user = User.objects.create_user(login, '', password)
+            user.save()
+            g = Group.objects.get(name='applicants')
+            g.user_set.add(user)
+    data = {}
+    applicants = User.objects.filter(groups__name='applicants')
+    data['applicants'] = applicants
+    return render(request, 'pgups/applicants.html', {'data': data}, )
+
+
+@login_required
+def teams(request):
+    if request.POST:
+        team_name = request.POST.get("team", False)
+        if team_name:
+            new_team = Team(name=team_name, active=False)
+            new_team.save()
+
+    data = {}
+    teams = Team.objects.all()
+    data['teams'] = teams
+    return render(request, 'pgups/teams.html', {'data': data}, )
 
 
 def login_user(request):
