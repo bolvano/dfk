@@ -268,7 +268,12 @@ def reg_request(request, userrequest_id=None):
         for p in Person.objects.filter(userrequest=userrequest):
             if p.id not in actual_person_ids:
                 p.delete()
-    elif not user.groups.filter(name='moderators').count() and Userrequest.objects.get(pk=userrequest_id).user != user:
+    elif userrequest_id:
+        if not user.groups.filter(name='moderators').count() and Userrequest.objects.get(pk=userrequest_id).user != user:
+            return HttpResponseForbidden()
+        else:
+            pass
+    elif not userrequest_id and not user.groups.filter(name='applicants').count():
         return HttpResponseForbidden()
 
     data = {}
