@@ -64,7 +64,9 @@
                 {% endif %}
                   <td class="text-center">{{userrequest.representative}}</td>
                 {% if user.is_authenticated %}
-                  <td class="text-center">{{userrequest.approved_competitors|length}} из {{userrequest.competitor_set.all|length}}</td>
+                  <td class="text-center">{{userrequest.approved_competitors|length}} из
+                    {{userrequest.competitor_set.all|length}} ({{userrequest.approved_persons|length}} из
+                      {{userrequest.persons|length}} чел.)</td>
                 {% endif %}
               </tr>
 

@@ -99,6 +99,12 @@ class Userrequest(models.Model):
     def approved_competitors(self):
         return self.competitor_set.filter(approved=True)
 
+    def approved_persons(self):
+         return set([c.person for c in self.competitor_set.filter(approved=True)])
+
+    def persons(self):
+         return set([c.person for c in self.competitor_set.all()])
+
 
 #Туры
 class Tour(models.Model):
@@ -126,7 +132,7 @@ class Competitor(models.Model):
     person = models.ForeignKey('Person')
     userrequest = models.ForeignKey('Userrequest')
     age = models.ForeignKey('Age')
-    approved = models.BooleanField(default=False)
+    approved = models.BooleanField(default=True)
     tour = models.ForeignKey('Tour')
     prior_time = models.FloatField()
     main_distance = models.BooleanField()
