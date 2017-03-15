@@ -83,17 +83,38 @@
             {% if request.user|has_group:"moderators" %}
 
           <!-- TEAMS -->
-          <div id="teams" class="tab-pane fade">
+            <div id="teams" class="tab-pane fade">
+
+        <table class="table table-striped table-hover table-bordered">
+          <thead>
+
+            <tr>
+              <th class="text-center">Команда</th>
+              <th class="text-center">Участников</th>
+              <th class="text-center">Заявок</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
             <ul class="basic-list">
-              {% for team in teams %}
-                <li>
-                  <a href="../../competition/team/{{competition.id}}/{{team.id}}/">{{team}}</a>
-                </li>
+              {% for team_name, team_data in teams.items %}
+                <tr>
+                  <td class="text-center"><a
+                          href="../../competition/team/{{competition.id}}/{{team_data.id}}/">{{team_name}} </a></td>
+                    <td class="text-center">{{team_data.persons}}</td>
+                    <td class="text-center">{{team_data.userrequests}}</td>
+                </tr>
               {% endfor %}
-                <li>
-                  <a href="../../competition/team/{{competition.id}}/0/">Без команды</a>
-                </li>
+                <tr>
+                    <td class="text-center"><a href="../../competition/team/{{competition.id}}/0/">Без команды</a></td>
+                    <td class="text-center">{{ind_persons}}</td>
+                    <td class="text-center">{{ind_requests}}</td>
+                </tr>
             </ul>
+
+           </tbody>
+        </table>
           </div>
 
           <!-- TOURS -->

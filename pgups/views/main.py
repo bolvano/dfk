@@ -14,6 +14,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
 
 import json
+from collections import defaultdict
 
 from pgups.common import get_client_ip
 
@@ -27,7 +28,20 @@ def competition(request, competition_id):
 
     competition = get_object_or_404(Competition, pk=competition_id)
     userrequests = Userrequest.objects.filter(competition=competition)
-    teams = set([userrequest.team for userrequest in userrequests if userrequest.team is not None])
+    teams = defaultdict(lambda : defaultdict(int))
+    ind_requests = 0
+    ind_persons = 0
+    for ur in userrequests:
+        if ur.team:
+            teams[ur.team.name]['id'] = ur.team.id
+            teams[ur.team.name]['userrequests'] += 1
+            teams[ur.team.name]['persons'] += len(ur.persons())
+        else:
+            ind_requests += 1
+            ind_persons += len(ur.persons())
+
+
+    # teams = set([userrequest.team for userrequest in userrequests if userrequest.team is not None])
     relay_list = TourRelay.objects.filter(competition=competition)
 
     if request.method == "POST":
@@ -97,7 +111,11 @@ def competition(request, competition_id):
 
         competition.save()
 
-    return render(request, 'pgups/competition.html', {'competition': competition, 'teams':teams, 'relays': relay_list},)
+    return render(request, 'pgups/competition.html', {'competition': competition,
+                                                      'teams': dict(teams),
+                                                      'relays': relay_list,
+                                                      'ind_requests': ind_requests,
+                                                      'ind_persons': ind_persons},)
 
 
 def person(request, person_id):
