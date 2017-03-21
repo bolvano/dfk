@@ -1,5 +1,6 @@
 {% extends 'pgups/base.html' %}
 {% load staticfiles %}
+{% load extras %}
 {% block content %}
 
 	<!-- Jumbotron -->
@@ -64,9 +65,15 @@
 					<div class="form-group">
 						<label class="col-lg-4 col-md-4 col-sm-5 col-xs-12 control-label text-left" for="team">Команда (необязательно):</label>
 						<div class="col-lg-5 col-md-5 col-sm-7 col-xs-12">
+							{% if request.user|has_group:"moderators" %}
 							<select class="form-control" name="team" ng-options="team.name for team in reg.teams track by team.id" ng-model="reg.form.team" ng-change="reg.clearPersons()">
 								<option value="" selected="selected">Выберите команду:</option>
 							</select>
+                            {% elif not data.applicant.team %}
+                            Индивидуальная заявка
+							{% else %}
+                            Заявка будет подана от команды {{data.applicant.team.name}}
+							{% endif %}
 						</div>
 					</div> <!-- End of Team -->
 

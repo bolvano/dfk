@@ -90,7 +90,7 @@ def get_competitions(request, userrequest_id=None):
 
 def get_teams(request):
     team_list = []
-    teams = Team.objects.all()
+    teams = Team.objects.all().order_by('name')
     for t in teams:
         team = {'id':t.id, 'name':t.name}
         team_list.append(team)

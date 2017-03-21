@@ -9,7 +9,7 @@ from django.forms import modelformset_factory
 
 from django.contrib.auth import authenticate, login, logout
 
-from pgups.models import Userrequest, Person, Competition, Team, Competitor, Tour, Age, Cdsg, TourRelay, TeamRelay
+from pgups.models import Userrequest, Person, Competition, Team, Competitor, Tour, Age, Cdsg, TourRelay, TeamRelay, Applicant
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
 
@@ -204,11 +204,17 @@ def reg_request(request, userrequest_id=None):
         ip = get_client_ip(request)
 
         #import ipdb; ipdb.set_trace()
-
-        if 'team' in data and data['team']!=None:
-            team = Team.objects.get(pk=data['team']['id'])
+        if user.groups.filter(name='moderators').count():
+            if 'team' in data and data['team']!=None:
+                team = Team.objects.get(pk=data['team']['id'])
+            else:
+                team = None
         else:
-            team = None
+            applicant = Applicant.objects.filter(user=user).first()
+            if applicant and user.applicant.team:
+                team = user.applicant.team
+            else:
+                team = None
 
         if 'userrequest_id' in data:
             userrequest = Userrequest.objects.get(pk=data['userrequest_id'])
@@ -295,8 +301,11 @@ def reg_request(request, userrequest_id=None):
         return HttpResponseForbidden()
 
     data = {}
+    applicant = Applicant.objects.filter(user=user).first()
+    if applicant:
+        data['applicant'] = applicant
 
-    return render(request, 'pgups/reg.html', data)
+    return render(request, 'pgups/reg.html', {'data': data})
 
 
 def competition_starts(request, competition_id):
@@ -347,17 +356,26 @@ def tour(request, id):
 
 @login_required
 def applicants(request):
+    #import ipdb; ipdb.set_trace()
     if request.POST:
         login = request.POST.get("login", False)
         password = request.POST.get("password", False)
+        team_id = int(request.POST.get("team_id", False))
         if login and password:
             user = User.objects.create_user(login, '', password)
             user.save()
+            if team_id:
+                team = Team.objects.get(pk=team_id)
+                new_applicant = Applicant(user=user, team=team)
+                new_applicant.save()
+
             g = Group.objects.get(name='applicants')
             g.user_set.add(user)
     data = {}
     applicants = User.objects.filter(groups__name='applicants')
     data['applicants'] = applicants
+    teams = Team.objects.all().order_by('name')
+    data['teams'] = {team.id: team.name for team in teams}
     return render(request, 'pgups/applicants.html', {'data': data}, )
 
 
@@ -370,7 +388,7 @@ def teams(request):
             new_team.save()
 
     data = {}
-    teams = Team.objects.all()
+    teams = Team.objects.all().order_by('name')
     data['teams'] = teams
     return render(request, 'pgups/teams.html', {'data': data}, )
 

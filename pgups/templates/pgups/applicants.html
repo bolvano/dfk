@@ -30,6 +30,13 @@
             <input type="text" name="login" >
             <input type="text" name="password" >
 
+            <select name="team_id">
+                <option selected value="0">Индивидуальная заявка</option>
+                {% for team_id, team_name in data.teams.items %}
+                <option value="{{team_id}}">{{team_name}}</option>
+                {% endfor %}
+            </select>
+
             <button type="submit">Добавить</button>
 
         </form>
