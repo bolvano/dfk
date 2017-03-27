@@ -15,8 +15,28 @@ from django.contrib.auth.decorators import login_required
 
 import json
 from collections import defaultdict
+import functools
 
 from pgups.common import get_client_ip
+
+
+# middleware to log out deactivated users
+class ActiveUserMiddleware(object):
+    def process_request(self, request):
+        if not request.user.is_authenticated():
+            return
+        if not request.user.is_active:
+           logout(request)
+
+# decorator
+def moderator_required(func):
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+        if not args[0].user.groups.filter(name='moderators').count():
+            return HttpResponseForbidden()
+        result = func(*args, **kwargs)
+        return result
+    return inner
 
 
 def index(request):
@@ -25,6 +45,10 @@ def index(request):
 
 
 def competition(request, competition_id):
+    if not request.user.is_authenticated():
+        applicant = None
+    else:
+        applicant = Applicant.objects.filter(user=request.user).first()
 
     competition = get_object_or_404(Competition, pk=competition_id)
     userrequests = Userrequest.objects.filter(competition=competition)
@@ -112,6 +136,7 @@ def competition(request, competition_id):
         competition.save()
 
     return render(request, 'pgups/competition.html', {'competition': competition,
+                                                      'applicant': applicant,
                                                       'teams': dict(teams),
                                                       'relays': relay_list,
                                                       'ind_requests': ind_requests,
@@ -122,7 +147,7 @@ def person(request, person_id):
     person = get_object_or_404(Person, pk=person_id)
     return render(request, 'pgups/person.html', {'person': person},)
 
-
+@login_required
 def competition_team(request, competition_id, team_id):
     persons = []
     competition = Competition.objects.get(pk=competition_id)
@@ -307,7 +332,7 @@ def reg_request(request, userrequest_id=None):
 
     return render(request, 'pgups/reg.html', {'data': data})
 
-
+@moderator_required
 def competition_starts(request, competition_id):
     competition = Competition.objects.get(pk=competition_id)
 
@@ -318,7 +343,7 @@ def competition_starts(request, competition_id):
                                                              'competition': competition,
                                                             },)
 
-
+@moderator_required
 def tour(request, id):
 
     res = []
@@ -354,13 +379,21 @@ def tour(request, id):
                                                'tour_name': tour_name},)
 
 
-@login_required
+@moderator_required
 def applicants(request):
     #import ipdb; ipdb.set_trace()
+
+    moderators = User.objects.filter(groups__name='moderators')
+
     if request.POST:
+        applicants = Applicant.objects.exclude(user__in=moderators).order_by('team')
+        ind_applicants = set(User.objects.filter(groups__name='applicants') \
+                             .exclude(groups__name='moderators')) - set([a.user for a in applicants])
+
         login = request.POST.get("login", False)
         password = request.POST.get("password", False)
         team_id = int(request.POST.get("team_id", False))
+        status_change = int(request.POST.get("status_change", False))
         if login and password:
             user = User.objects.create_user(login, '', password)
             user.save()
@@ -371,15 +404,34 @@ def applicants(request):
 
             g = Group.objects.get(name='applicants')
             g.user_set.add(user)
+        elif status_change:
+            new_active = request.POST.getlist("applicant[]", [])
+            for applicant in applicants:
+                applicant.user.is_active = False
+                applicant.user.save()
+            for ind_applicant in ind_applicants:
+                ind_applicant.is_active = False
+                ind_applicant.save()
+
+            for applicant in User.objects.all():
+                if applicant.id in [int(i) for i in new_active]:
+                    applicant.is_active = True
+                    applicant.save()
+
     data = {}
-    applicants = User.objects.filter(groups__name='applicants')
+
+    applicants = Applicant.objects.exclude(user__in=moderators).order_by('team')
+    ind_applicants = set(User.objects.filter(groups__name='applicants')\
+        .exclude(groups__name='moderators')) - set([a.user for a in applicants])
+
     data['applicants'] = applicants
+    data['ind_applicants'] = ind_applicants
     teams = Team.objects.all().order_by('name')
     data['teams'] = {team.id: team.name for team in teams}
     return render(request, 'pgups/applicants.html', {'data': data}, )
 
 
-@login_required
+@moderator_required
 def teams(request):
     if request.POST:
         team_name = request.POST.get("team", False)

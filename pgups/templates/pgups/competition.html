@@ -16,26 +16,25 @@
 
       <div class="col-sm-8 dfk-tabs-content">
 
-        {% if user.is_authenticated %}
+    {% if user.is_authenticated %}
 
         <ul class="nav nav-tabs">
           <li class="active"><a data-toggle="tab" href="#requests">Заявки</a></li>
-            {% if request.user|has_group:"moderators" %}
           <li><a data-toggle="tab" href="#teams">Составы команд</a></li>
+          {% if request.user|has_group:"moderators" %}
           <li><a data-toggle="tab" href="#tours">Дисциплины</a></li>
           <li><a data-toggle="tab" href="#relays">Эстафеты</a></li>
-            {% endif %}
+          {% endif %}
         </ul>
 
-        {% endif %}
+    {% endif %}
 
         <div class="tab-content ">
 
-        {% if user.is_authenticated %}
+    {% if user.is_authenticated %}
 
           <!-- REQUESTS -->
-          <div id="requests" class="tab-pane fade in active">
-
+        <div id="requests" class="tab-pane fade in active">
 
         <table class="table table-striped table-hover table-bordered">
           <thead>
@@ -78,12 +77,10 @@
 
           </table>
 
-          </div>
-
-            {% if request.user|has_group:"moderators" %}
+        </div>
 
           <!-- TEAMS -->
-            <div id="teams" class="tab-pane fade">
+        <div id="teams" class="tab-pane fade">
 
         <table class="table table-striped table-hover table-bordered">
           <thead>
@@ -99,23 +96,29 @@
 
             <ul class="basic-list">
               {% for team_name, team_data in teams.items %}
+                {% if  request.user|has_group:"moderators" or applicant and applicant.team.id == team_data.id  %}
                 <tr>
                   <td class="text-center"><a
                           href="../../competition/team/{{competition.id}}/{{team_data.id}}/">{{team_name}} </a></td>
                     <td class="text-center">{{team_data.persons}}</td>
                     <td class="text-center">{{team_data.userrequests}}</td>
                 </tr>
+                {% endif %}
               {% endfor %}
+                {% if  request.user|has_group:"moderators" %}
                 <tr>
                     <td class="text-center"><a href="../../competition/team/{{competition.id}}/0/">Без команды</a></td>
                     <td class="text-center">{{ind_persons}}</td>
                     <td class="text-center">{{ind_requests}}</td>
                 </tr>
+                {% endif %}
             </ul>
 
            </tbody>
         </table>
           </div>
+
+         {% if request.user|has_group:"moderators" %}
 
           <!-- TOURS -->
           <div id="tours" class="tab-pane fade">

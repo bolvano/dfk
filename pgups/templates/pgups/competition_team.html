@@ -20,7 +20,7 @@
 		<h2><b>{% if team != '' %}Команда {{team.name}}{% else %} Вне команд {% endif %}</b></h2>
 	</div> <!-- End of Heading -->
 
-    {% if user.is_authenticated %}
+    {% if request.user|has_group:"moderators" %}
 
 		<form role="form" method="POST">{% csrf_token %}
 

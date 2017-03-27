@@ -19,11 +19,38 @@
 	</div> <!--End of Heading -->
 
 		{% if request.user|has_group:"moderators" %}
+
+    <form method="POST" action=".">{% csrf_token %}
+        <input type="hidden" name="status_change" value="1">
         {% for a in data.applicants %}
 
-        {{a}}<br>
+        {% if a.user.is_active %} <b> {% endif %}{{a.user}}
+        ({{a.team.name}}) {% if a.user.is_active %} </b> {% endif %} <input
+                {% if  a.user.is_active %} checked {% endif %}
+                type="checkbox" name="applicant[]"
+                value="{{a.user.id}}"><br>
 
         {% endfor %}
+
+        <h2>Индивидуальные заявители:</h2>
+
+        {% for a in data.ind_applicants %}
+
+        {% if a.is_active %} <b> {% endif %}{{a}}{% if a.is_active %} </b>{% endif %}
+        <input
+                {% if  a.is_active %} checked {% endif %}
+                type="checkbox" name="applicant[]"
+                value="{{a.id}}">
+        <br>
+
+        {% endfor %}
+
+        <br><button type="submit">Сохранить изменения</button>
+
+
+    </form>
+
+    <hr>
 
         <form method="POST" action=".">{% csrf_token %}
 
