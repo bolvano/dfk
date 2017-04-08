@@ -44,8 +44,10 @@ class Person(models.Model):
     userrequest = models.ForeignKey('Userrequest')
     
     def __str__(self):
-        return self.last_name.title() + ' ' + self.first_name.title() + ' (' + str(self.birth_year) + '/' + \
-               self.gender +')'
+        return "{} {} ({}/{})".format(self.last_name.title(),
+                                      self.first_name.title(),
+                                      self.birth_year,
+                                      self.gender)
 
 
 #Возрастные группы
@@ -93,17 +95,17 @@ class Userrequest(models.Model):
     user = models.ForeignKey(User, default=2)
     
     def __str__(self):
-        team = '('+self.team.name+')' if self.team else '(Инд.)'
-        return self.competition.name + ' ' + team
+        team = '({})'.format(self.team.name) if self.team else '(Инд.)'
+        return '{} {}'.format(self.competition.name, team)
 
     def approved_competitors(self):
         return self.competitor_set.filter(approved=True)
 
     def approved_persons(self):
-         return set([c.person for c in self.competitor_set.filter(approved=True)])
+        return set([c.person for c in self.competitor_set.filter(approved=True)])
 
     def persons(self):
-         return set([c.person for c in self.competitor_set.all()])
+        return set([c.person for c in self.competitor_set.all()])
 
 
 #Туры
@@ -122,7 +124,11 @@ class Tour(models.Model):
     
     def __str__(self):
         out = ' (вне конкурса)' if self.out else ''
-        return self.style.name + ' ' + self.distance.name  + ' ' + self.age.name + ' ' + self.gender + out
+        return "{} {} {} {} {}".format(self.style.name,
+                                       self.distance.name,
+                                       self.age.name,
+                                       self.gender,
+                                       out)
 
 
 #Участники
@@ -150,8 +156,12 @@ class Competitor(models.Model):
             team = self.userrequest.team.name
         else:
             team = 'Инд.'
-        return self.person.last_name.title() + ' ' + self.person.first_name.title() + ' ('+ team +')' +': ' + \
-               self.tour.age.name + ' ' + self.tour.style.name + ' (' + str(self.prior_time) + ')'
+        return "{} {} ({}): {} {} ({})".format(self.person.last_name.title(),
+                                               self.person.first_name.title(),
+                                               team,
+                                               self.tour.age.name,
+                                               self.tour.style.name,
+                                               str(self.prior_time))
 
     class Meta:
         ordering = ['lane']
@@ -163,7 +173,7 @@ class Cdsg(models.Model):
     number = models.PositiveSmallIntegerField(default=1)
 
     def __str__(self):
-        return self.name + ' #' + str(self.number)
+        return "{} #{}".format(self.name, str(self.number))
 
 
 #Старты
@@ -175,7 +185,7 @@ class Start(models.Model):
     num = models.PositiveSmallIntegerField(default=1) # num in cdsg
     
     def __str__(self):
-        return self.name + ' #' + str(self.num)
+        return "{} #{}".format(self.name, str(self.num))
 
 
 class Applicant(models.Model):
@@ -213,7 +223,11 @@ class TourRelay(models.Model):
 
     def __str__(self):
         out = ' (вне конкурса)' if self.out else ''
-        return self.style.name + ' ' + self.distance.name + ' ' + self.age.name + ' ' + self.gender + out
+        return "{} {} {} {}{}".format(self.style.name,
+                                      self.distance.name,
+                                      self.age.name,
+                                      self.gender,
+                                      out)
 
 
 # CDSG
@@ -223,7 +237,7 @@ class CdsgRelay(models.Model):
     number = models.PositiveSmallIntegerField(default=1)
 
     def __str__(self):
-        return self.name + ' #' + str(self.number)
+        return "{} #{}".format(self.name, str(self.number))
 
 
 # Старты
@@ -235,7 +249,7 @@ class StartRelay(models.Model):
     num = models.PositiveSmallIntegerField(default=1)  # num in cdsg
 
     def __str__(self):
-        return self.name + ' #' + str(self.num)
+        return "{} #{}".format(self.name, str(self.num))
 
 
 #Участники
@@ -262,8 +276,11 @@ class TeamRelay(models.Model):
         else:
             team = 'Инд.'
 
-        return self.name + ' (' + team + ') : ' + self.tour.age.name + ' ' + self.tour.style.name + ' ' + \
-               self.tour.gender
+        return "{} ({}): {} {} {}".format(self.name,
+                                          team,
+                                          self.tour.age.name,
+                                          self.tour.style.name,
+                                          self.tour.gender)
 
     class Meta:
         ordering = ['lane']
@@ -282,6 +299,10 @@ class CompetitorRelay(models.Model):
             team = self.teamRelay.name
         else:
             team = 'Инд.'
-        return self.person.last_name.title() + ' ' + self.person.first_name.title() + ' ('+ team +')' +': ' + \
-               self.teamRelay.tour.age.name + ' ' + self.teamRelay.tour.style.name + ' дорожка ' + \
-               str(self.teamRelay.lane) + ', #' + str(self.order)
+        return "{} {} ({}): {} {} дорожка {}, #{}".format(self.person.last_name.title(),
+                                                          self.person.first_name.title(),
+                                                          team,
+                                                          self.teamRelay.tour.age.name,
+                                                          self.teamRelay.tour.style.name,
+                                                          str(self.teamRelay.lane),
+                                                          str(self.order))
