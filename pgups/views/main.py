@@ -9,15 +9,18 @@ from django.forms import modelformset_factory
 
 from django.contrib.auth import authenticate, login, logout
 
-from pgups.models import Userrequest, Person, Competition, Team, Competitor, Tour, Age, Cdsg, TourRelay, TeamRelay, Applicant
+from pgups.models import Userrequest, Person, Competition, Team, Competitor, Tour, Start, Age, Cdsg, TourRelay, \
+    TeamRelay, Applicant
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
 
 import json
 from collections import defaultdict
 import functools
-
+import os
 from pgups.common import get_client_ip
+
+from django.conf import settings
 
 
 # middleware to log out deactivated users
@@ -146,6 +149,7 @@ def competition(request, competition_id):
 def person(request, person_id):
     person = get_object_or_404(Person, pk=person_id)
     return render(request, 'pgups/person.html', {'person': person},)
+
 
 @login_required
 def competition_team(request, competition_id, team_id):
@@ -332,6 +336,7 @@ def reg_request(request, userrequest_id=None):
 
     return render(request, 'pgups/reg.html', {'data': data})
 
+
 @moderator_required
 def competition_starts(request, competition_id):
     competition = Competition.objects.get(pk=competition_id)
@@ -342,6 +347,40 @@ def competition_starts(request, competition_id):
                                                              'competition_id':competition_id,
                                                              'competition': competition,
                                                             },)
+
+
+@moderator_required
+def generate_starts_slides(request, competition_id):
+
+    slides_dir = os.path.join(settings.BASE_DIR, 'slides')
+    for file_object in os.listdir(slides_dir):
+        file_object_path = os.path.join(slides_dir, file_object)
+        if os.path.isfile(file_object_path):
+            os.unlink(file_object_path)
+
+    competition = Competition.objects.get(pk=competition_id)
+    cdsg_list = Cdsg.objects.filter(competition=competition)
+    i = 0
+    for cdsg in cdsg_list:
+        start_list = Start.objects.filter(cdsg=cdsg).order_by('num')
+        for start in start_list:
+            i += 1
+            new_filename = "start_{}.html".format(i)
+            content = '''<html><head>
+  <meta charset="UTF-8">
+</head><h1>Заплыв №{}. {}</h1><br><br><ul>'''.format(start.num, start.name)
+            competitors = Competitor.objects.filter(start=start).order_by('lane')
+            for competitor in competitors:
+                content += "<li style=\"font-size:60px\">{}. {} {}</li>".format(competitor.lane,
+                                                  competitor.person.last_name,
+                                                  competitor.person.first_name)
+            content += "</ul></html>"
+            with open(os.path.join(slides_dir, new_filename), 'w') as outfile:
+                outfile.write(content)
+
+    return HttpResponse("<html>Done!</html>")
+
+
 
 @moderator_required
 def tour(request, id):

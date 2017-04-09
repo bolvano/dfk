@@ -56,5 +56,7 @@ urlpatterns = [
     url(r'^cdsg_print/(?P<cdsg_id>\d+)/$', cdsg_print, name="cdsg_print"),
     url(r'^final_print/(?P<competition_id>\d+)/(?P<as_csv>(0|1))?/?$', final_print, name="final_print"),
 
+    url(r'^generate_slides/(?P<competition_id>\d+)/$', generate_starts_slides, name="generate_starts_slides"),
+
     url(r'^relay_cdsg_print/(?P<cdsg_id>\d+)/$', relay_cdsg_print, name="relay_cdsg_print"),
 ]
