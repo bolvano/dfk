@@ -355,7 +355,7 @@ def generate_starts_slides(request, competition_id):
     slides_dir = os.path.join(settings.BASE_DIR, 'slides')
     for file_object in os.listdir(slides_dir):
         file_object_path = os.path.join(slides_dir, file_object)
-        if os.path.isfile(file_object_path):
+        if os.path.isfile(file_object_path) and file_object != '.gitignore':
             os.unlink(file_object_path)
 
     competition = Competition.objects.get(pk=competition_id)
@@ -368,12 +368,12 @@ def generate_starts_slides(request, competition_id):
             new_filename = "start_{}.html".format(i)
             content = '''<html><head>
   <meta charset="UTF-8">
-</head><h1>Заплыв №{}. {}</h1><br><br><ul>'''.format(start.num, start.name)
+</head><span style=\"font-size:70px\">Заплыв №{}. {}</span><br><br><ul>'''.format(start.num, start.name)
             competitors = Competitor.objects.filter(start=start).order_by('lane')
             for competitor in competitors:
-                content += "<li style=\"font-size:60px\">{}. {} {}</li>".format(competitor.lane,
-                                                  competitor.person.last_name,
-                                                  competitor.person.first_name)
+                content += "<li style=\"font-size:85px\">{}. {} {}</li>".format(competitor.lane,
+                                                  competitor.person.last_name.title(),
+                                                  competitor.person.first_name.title())
             content += "</ul></html>"
             with open(os.path.join(slides_dir, new_filename), 'w') as outfile:
                 outfile.write(content)
